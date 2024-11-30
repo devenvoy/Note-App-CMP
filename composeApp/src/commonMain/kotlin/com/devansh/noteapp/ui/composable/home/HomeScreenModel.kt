@@ -23,7 +23,7 @@ class HomeScreenModel(
     private val searchText = MutableStateFlow("")
     private val isSearchActive = MutableStateFlow(false)
 
-    private val noteState =
+    val noteState =
         combine(_notes, searchText, isSearchActive) { list, text, isSearchActive ->
             NoteListState(
                 notes = searchNotes.execute(list, text),

@@ -28,8 +28,8 @@ class SplashScreen : Screen {
         val navigator = LocalNavigator.currentOrThrow
 
         LaunchedEffect(Unit){
-            delay(1000L)
-            navigator.push(HomeScreen())
+            delay(500L)
+            navigator.replace(HomeScreen())
         }
 
         Box(
