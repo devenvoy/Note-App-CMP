@@ -39,7 +39,9 @@ class HomeScreenModel(
 
     private fun loadNotes() {
         screenModelScope.launch {
-            _notes.update { noteDataSource.getAllNotes() }
+            noteDataSource.getAllNotes().collect{ newList->
+            _notes.update { newList }
+            }
         }
     }
 
