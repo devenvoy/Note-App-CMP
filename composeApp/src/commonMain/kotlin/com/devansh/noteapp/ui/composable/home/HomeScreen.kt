@@ -24,25 +24,35 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import cafe.adriel.voyager.core.model.rememberScreenModel
 import cafe.adriel.voyager.core.screen.Screen
+import cafe.adriel.voyager.navigator.LocalNavigator
+import cafe.adriel.voyager.navigator.currentOrThrow
 import com.devansh.noteapp.ui.components.ExpandableSearchView
+import com.devansh.noteapp.ui.composable.add_edit_note.AddEditNoteScreen
 import com.devansh.noteapp.ui.composable.core.Constants
+import com.devansh.noteapp.ui.composable.home.notes.NoteScreenContent
 import com.devansh.noteapp.ui.theme.getMontBFont
 import network.chaintech.sdpcomposemultiplatform.ssp
 
 class HomeScreen : Screen {
     @Composable
     override fun Content() {
-
-        val homeScreenModel = rememberScreenModel { HomeScreenModel(Constants.dbClient) }
+val navigator = LocalNavigator.currentOrThrow
+        val homeScreenModel = rememberScreenModel { HomeScreenModel(Constants.noteDatabase) }
         HomeScreenContent(
-            homeScreenModel = homeScreenModel
+            homeScreenModel = homeScreenModel,
+            onNavigateToAddEditNote={
+                navigator.push(AddEditNoteScreen(it))
+            },
         )
     }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun HomeScreenContent(homeScreenModel: HomeScreenModel) {
+fun HomeScreenContent(
+    homeScreenModel: HomeScreenModel,
+    onNavigateToAddEditNote: (Long) -> Unit,
+) {
 
     val noteState by homeScreenModel.noteState.collectAsState()
     Scaffold(topBar = {
@@ -72,7 +82,9 @@ fun HomeScreenContent(homeScreenModel: HomeScreenModel) {
                         imageVector = Icons.Filled.Search, contentDescription = "search"
                     )
                 }
-                IconButton(onClick = {}) {
+                IconButton(onClick = {
+                    onNavigateToAddEditNote(-1)
+                }) {
                     Icon(
                         imageVector = Icons.Filled.Add, contentDescription = "Add"
                     )
@@ -86,7 +98,13 @@ fun HomeScreenContent(homeScreenModel: HomeScreenModel) {
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Text("Hello World!!")
+           NoteScreenContent(
+               state = noteState,
+               onNavigateToAddEditNote =onNavigateToAddEditNote,
+               onDeleteNote = { id->
+                   homeScreenModel.deleteNoteById(id)
+               }
+           )
         }
     }
 }

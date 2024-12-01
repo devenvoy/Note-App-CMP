@@ -11,7 +11,7 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 @Composable
 @Preview
 fun App(db: SqlDelightNoteDataSource) {
-    Constants.dbClient = db
+    Constants.noteDatabase = db
   NoteAppTheme {
       Navigator(SplashScreen())
   }

@@ -19,7 +19,7 @@ data class Note(
     val created: LocalDateTime
 ) {
     companion object {
-        private val colors = listOf(
+        val colors = listOf(
             RedOrangeHex,
             RedPinkHex,
             BabyBlueHex,
