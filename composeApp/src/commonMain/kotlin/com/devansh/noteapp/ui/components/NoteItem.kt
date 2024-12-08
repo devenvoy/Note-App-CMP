@@ -50,7 +50,7 @@ fun NoteItemUI(
                         text = note.title,
                         style = MaterialTheme.typography.bodyLarge,
                         fontWeight = FontWeight.Bold,
-                        color = MaterialTheme.colorScheme.secondary,
+                        color = Color.White,
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis
                     )
@@ -60,38 +60,38 @@ fun NoteItemUI(
                     Text(
                         text = note.content,
                         style = MaterialTheme.typography.bodyMedium,
-                        color = MaterialTheme.colorScheme.background,
+                        color = MaterialTheme.colorScheme.onBackground,
                         maxLines = 10,
                         overflow = TextOverflow.Ellipsis
                     )
 
-                    // Share and Delete Icons
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(top = 8.dp),
-                        horizontalArrangement = Arrangement.End
-                    ) {
-                        IconButton(
-                            onClick = { onShareClicked(note.content) },
-                        ) {
-                            Icon(
-                                imageVector = Icons.Default.Share,
-                                contentDescription = "Share Note",
-                                tint = MaterialTheme.colorScheme.onSurface
-                            )
-                        }
-
-                        IconButton(
-                            onClick = onDeleteClicked,
-                        ) {
-                            Icon(
-                                imageVector = Icons.Default.Delete,
-                                contentDescription = "Delete Note",
-                                tint = MaterialTheme.colorScheme.onSurface
-                            )
-                        }
-                    }
+//                    // Share and Delete Icons
+//                    Row(
+//                        modifier = Modifier
+//                            .fillMaxWidth()
+//                            .padding(top = 8.dp),
+//                        horizontalArrangement = Arrangement.End
+//                    ) {
+//                        IconButton(
+//                            onClick = { onShareClicked(note.content) },
+//                        ) {
+//                            Icon(
+//                                imageVector = Icons.Default.Share,
+//                                contentDescription = "Share Note",
+//                                tint = MaterialTheme.colorScheme.onSurface
+//                            )
+//                        }
+//
+//                        IconButton(
+//                            onClick = onDeleteClicked,
+//                        ) {
+//                            Icon(
+//                                imageVector = Icons.Default.Delete,
+//                                contentDescription = "Delete Note",
+//                                tint = MaterialTheme.colorScheme.onSurface
+//                            )
+//                        }
+//                    }
                 }
             }
         }

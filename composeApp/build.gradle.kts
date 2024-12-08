@@ -1,8 +1,6 @@
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
-import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
-import org.jetbrains.kotlin.gradle.targets.js.webpack.KotlinWebpackConfig
 
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
@@ -23,7 +21,7 @@ kotlin {
             jvmTarget.set(JvmTarget.JVM_11)
         }
     }
-    
+
     listOf(
         iosX64(),
         iosArm64(),
@@ -34,12 +32,12 @@ kotlin {
             isStatic = true
         }
     }
-    
+
     jvm("desktop")
 
     sourceSets {
         val desktopMain by getting
-        
+
         androidMain.dependencies {
 
             implementation(libs.ktor.client.android)
@@ -64,7 +62,7 @@ kotlin {
             implementation(libs.voyager.screenModel)
 
             implementation(libs.sdp.ssp.compose.multiplatform)
-            
+
             // build in
             implementation(compose.runtime)
             implementation(compose.foundation)
@@ -75,6 +73,8 @@ kotlin {
             implementation(libs.androidx.lifecycle.viewmodel)
             implementation(libs.androidx.lifecycle.runtime.compose)
 
+
+            implementation(libs.composeIcons.fontAwesome)
 
         }
         iosMain.dependencies {
