@@ -1,4 +1,4 @@
-package com.devansh.noteapp.ui.composable.add_edit_note
+package com.devansh.noteapp.ui.screens.add_edit_note
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
@@ -37,7 +37,7 @@ import androidx.compose.ui.unit.sp
 import com.mohamedrejeb.richeditor.model.RichTextState
 
 @Composable
-fun SlackDemoLinkDialog(
+fun SlackLinkDialog(
     state: RichTextState,
     openLinkDialog: MutableState<Boolean>,
 ) {

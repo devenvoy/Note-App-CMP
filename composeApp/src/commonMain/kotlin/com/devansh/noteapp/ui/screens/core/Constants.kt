@@ -1,4 +1,4 @@
-package com.devansh.noteapp.ui.composable.core
+package com.devansh.noteapp.ui.screens.core
 
 import com.devansh.noteapp.data.local.SqlDelightNoteDataSource
 

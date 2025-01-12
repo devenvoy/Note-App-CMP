@@ -1,4 +1,4 @@
-package com.devansh.noteapp.ui.composable.add_edit_note
+package com.devansh.noteapp.ui.screens.add_edit_note
 
 import androidx.compose.ui.focus.FocusState
 

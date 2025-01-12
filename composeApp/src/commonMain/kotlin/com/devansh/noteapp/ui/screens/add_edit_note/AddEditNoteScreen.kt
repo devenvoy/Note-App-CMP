@@ -1,4 +1,4 @@
-package com.devansh.noteapp.ui.composable.add_edit_note
+package com.devansh.noteapp.ui.screens.add_edit_note
 
 import androidx.compose.animation.Animatable
 import androidx.compose.animation.core.tween
@@ -16,12 +16,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.outlined.Send
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
@@ -36,16 +31,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import cafe.adriel.voyager.core.model.rememberScreenModel
@@ -54,10 +46,8 @@ import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import com.devansh.noteapp.domain.model.Note
 import com.devansh.noteapp.ui.components.HintUI
-import com.devansh.noteapp.ui.composable.core.Constants
-import com.mohamedrejeb.richeditor.model.RichTextState
+import com.devansh.noteapp.ui.screens.core.Constants
 import com.mohamedrejeb.richeditor.model.rememberRichTextState
-import com.mohamedrejeb.richeditor.ui.material3.RichText
 import com.mohamedrejeb.richeditor.ui.material3.RichTextEditor
 import com.mohamedrejeb.richeditor.ui.material3.RichTextEditorDefaults
 import compose.icons.FontAwesomeIcons
@@ -66,8 +56,6 @@ import compose.icons.fontawesomeicons.Solid
 import compose.icons.fontawesomeicons.regular.Save
 import compose.icons.fontawesomeicons.solid.ArrowLeft
 import compose.icons.fontawesomeicons.solid.EllipsisV
-import compose.icons.fontawesomeicons.solid.PaperPlane
-import compose.icons.fontawesomeicons.solid.Paperclip
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import network.chaintech.sdpcomposemultiplatform.sdp
@@ -208,7 +196,7 @@ fun AddEditScreenContent(
                 }
             }
 
-            SlackDemoPanel(
+            SlackPanel(
                 state = richTextState,
                 openLinkDialog = openLinkDialog,
                 modifier = Modifier
@@ -254,7 +242,7 @@ fun AddEditScreenContent(
                         openLinkDialog.value = false
                     }
                 ) {
-                    SlackDemoLinkDialog(
+                    SlackLinkDialog(
                         state = richTextState,
                         openLinkDialog = openLinkDialog
                     )

@@ -1,11 +1,11 @@
-package com.devansh.noteapp.ui.composable.home
+package com.devansh.noteapp.ui.screens.home
 
 import cafe.adriel.voyager.core.model.ScreenModel
 import cafe.adriel.voyager.core.model.screenModelScope
 import com.devansh.noteapp.domain.model.Note
 import com.devansh.noteapp.domain.repo.NoteDataSource
 import com.devansh.noteapp.domain.repo.SearchNotes
-import com.devansh.noteapp.ui.composable.home.notes.NoteListState
+import com.devansh.noteapp.ui.screens.home.notes.NoteListState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine

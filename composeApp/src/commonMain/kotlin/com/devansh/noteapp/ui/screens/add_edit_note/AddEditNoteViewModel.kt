@@ -1,6 +1,5 @@
-package com.devansh.noteapp.ui.composable.add_edit_note
+package com.devansh.noteapp.ui.screens.add_edit_note
 
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import cafe.adriel.voyager.core.model.ScreenModel

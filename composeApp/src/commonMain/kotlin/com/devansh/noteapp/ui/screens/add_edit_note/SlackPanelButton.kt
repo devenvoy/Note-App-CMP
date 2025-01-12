@@ -1,4 +1,4 @@
-package com.devansh.noteapp.ui.composable.add_edit_note
+package com.devansh.noteapp.ui.screens.add_edit_note
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -20,7 +20,7 @@ import androidx.compose.ui.unit.dp
 import network.chaintech.sdpcomposemultiplatform.sdp
 
 @Composable
-fun SlackDemoPanelButton(
+fun SlackPanelButton(
     onClick: () -> Unit,
     icon: ImageVector,
     tint: Color? = null,

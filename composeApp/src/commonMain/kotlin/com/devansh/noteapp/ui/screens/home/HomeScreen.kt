@@ -1,4 +1,4 @@
-package com.devansh.noteapp.ui.composable.home
+package com.devansh.noteapp.ui.screens.home
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -27,9 +27,9 @@ import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import com.devansh.noteapp.ui.components.ExpandableSearchView
-import com.devansh.noteapp.ui.composable.add_edit_note.AddEditNoteScreen
-import com.devansh.noteapp.ui.composable.core.Constants
-import com.devansh.noteapp.ui.composable.home.notes.NoteScreenContent
+import com.devansh.noteapp.ui.screens.add_edit_note.AddEditNoteScreen
+import com.devansh.noteapp.ui.screens.core.Constants
+import com.devansh.noteapp.ui.screens.home.notes.NoteScreenContent
 import com.devansh.noteapp.ui.theme.getMontBFont
 import network.chaintech.sdpcomposemultiplatform.ssp
 

@@ -1,4 +1,4 @@
-package com.devansh.noteapp.ui.composable.splash
+package com.devansh.noteapp.ui.screens.splash
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -16,7 +16,7 @@ import androidx.compose.ui.graphics.Color
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
-import com.devansh.noteapp.ui.composable.home.HomeScreen
+import com.devansh.noteapp.ui.screens.home.HomeScreen
 import kotlinx.coroutines.delay
 import network.chaintech.sdpcomposemultiplatform.sdp
 import network.chaintech.sdpcomposemultiplatform.ssp

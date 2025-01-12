@@ -75,7 +75,6 @@ kotlin {
 
 
             implementation(libs.composeIcons.fontAwesome)
-            api(libs.calf.ui)
             implementation(libs.richeditor.compose)
 
         }
