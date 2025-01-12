@@ -11,5 +11,5 @@ sealed class AddEditNoteEvent {
 
     data class ChangeColor(val color: Long) : AddEditNoteEvent()
 
-    data object SaveNote : AddEditNoteEvent()
+    data class SaveNote(val content: String) : AddEditNoteEvent()
 }

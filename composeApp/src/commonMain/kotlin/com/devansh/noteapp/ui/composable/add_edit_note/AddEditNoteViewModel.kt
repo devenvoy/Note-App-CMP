@@ -9,7 +9,9 @@ import com.devansh.noteapp.domain.model.Note
 import com.devansh.noteapp.domain.repo.NoteDataSource
 import com.devansh.noteapp.domain.utils.DateTimeUtil
 import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
 class AddEditNoteViewModel(
@@ -19,11 +21,11 @@ class AddEditNoteViewModel(
     private val _noteTitle = mutableStateOf(NoteTextFieldState(hint = "Enter title"))
     val noteTitle: State<NoteTextFieldState> = _noteTitle
 
-    private val _noteContent = mutableStateOf(NoteTextFieldState(hint = "Enter some content"))
-    val noteContent: State<NoteTextFieldState> = _noteContent
+    private val _noteContent = mutableStateOf("")
+    val noteContent = _noteContent
 
-    private val _noteColor = mutableStateOf(Note.generateRandomColor())
-    val noteColor: MutableState<Long> = _noteColor
+    private val _noteColor = MutableStateFlow(Note.generateRandomColor())
+    val noteColor = _noteColor.asStateFlow()
 
     private val _eventFlow = MutableSharedFlow<UiEvent>()
     val eventFlow = _eventFlow.asSharedFlow()
@@ -40,10 +42,7 @@ class AddEditNoteViewModel(
                         isHintVisible = false
                     )
 
-                    _noteContent.value = noteContent.value.copy(
-                        text = note.content,
-                        isHintVisible = false
-                    )
+                    _noteContent.value = note.content
 
                     _noteColor.value = note.colorRes
                 }
@@ -64,13 +63,11 @@ class AddEditNoteViewModel(
             }
 
             is AddEditNoteEvent.EnteredContent -> {
-                _noteContent.value = noteContent.value.copy(text = event.newContent)
+                _noteContent.value =  event.newContent
             }
 
             is AddEditNoteEvent.ChangeContentFocus -> {
-                _noteContent.value = noteContent.value.copy(
-                    isHintVisible = !event.focusState.isFocused && noteContent.value.text.isBlank()
-                )
+
             }
 
             is AddEditNoteEvent.ChangeColor -> {
@@ -83,7 +80,7 @@ class AddEditNoteViewModel(
                         noteDataSource.insertNote(
                             Note(
                                 title = noteTitle.value.text,
-                                content = noteContent.value.text,
+                                content = event.content,
                                 created = DateTimeUtil.now(),
                                 colorRes = noteColor.value,
                                 id = currentNoteId

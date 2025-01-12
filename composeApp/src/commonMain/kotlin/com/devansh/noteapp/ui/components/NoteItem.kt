@@ -25,6 +25,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.devansh.noteapp.domain.model.Note
+import com.mohamedrejeb.richeditor.model.rememberRichTextState
+import com.mohamedrejeb.richeditor.ui.material3.RichText
 
 @Composable
 fun NoteItemUI(
@@ -40,6 +42,7 @@ fun NoteItemUI(
                 .background(Color(note.colorRes))
         ) {
             // Title and Content Section
+            val content = rememberRichTextState().setHtml(note.content)
             Box(
                 modifier = Modifier
                     .fillMaxSize()
@@ -57,41 +60,39 @@ fun NoteItemUI(
 
                     Spacer(modifier = Modifier.height(8.dp))
 
-                    Text(
-                        text = note.content,
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = MaterialTheme.colorScheme.onBackground,
+                    RichText(
+                        state = content,
                         maxLines = 10,
                         overflow = TextOverflow.Ellipsis
                     )
 
-//                    // Share and Delete Icons
-//                    Row(
-//                        modifier = Modifier
-//                            .fillMaxWidth()
-//                            .padding(top = 8.dp),
-//                        horizontalArrangement = Arrangement.End
-//                    ) {
-//                        IconButton(
-//                            onClick = { onShareClicked(note.content) },
-//                        ) {
-//                            Icon(
-//                                imageVector = Icons.Default.Share,
-//                                contentDescription = "Share Note",
-//                                tint = MaterialTheme.colorScheme.onSurface
-//                            )
-//                        }
-//
-//                        IconButton(
-//                            onClick = onDeleteClicked,
-//                        ) {
-//                            Icon(
-//                                imageVector = Icons.Default.Delete,
-//                                contentDescription = "Delete Note",
-//                                tint = MaterialTheme.colorScheme.onSurface
-//                            )
-//                        }
-//                    }
+                    // Share and Delete Icons
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(top = 8.dp),
+                        horizontalArrangement = Arrangement.End
+                    ) {
+                        IconButton(
+                            onClick = { onShareClicked(note.content) },
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.Share,
+                                contentDescription = "Share Note",
+                                tint = MaterialTheme.colorScheme.onSurface
+                            )
+                        }
+
+                        IconButton(
+                            onClick = onDeleteClicked,
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.Delete,
+                                contentDescription = "Delete Note",
+                                tint = MaterialTheme.colorScheme.onSurface
+                            )
+                        }
+                    }
                 }
             }
         }

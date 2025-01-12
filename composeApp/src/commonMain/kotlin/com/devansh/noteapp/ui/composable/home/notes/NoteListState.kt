@@ -1,4 +1,4 @@
-package com.devansh.noteapp.ui.composable.home
+package com.devansh.noteapp.ui.composable.home.notes
 
 import com.devansh.noteapp.domain.model.Note
 

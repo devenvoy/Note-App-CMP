@@ -89,7 +89,7 @@ fun ExpandedSearchView(
         OutlinedTextField(
             colors = OutlinedTextFieldDefaults.colors(
                 focusedBorderColor = Color.Transparent,
-                focusedContainerColor = Color.White,
+                focusedContainerColor = MaterialTheme.colorScheme.surface,
             ),
             value = textFieldValue,
             onValueChange = {

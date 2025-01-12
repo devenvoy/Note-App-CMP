@@ -17,7 +17,6 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.devansh.noteapp.ui.components.NoteItemUI
-import com.devansh.noteapp.ui.composable.home.NoteListState
 
 
 @Composable
