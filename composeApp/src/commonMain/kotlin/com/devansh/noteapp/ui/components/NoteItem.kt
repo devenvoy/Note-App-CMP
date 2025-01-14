@@ -46,7 +46,7 @@ fun NoteItemUI(
             Box(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(16.dp)
+                    .padding(8.dp)
             ) {
                 Column {
                     Text(

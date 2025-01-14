@@ -114,7 +114,7 @@ fun AddEditScreenContent(
                 actions = {
                     IconButton(onClick = { onNavigateUp() }) {
                         Icon(
-                            modifier = Modifier.size(14.sdp),
+                            modifier = Modifier.size(14.dp),
                             imageVector = FontAwesomeIcons.Solid.EllipsisV,
                             contentDescription = null,
                         )
@@ -123,7 +123,7 @@ fun AddEditScreenContent(
                 navigationIcon = {
                     IconButton(onClick = { onNavigateUp() }) {
                         Icon(
-                            modifier = Modifier.size(16.sdp),
+                            modifier = Modifier.size(16.dp),
                             imageVector = FontAwesomeIcons.Solid.ArrowLeft,
                             contentDescription = null,
                         )
@@ -146,19 +146,19 @@ fun AddEditScreenContent(
                 contentColor = Color.White
             ) {
                 Icon(
-                    modifier = Modifier.size(20.sdp),
+                    modifier = Modifier.size(28.dp),
                     imageVector = FontAwesomeIcons.Regular.Save,
                     contentDescription = "Save Note"
                 )
             }
         }) { padding ->
-        //making a Row to select colors
+
         Column(
             modifier = Modifier
                 .padding(padding)
                 .fillMaxSize()
                 .background(noteBgAnimation.value.copy(alpha = .4f))
-                .padding(vertical = 12.sdp, horizontal = 8.sdp)
+                .padding(vertical = 12.dp, horizontal = 8.dp)
         ) {
             Row(
                 modifier = Modifier.fillMaxWidth().padding(4.dp),
@@ -168,11 +168,11 @@ fun AddEditScreenContent(
                     val color = Color(colorInt)
 
                     Box(
-                        modifier = Modifier.size(30.sdp).shadow(15.sdp, CircleShape)
+                        modifier = Modifier.size(40.dp).shadow(15.dp, CircleShape)
                             .clip(CircleShape)
                             .background(color)
                             .border(
-                                width = 2.sdp,
+                                width = 3.dp,
                                 color = if (selectedBgColor == colorInt) {
                                     Color.White
                                 } else {
@@ -201,9 +201,9 @@ fun AddEditScreenContent(
                 openLinkDialog = openLinkDialog,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(top = 12.sdp)
+                    .padding(top =8.dp)
             )
-            Spacer(Modifier.height(12.sdp))
+            Spacer(Modifier.height(12.dp))
 
             HintUI(
                 text = titleState.text,
@@ -219,7 +219,7 @@ fun AddEditScreenContent(
                 textStyle = MaterialTheme.typography.titleLarge
             )
 
-            Spacer(Modifier.height(12.sdp))
+            Spacer(Modifier.height(12.dp))
 
             RichTextEditor(
                 state = richTextState,
@@ -231,7 +231,7 @@ fun AddEditScreenContent(
                     containerColor = Color.Transparent,
                     focusedIndicatorColor = Color.Transparent,
                     unfocusedIndicatorColor = Color.Transparent,
-                    placeholderColor = Color.White.copy(alpha = .6f),
+                    placeholderColor = Color.Gray.copy(alpha = .6f),
                 ),
                 modifier = Modifier.fillMaxWidth()
             )

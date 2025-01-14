@@ -23,6 +23,7 @@ import com.devansh.noteapp.ui.components.NoteItemUI
 fun NoteScreenContent(
     state: NoteListState,
     onNavigateToAddEditNote: (Long) -> Unit,
+    isGridLayout: Boolean,
     onDeleteNote: (Long) -> Unit
 ) {
     val snackbarHostState = remember { SnackbarHostState() }
@@ -47,7 +48,7 @@ fun NoteScreenContent(
         Spacer(modifier = Modifier.height(16.dp))
 
         LazyVerticalStaggeredGrid(
-            columns = StaggeredGridCells.Fixed(2),
+            columns = StaggeredGridCells.Fixed(if (isGridLayout) 2 else 1),
             modifier = Modifier.fillMaxSize()
         ) {
             items(state.notes) { note ->
@@ -59,7 +60,7 @@ fun NoteScreenContent(
                         .clickable {
                             onNavigateToAddEditNote(note.id ?: -1)
                         },
-                    onShareClicked = {                    },
+                    onShareClicked = { },
                     onDeleteClicked = { note.id?.let { onDeleteNote(it) } }
                 )
                 Spacer(modifier = Modifier.height(16.dp))

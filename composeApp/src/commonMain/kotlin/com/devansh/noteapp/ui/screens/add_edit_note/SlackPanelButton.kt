@@ -32,7 +32,7 @@ fun SlackPanelButton(
             // Workaround to prevent the rich editor
             // from losing focus when clicking on the button
             // (Happens only on Desktop)
-            .size(24.sdp)
+            .size(24.dp)
             .focusProperties { canFocus = false }
             .clip(RoundedCornerShape(10.dp))
             .clickable(
