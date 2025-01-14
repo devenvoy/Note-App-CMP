@@ -13,7 +13,7 @@ import kotlinx.coroutines.IO
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
-class SqlDelightNoteDataSource(
+class NoteDataSourceImpl(
     db: NoteDatabase,
     private val dispatcher: CoroutineDispatcher = Dispatchers.IO
 ) : NoteDataSource {

@@ -11,6 +11,8 @@ plugins {
 
     alias(libs.plugins.kotlinxSerialization)
     alias(libs.plugins.sqldelight)
+    alias(libs.plugins.ksp)
+    alias(libs.plugins.buildConfig)
 
 }
 
@@ -46,6 +48,8 @@ kotlin {
             // built in
             implementation(compose.preview)
             implementation(libs.androidx.activity.compose)
+            implementation(libs.ktor.client.okhttp)
+            implementation("com.github.chuckerteam.chucker:library:4.1.0")
         }
         commonMain.dependencies {
 
@@ -77,6 +81,58 @@ kotlin {
             implementation(libs.composeIcons.fontAwesome)
             implementation(libs.richeditor.compose)
 
+            implementation(libs.voyager.navigator)
+            implementation(libs.voyager.screenModel)
+            implementation(libs.voyager.transitions)
+            implementation(libs.voyager.tabNavigator)
+
+            implementation(libs.koin.core)
+            implementation(libs.koin.compose)
+
+            implementation(compose.material3)
+            implementation(compose.materialIconsExtended)
+            implementation(libs.mvvm.core)
+
+            // #1 - Basic settings
+            implementation(libs.multiplatform.settings.no.arg)
+
+            // #2 - For custom class serialization
+            implementation(libs.kotlinx.serialization.json.v141)
+            implementation(libs.multiplatform.settings.serialization)
+
+            // #3 - For observing values as flows
+            implementation(libs.multiplatform.settings.coroutines)
+
+            implementation(libs.kotlinx.datetime)
+
+            implementation(libs.sdp.ssp.compose.multiplatform)
+            implementation(libs.sonner)
+
+            implementation(libs.room.runtime)
+            implementation(libs.sqlite.bundled)
+
+            implementation(libs.retrofit)
+
+            implementation(libs.coil.compose)
+            implementation(libs.coil.network.ktor)
+
+            implementation(libs.ktor.client.core)
+            implementation(libs.ktor.client.logging)
+            implementation(libs.ktor.serialization.kotlinx.json)
+            implementation(libs.ktor.client.content.negotiation)
+            implementation(libs.ktor.client.encoding)
+            implementation(libs.ktor.client.serialization)
+
+            implementation(libs.kermit)
+            implementation(libs.kstore)
+
+            implementation(libs.kmp.date.time.picker)
+
+            implementation("network.chaintech:cmp-image-pick-n-crop:1.0.8")
+
+            // for network status
+            implementation(libs.connectivity.core)
+
         }
         iosMain.dependencies {
             implementation(libs.ktor.client.darwin)
@@ -84,12 +140,10 @@ kotlin {
         }
 
         desktopMain.dependencies {
-
             implementation(libs.sqldelight.jvm)
-
-
             implementation(compose.desktop.currentOs)
             implementation(libs.kotlinx.coroutines.swing)
+            implementation(libs.ktor.client.okhttp)
         }
     }
 }

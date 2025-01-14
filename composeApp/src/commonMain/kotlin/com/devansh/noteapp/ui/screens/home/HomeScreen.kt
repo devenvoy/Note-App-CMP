@@ -31,13 +31,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import cafe.adriel.voyager.core.model.rememberScreenModel
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
+import com.devansh.noteapp.domain.utils.koinScreenModel
 import com.devansh.noteapp.ui.components.ExpandableSearchView
 import com.devansh.noteapp.ui.screens.add_edit_note.AddEditNoteScreen
-import com.devansh.noteapp.ui.screens.core.Constants
 import com.devansh.noteapp.ui.screens.home.notes.NoteScreenContent
 import com.devansh.noteapp.ui.theme.getMontBFont
 import compose.icons.FontAwesomeIcons
@@ -49,7 +48,7 @@ class HomeScreen : Screen {
     @Composable
     override fun Content() {
         val navigator = LocalNavigator.currentOrThrow
-        val homeScreenModel = rememberScreenModel { HomeScreenModel(Constants.noteDatabase) }
+        val homeScreenModel = koinScreenModel<HomeScreenModel>()
         HomeScreenContent(
             homeScreenModel = homeScreenModel,
             onNavigateToAddEditNote = {

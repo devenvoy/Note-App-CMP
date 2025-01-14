@@ -40,13 +40,12 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
-import cafe.adriel.voyager.core.model.rememberScreenModel
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import com.devansh.noteapp.domain.model.Note
+import com.devansh.noteapp.domain.utils.koinScreenModel
 import com.devansh.noteapp.ui.components.HintUI
-import com.devansh.noteapp.ui.screens.core.Constants
 import com.mohamedrejeb.richeditor.model.rememberRichTextState
 import com.mohamedrejeb.richeditor.ui.material3.RichTextEditor
 import com.mohamedrejeb.richeditor.ui.material3.RichTextEditorDefaults
@@ -58,13 +57,12 @@ import compose.icons.fontawesomeicons.solid.ArrowLeft
 import compose.icons.fontawesomeicons.solid.EllipsisV
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
-import network.chaintech.sdpcomposemultiplatform.sdp
 
 class AddEditNoteScreen(private val noteId: Long) : Screen {
     @Composable
     override fun Content() {
         val navigator = LocalNavigator.currentOrThrow
-        val viewModel = rememberScreenModel { AddEditNoteViewModel(Constants.noteDatabase) }
+        val viewModel =  koinScreenModel<AddEditNoteViewModel>()
         LaunchedEffect(Unit) {
             viewModel.initState(noteId = noteId)
         }
