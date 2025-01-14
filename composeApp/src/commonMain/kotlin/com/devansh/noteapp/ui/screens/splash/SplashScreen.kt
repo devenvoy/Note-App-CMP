@@ -21,6 +21,7 @@ import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import com.devansh.noteapp.domain.utils.koinScreenModel
+import com.devansh.noteapp.ui.screens.auth.AuthScreen
 import com.devansh.noteapp.ui.screens.home.HomeScreen
 import kotlinx.coroutines.delay
 import network.chaintech.sdpcomposemultiplatform.sdp
@@ -45,7 +46,8 @@ class SplashScreen : Screen {
                 delay(500L)
                 navigator.replace(HomeScreen())
             }else{
-
+                delay(500L)
+                navigator.replace(AuthScreen())
             }
         }
 
