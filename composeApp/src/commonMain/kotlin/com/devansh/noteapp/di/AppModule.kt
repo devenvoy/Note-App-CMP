@@ -1,25 +1,29 @@
 package com.devansh.noteapp.di
 
 import com.devansh.noteapp.data.local.NoteDataSourceImpl
+import com.devansh.noteapp.data.preference.AppCacheSettingImpl
+import com.devansh.noteapp.data.remote.NoteRemoteDaoImpl
 import com.devansh.noteapp.di.platform_di.getHttpClient
 import com.devansh.noteapp.di.platform_di.platformModule
+import com.devansh.noteapp.domain.repo.AppCacheSetting
 import com.devansh.noteapp.domain.repo.NoteDataSource
+import com.devansh.noteapp.domain.repo.NoteRemoteDao
 import com.devansh.noteapp.ui.screens.add_edit_note.AddEditNoteViewModel
 import com.devansh.noteapp.ui.screens.home.HomeScreenModel
+import com.devansh.noteapp.ui.screens.splash.SplashScreenModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import org.koin.dsl.module
 
 val screenModelsModule = module {
-    factory { AddEditNoteViewModel(get()) }
+    factory { SplashScreenModel(get(),get(),get()) }
     factory { HomeScreenModel(get()) }
+    factory { AddEditNoteViewModel(get()) }
 }
 
-
 val repositoryModule = module {
-    single<NoteDataSource> {
-        NoteDataSourceImpl(get(), get())
-    }
+    single<NoteDataSource> { NoteDataSourceImpl(get(), get()) }
+    single<NoteRemoteDao> { NoteRemoteDaoImpl(get()) }
 }
 
 val dispatcherModule = module {
@@ -31,6 +35,7 @@ val dispatcherModule = module {
 
 val dataModule = module {
     single { getHttpClient() }
+    single<AppCacheSetting> { AppCacheSettingImpl() }
 }
 
 val appModules = listOf(

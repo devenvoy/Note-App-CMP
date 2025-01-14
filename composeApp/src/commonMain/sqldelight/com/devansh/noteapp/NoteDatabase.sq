@@ -1,14 +1,26 @@
 CREATE TABLE IF NOT EXISTS noteEntity(
-id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT ,
-title TEXT NOT NULL,
-content TEXT NOT NULL,
-colorres INTEGER NOT NULL,
-created INTEGER NOT NULL
+    id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    title TEXT NOT NULL,
+    content TEXT NOT NULL,
+    category TEXT,
+    colorres INTEGER NOT NULL,
+    last_modified INTEGER NOT NULL,
+    isSynced INTEGER NOT NULL DEFAULT 0
 );
 
 getAllNotes:
 SELECT *
 FROM noteEntity;
+
+getAllUnsyncedNotes:
+SELECT *
+FROM noteEntity
+WHERE isSynced = 0;
+
+getAllSyncedNotes:
+SELECT *
+FROM noteEntity
+WHERE isSynced = 1;
 
 getNoteById:
 SELECT *
@@ -17,13 +29,15 @@ WHERE id = ?;
 
 insertNote:
 INSERT OR REPLACE
-INTO noteEntity(
-id,
-title,
-content,
-colorres,
-created
-) VALUES (?,?,?,?,?);
+INTO noteEntity (
+    id, title, content,category, colorres, last_modified, isSynced
+) VALUES (?,?,?,?,?,?,?);
+
+
+markNoteAsSync:
+UPDATE noteEntity
+SET isSynced = 1
+WHERE id = ?;
 
 deleteNoteById:
 DELETE FROM noteEntity

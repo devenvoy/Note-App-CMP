@@ -16,7 +16,8 @@ data class Note(
     val title: String,
     val content: String,
     val colorRes: Long,
-    val created: LocalDateTime
+    val category: String?,
+    val lastModified: LocalDateTime,
 ) {
     companion object {
         val colors = listOf(
@@ -37,6 +38,7 @@ fun NoteEntity.toNote() = Note(
     title = title,
     content = content,
     colorRes = colorres,
-    created = Instant.fromEpochMilliseconds(created)
+    category = category,
+    lastModified = Instant.fromEpochMilliseconds(last_modified)
         .toLocalDateTime(TimeZone.currentSystemDefault())
 )

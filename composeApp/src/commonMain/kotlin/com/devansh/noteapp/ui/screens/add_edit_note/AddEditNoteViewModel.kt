@@ -78,11 +78,12 @@ class AddEditNoteViewModel(
                     try {
                         noteDataSource.insertNote(
                             Note(
+                                id = currentNoteId,
                                 title = noteTitle.value.text,
                                 content = event.content,
-                                created = DateTimeUtil.now(),
+                                category = "",
+                                lastModified = DateTimeUtil.now(),
                                 colorRes = noteColor.value,
-                                id = currentNoteId
                             )
                         )
                         _eventFlow.emit(UiEvent.SaveNote)

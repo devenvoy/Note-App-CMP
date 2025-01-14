@@ -25,10 +25,10 @@ class NoteDataSourceImpl(
             .asFlow()
             .mapToList(dispatcher)
             .map { list ->
-            list.map { entity ->
-                entity.toNote()
+                list.map { entity ->
+                    entity.toNote()
+                }
             }
-        }
     }
 
     override suspend fun getNoteById(id: Long): Note? {
@@ -43,11 +43,30 @@ class NoteDataSourceImpl(
             title = note.title,
             content = note.content,
             colorres = note.colorRes,
-            created = DateTimeUtil.toEpochMillis(note.created)
+            category = note.category,
+            last_modified = DateTimeUtil.toEpochMillis(note.lastModified),
+            isSynced = 0
         )
     }
 
     override suspend fun deleteNoteById(id: Long) {
         queries.deleteNoteById(id = id)
+    }
+
+    override suspend fun getUnSyncedNotes(): List<Note> {
+        return queries.getAllUnsyncedNotes()
+            .executeAsList()
+            .map { it.toNote() }
+
+    }
+
+    override suspend fun getSyncedNotes(): List<Note> {
+        return queries.getAllSyncedNotes()
+            .executeAsList()
+            .map { it.toNote() }
+    }
+
+    override suspend fun markNoteAsSynced(id: Long) {
+        queries.markNoteAsSync(id)
     }
 }

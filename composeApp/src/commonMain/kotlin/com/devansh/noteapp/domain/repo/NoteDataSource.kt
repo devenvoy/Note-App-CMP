@@ -8,4 +8,7 @@ interface NoteDataSource {
     suspend fun getNoteById(id: Long): Note?
     suspend fun insertNote(note: Note)
     suspend fun deleteNoteById(id: Long)
+    suspend fun getUnSyncedNotes(): List<Note>
+    suspend fun getSyncedNotes() : List<Note>
+    suspend fun markNoteAsSynced(id: Long)
 }

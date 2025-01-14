@@ -12,7 +12,7 @@ class SearchNotes {
             it.title.trim().lowercase().contains(query.lowercase()) ||
                     it.content.trim().lowercase().contains(query.lowercase())
         }.sortedBy {
-            DateTimeUtil.toEpochMillis(it.created)
+            DateTimeUtil.toEpochMillis(it.lastModified)
         }
     }
 }

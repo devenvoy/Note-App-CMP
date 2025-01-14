@@ -14,7 +14,7 @@ data class  ServerResponse<T>(
     @SerialName("message")
     val detail: String?,
     @SerialName("isSuccessful")
-    val status: Boolean?
+    val status: Boolean=false
 )
 
 @Serializable
@@ -26,5 +26,5 @@ data class  ServerError(
     @SerialName("message")
     val detail: String?,
     @SerialName("isSuccessful")
-    val status: Boolean? = false
+    val status: Boolean = false
 ): Error
