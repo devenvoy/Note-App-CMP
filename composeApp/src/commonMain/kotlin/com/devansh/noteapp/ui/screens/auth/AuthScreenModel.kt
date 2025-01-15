@@ -9,6 +9,7 @@ import com.devansh.noteapp.domain.repo.AuthDao
 import com.devansh.noteapp.ui.components.AuthScreenState
 import com.devansh.noteapp.ui.components.UiState
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
@@ -36,49 +37,103 @@ class AuthScreenModel(
     val authState = _authState.asStateFlow()
 
     fun onLoginEmailChange(email: String) {
-        _loginEmail.value = email
+        _loginEmail.update { email }
     }
 
     fun onLoginPasswordChange(password: String) {
-        _loginPassword.value = password
+        _loginPassword.update { password }
     }
 
     fun onRegisterEmailChange(email: String) {
-        _registerEmail.value = email
+        _registerEmail.update { email }
     }
 
     fun onRegisterPasswordChange(password: String) {
-        _registerPassword.value = password
+        _registerPassword.update { password }
     }
 
     fun onRegisterConfirmPasswordChange(password: String) {
-        _registerConfirmPwd.value = password
+        _registerConfirmPwd.update { password }
     }
 
     fun login() {
+        _authState.update { UiState.Loading }
         screenModelScope.launch {
-            _authState.value = UiState.Loading
+            if (!validateLoginInputs()) return@launch
             val result = authDao.login(_loginEmail.value, _loginPassword.value)
-            result.onSuccess {
-                if(it.value == null) return@launch
-                pref.accessToken = it.value.authToken
-                _authState.value = UiState.Success(it)
-            }.onError {
-                _authState.value = UiState.Error(it.detail)
+            result.onSuccess { res ->
+                if (res.value == null) return@launch
+                pref.accessToken = res.value.authToken
+                _authState.update { UiState.Success(res) }
+            }.onError { e ->
+                _authState.update { UiState.Error(e.detail) }
             }
         }
     }
 
     fun register() {
+        _authState.update { UiState.Loading }
         screenModelScope.launch {
-            _authState.value = UiState.Loading
+            if (!validateRegisterInputs()) return@launch
             val result = authDao.register(_registerEmail.value, _registerPassword.value)
             result.onSuccess { response ->
                 pref.accessToken = response.value?.authToken.toString()
-                _authState.value = UiState.Success(response)
-            }.onError {
-                _authState.value = UiState.Error(it.detail)
+                _authState.update { UiState.Success(response) }
+            }.onError { e->
+                _authState.update { UiState.Error(e.detail) }
             }
+        }
+    }
+
+    private fun isValidEmail(email: String): Boolean {
+        val emailRegex = "^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$"
+        return email.matches(Regex(emailRegex))
+    }
+
+    private fun validateLoginInputs(): Boolean {
+        return when {
+            _loginEmail.value.isBlank() -> {
+                _authState.update { UiState.Error("Email cannot be empty") }
+                false
+            }
+
+            !isValidEmail(_loginEmail.value) -> {
+                _authState.update { UiState.Error("Invalid email format") }
+                false
+            }
+
+            _loginPassword.value.isBlank() -> {
+                _authState.update { UiState.Error("Password cannot be empty") }
+                false
+            }
+
+            else -> true
+        }
+    }
+
+    private fun validateRegisterInputs(): Boolean {
+        return when {
+            _registerEmail.value.isBlank() -> {
+                _authState.update { UiState.Error("Email cannot be empty") }
+                false
+            }
+
+            !isValidEmail(_registerEmail.value) -> {
+                _authState.update { UiState.Error("Invalid email format") }
+                false
+            }
+
+            _registerPassword.value.isBlank() -> {
+                _authState.update { UiState.Error("Password cannot be empty") }
+                false
+            }
+
+            _registerPassword.value != _registerConfirmPwd.value -> {
+                _authState.update { UiState.Error("Passwords do not match") }
+                false
+            }
+
+            else -> true
         }
     }
 }

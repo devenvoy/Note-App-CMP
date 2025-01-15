@@ -1,5 +1,6 @@
 package com.devansh.noteapp.ui.components
 
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.CircularProgressIndicator
@@ -7,41 +8,59 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import com.dokar.sonner.TextToastAction
+import com.dokar.sonner.ToastType
+import com.dokar.sonner.Toaster
+import com.dokar.sonner.ToasterDefaults
+import com.dokar.sonner.rememberToasterState
 
 
 @Composable
 fun <T> UiStateHandler(
     uiState: UiState<T>,
     onErrorShowed: () -> Unit,
-    content: @Composable (T) -> Unit // Handle Success state
+    content: @Composable (T) -> Unit
 ) {
+    val toaster = rememberToasterState()
 
     when (uiState) {
         is UiState.Error -> {
-            LaunchedEffect(Unit) {
-               /* showToast(
+            LaunchedEffect(uiState.timestamp) {
+                toaster.show(
                     message = uiState.message ?: "Unknown Error",
-                    backgroundColor = Color.Red,
-                    textColor = Color.White,
-                    duration = ToastDuration.Short,
-                    bottomPadding = 100
-                )*/
+                    duration = ToasterDefaults.DurationShort,
+                    type = ToastType.Error
+                )
                 onErrorShowed()
             }
+            Toaster(
+                state = toaster,
+                richColors = true,
+                darkTheme = isSystemInDarkTheme(),
+                showCloseButton = true,
+                alignment = Alignment.TopCenter,
+            )
         }
 
         is UiState.ValidationError -> {
             val errors = uiState.errors
-            LaunchedEffect(Unit) {
-               /* showToast(
-                    message = errors.entries.first().value.first(),
-                    backgroundColor = Color.Red,
-                    textColor = Color.White,
-                    duration = ToastDuration.Short,
-                    bottomPadding = 100
-                )*/
+            LaunchedEffect(errors) {
+                errors.entries.forEach { eMsg ->
+                    toaster.show(
+                        message = eMsg,
+                        duration = ToasterDefaults.DurationShort,
+                        type = ToastType.Error
+                    )
+                }
                 onErrorShowed()
             }
+            Toaster(
+                state = toaster,
+                richColors = true,
+                darkTheme = isSystemInDarkTheme(),
+                showCloseButton = true,
+                alignment = Alignment.TopCenter,
+            )
         }
 
         is UiState.Loading -> {

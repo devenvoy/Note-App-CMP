@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
@@ -27,16 +28,14 @@ import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
-import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import compose.icons.FontAwesomeIcons
 import compose.icons.fontawesomeicons.Solid
 import compose.icons.fontawesomeicons.solid.Eye
 import compose.icons.fontawesomeicons.solid.EyeSlash
-import network.chaintech.sdpcomposemultiplatform.sdp
-import network.chaintech.sdpcomposemultiplatform.ssp
 
 @Composable
 fun CustomInputField(
@@ -54,21 +53,23 @@ fun CustomInputField(
     readOnly: Boolean = false
 ) {
     Column(
-        modifier = Modifier.background(MaterialTheme.colorScheme.background),
+        modifier = Modifier
+            .widthIn(max =400.dp, min = Dp.Infinity)
+            .background(MaterialTheme.colorScheme.background),
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         fieldTitle?.let {
             Text(
                 text = fieldTitle,
-                modifier = Modifier.padding(start = 2.sdp),
+                modifier = Modifier.padding(start = 2.dp),
                 color = MaterialTheme.colorScheme.onBackground,
-                fontSize = 14.ssp
+                fontSize = 14.sp
             )
         }
         OutlinedTextField(
             value = textFieldValue,
             onValueChange = onValueChange,
-            shape = RoundedCornerShape(8.sdp),
+            shape = RoundedCornerShape(8.dp),
             trailingIcon = trailingIcon,
             enabled = isEnable,
             readOnly = readOnly,
@@ -86,7 +87,7 @@ fun CustomInputField(
             ),
             supportingText = supportingText,
             textStyle = LocalTextStyle.current.copy(
-                fontSize = 12.ssp,
+                fontSize = 12.sp,
             ),
             placeholder = placeholder,
         )
@@ -109,19 +110,21 @@ fun CustomInputPasswordField(
     val keyboardController = LocalSoftwareKeyboardController.current
 
     Column(
-        modifier = Modifier.background(MaterialTheme.colorScheme.background),
+        modifier = Modifier
+            .widthIn(max =400.dp, min = Dp.Infinity)
+            .background(MaterialTheme.colorScheme.background),
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         Text(
             text = fieldTitle,
-            modifier = Modifier.padding(start = 2.sdp),
+            modifier = Modifier.padding(start = 2.dp),
             color = MaterialTheme.colorScheme.onBackground,
-            fontSize = 14.ssp
+            fontSize = 14.sp
         )
         OutlinedTextField(
             value = textFieldValue,
             onValueChange = onValueChange,
-            shape = RoundedCornerShape(8.sdp),
+            shape = RoundedCornerShape(8.dp),
             trailingIcon = {
                 if (isPasswordField) {
                     val visibilityIcon =
@@ -131,7 +134,7 @@ fun CustomInputPasswordField(
                         onClick = { passwordVisible = !passwordVisible }
                     ) {
                         Icon(
-                            modifier = Modifier.size(24.sdp),
+                            modifier = Modifier.size(24.dp),
                             imageVector = visibilityIcon,
                             contentDescription = if (passwordVisible) "Hide password" else "Show password",
                             tint = MaterialTheme.colorScheme.onBackground,
@@ -160,7 +163,7 @@ fun CustomInputPasswordField(
             ),
             visualTransformation = if (isPasswordField && !passwordVisible) PasswordVisualTransformation() else VisualTransformation.None,
             textStyle = LocalTextStyle.current.copy(
-                fontSize = 12.ssp,
+                fontSize = 12.sp,
             ),
             placeholder = placeholder,
         )
@@ -180,22 +183,24 @@ fun CustomInputArea(
     supportingText: @Composable (() -> Unit)? = null,
     isEnable: Boolean = true,
     keyboardOption: KeyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
-    height: Dp = 80.sdp
+    height: Dp = 80.dp
 ) {
     Column(
-        modifier = Modifier.background(MaterialTheme.colorScheme.background),
+        modifier = Modifier
+            .widthIn(max =400.dp, min = Dp.Infinity)
+            .background(MaterialTheme.colorScheme.background),
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         Text(
             text = fieldTitle,
-            modifier = Modifier.padding(start = 2.sdp),
+            modifier = Modifier.padding(start = 2.dp),
             color = MaterialTheme.colorScheme.onBackground,
-            fontSize = 14.ssp
+            fontSize = 14.sp
         )
         OutlinedTextField(
             value = textFieldValue,
             onValueChange = onValueChange,
-            shape = RoundedCornerShape(8.sdp),
+            shape = RoundedCornerShape(8.dp),
             trailingIcon = trailingIcon,
             enabled = isEnable,
             modifier = Modifier.fillMaxWidth().height(height),
@@ -212,7 +217,7 @@ fun CustomInputArea(
             ),
             supportingText = supportingText,
             textStyle = LocalTextStyle.current.copy(
-                fontSize = 12.ssp,
+                fontSize = 12.sp,
             ),
             placeholder = placeholder,
         )

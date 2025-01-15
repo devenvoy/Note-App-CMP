@@ -19,25 +19,24 @@ import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import network.chaintech.sdpcomposemultiplatform.sdp
-import network.chaintech.sdpcomposemultiplatform.ssp
+import androidx.compose.ui.unit.sp
 
 @Composable
 fun PrimaryButton(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
-    shape: Shape = RoundedCornerShape(8.sdp),
+    shape: Shape = RoundedCornerShape(8.dp),
     colors: ButtonColors = ButtonDefaults.buttonColors(
         contentColor = Color.White,
         containerColor = MaterialTheme.colorScheme.primary,
 
         ),
     elevation: ButtonElevation? = ButtonDefaults.buttonElevation(
-        defaultElevation = 1.sdp
+        defaultElevation = 1.dp
     ),
     border: BorderStroke? = null,
-    contentPadding: PaddingValues = PaddingValues(vertical = 10.sdp),
+    contentPadding: PaddingValues = PaddingValues(vertical = 10.dp),
     interactionSource: MutableInteractionSource? = null,
     content: @Composable RowScope.() -> Unit
 ) {
@@ -60,20 +59,20 @@ fun SecondaryOutlinedButton(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
-    shape: Shape = RoundedCornerShape(8.sdp),
+    shape: Shape = RoundedCornerShape(8.dp),
     colors: ButtonColors = ButtonDefaults.outlinedButtonColors(
         contentColor = MaterialTheme.colorScheme.primary,
         containerColor = MaterialTheme.colorScheme.background
     ),
     elevation: ButtonElevation? = ButtonDefaults.buttonElevation(defaultElevation = 1.dp),
-    border: BorderStroke? = BorderStroke(1.sdp, MaterialTheme.colorScheme.primary),
-    contentPadding: PaddingValues = PaddingValues(vertical = 10.sdp),
+    border: BorderStroke? = BorderStroke(1.dp, MaterialTheme.colorScheme.primary),
+    contentPadding: PaddingValues = PaddingValues(vertical = 10.dp),
     interactionSource: MutableInteractionSource? = null,
     content: @Composable RowScope.() -> Unit = {
         Text(
             text = "Create Account",
             style = TextStyle(
-                fontSize = 14.ssp,
+                fontSize = 14.sp,
                 fontWeight = FontWeight.SemiBold
             )
         )

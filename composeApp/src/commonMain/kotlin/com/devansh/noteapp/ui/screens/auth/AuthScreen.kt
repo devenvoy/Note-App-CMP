@@ -3,13 +3,13 @@ package com.devansh.noteapp.ui.screens.auth
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
@@ -30,7 +30,10 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.max
+import androidx.compose.ui.unit.sp
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
@@ -44,15 +47,14 @@ import compose.icons.FontAwesomeIcons
 import compose.icons.fontawesomeicons.Regular
 import compose.icons.fontawesomeicons.regular.Envelope
 import kotlinx.coroutines.launch
-import network.chaintech.sdpcomposemultiplatform.sdp
-import network.chaintech.sdpcomposemultiplatform.ssp
 
 class AuthScreen : Screen {
+
     @Composable
     override fun Content() {
         val navigator = LocalNavigator.currentOrThrow
         AuthScreenContent(
-            onSuccess= {
+            onSuccess = {
                 navigator.replace(HomeScreen())
             }
         )
@@ -74,8 +76,7 @@ class AuthScreen : Screen {
                 )
             }
         ) { sPad ->
-            Box(modifier = Modifier.padding(sPad).fillMaxSize(),
-                contentAlignment = Alignment.Center) {
+            Box(modifier = Modifier.padding(sPad).fillMaxSize()) {
                 Column {
                     Tabs(tabs = tabs,
                         pagerState = pagerState,
@@ -156,43 +157,44 @@ fun loginScreenContent(viewModel: AuthScreenModel) {
     val email by viewModel.loginEmail.collectAsState()
     val password by viewModel.loginPassword.collectAsState()
     Column(
-        modifier = Modifier.padding(top = 20.sdp).padding(8.sdp),
-        verticalArrangement = Arrangement.spacedBy(8.sdp)
+        modifier = Modifier.padding(top = 20.dp).padding(8.dp).fillMaxWidth(),
+        verticalArrangement = Arrangement.spacedBy(8.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Column {
-            CustomInputField(
-                fieldTitle = "Email",
-                textFieldValue = email,
-                onValueChange = viewModel::onLoginEmailChange,
-                placeholder = { Text("Enter email") },
-                trailingIcon = {
-                    Icon(
-                        modifier = Modifier.size(20.sdp),
-                        imageVector = FontAwesomeIcons.Regular.Envelope,
-                        tint = MaterialTheme.colorScheme.onBackground,
-                        contentDescription = "Email icon",
-                    )
-                },
-            )
-            Spacer(modifier = Modifier.height(10.sdp))
-            CustomInputPasswordField(
-                fieldTitle = "Password",
-                textFieldValue = password,
-                onValueChange = viewModel::onLoginPasswordChange,
-                placeholder = { Text("Password") },
-                isPasswordField = true
-            )
-        }
-        Spacer(modifier = Modifier.height(20.sdp))
+        CustomInputField(
+            fieldTitle = "Email",
+            textFieldValue = email,
+            onValueChange = viewModel::onLoginEmailChange,
+            placeholder = { Text("Enter email") },
+            trailingIcon = {
+                Icon(
+                    modifier = Modifier.size(20.dp),
+                    imageVector = FontAwesomeIcons.Regular.Envelope,
+                    tint = MaterialTheme.colorScheme.onBackground,
+                    contentDescription = "Email icon",
+                )
+            },
+        )
+        CustomInputPasswordField(
+            fieldTitle = "Password",
+            textFieldValue = password,
+            onValueChange = viewModel::onLoginPasswordChange,
+            placeholder = { Text("Password") },
+            isPasswordField = true
+        )
+
         PrimaryButton(
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier
+                .widthIn(max = 300.dp, min = Dp.Infinity)
+                .padding(top = 20.dp)
+                .align(Alignment.CenterHorizontally),
             onClick = { viewModel.login() },
         ) {
             Text(
                 text = "Sign In",
                 fontWeight = FontWeight.SemiBold,
                 color = MaterialTheme.colorScheme.onPrimary,
-                fontSize = 16.ssp
+                fontSize = 16.sp
             )
         }
     }
@@ -205,51 +207,50 @@ fun registerScreenContent(viewModel: AuthScreenModel) {
     val password by viewModel.registerPassword.collectAsState()
     val confirmPwd by viewModel.registerConfirmPwd.collectAsState()
     Column(
-        modifier = Modifier.padding(top = 20.sdp).padding(8.sdp),
-        verticalArrangement = Arrangement.spacedBy(8.sdp)
+        modifier = Modifier.padding(top = 20.dp).padding(8.dp).fillMaxWidth(),
+        verticalArrangement = Arrangement.spacedBy(8.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Column {
-            CustomInputField(
-                fieldTitle = "Email",
-                textFieldValue = email,
-                onValueChange = viewModel::onRegisterEmailChange,
-                placeholder = { Text("Enter email") },
-                trailingIcon = {
-                    Icon(
-                        modifier = Modifier.size(20.sdp),
-                        imageVector = FontAwesomeIcons.Regular.Envelope,
-                        tint = MaterialTheme.colorScheme.onBackground,
-                        contentDescription = "Email icon",
-                    )
-                },
-            )
-            Spacer(modifier = Modifier.height(10.sdp))
-            CustomInputPasswordField(
-                fieldTitle = "Password",
-                textFieldValue = password,
-                onValueChange = viewModel::onRegisterPasswordChange,
-                placeholder = { Text("Password") },
-                isPasswordField = true
-            )
-            Spacer(modifier = Modifier.height(10.sdp))
-            CustomInputPasswordField(
-                fieldTitle = "Confirm Password",
-                textFieldValue = confirmPwd,
-                onValueChange = viewModel::onRegisterConfirmPasswordChange,
-                placeholder = { Text("confirm Password") },
-                isPasswordField = true
-            )
-        }
-        Spacer(modifier = Modifier.height(20.sdp))
+        CustomInputField(
+            fieldTitle = "Email",
+            textFieldValue = email,
+            onValueChange = viewModel::onRegisterEmailChange,
+            placeholder = { Text("Enter email") },
+            trailingIcon = {
+                Icon(
+                    modifier = Modifier.size(20.dp),
+                    imageVector = FontAwesomeIcons.Regular.Envelope,
+                    tint = MaterialTheme.colorScheme.onBackground,
+                    contentDescription = "Email icon",
+                )
+            },
+        )
+        CustomInputPasswordField(
+            fieldTitle = "Password",
+            textFieldValue = password,
+            onValueChange = viewModel::onRegisterPasswordChange,
+            placeholder = { Text("Password") },
+            isPasswordField = true
+        )
+        CustomInputPasswordField(
+            fieldTitle = "Confirm Password",
+            textFieldValue = confirmPwd,
+            onValueChange = viewModel::onRegisterConfirmPasswordChange,
+            placeholder = { Text("confirm Password") },
+            isPasswordField = true
+        )
+
         PrimaryButton(
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier
+                .widthIn(max = 300.dp, min = Dp.Infinity)
+                .padding(top = 20.dp),
             onClick = { viewModel.register() },
         ) {
             Text(
                 text = "Register",
                 fontWeight = FontWeight.SemiBold,
                 color = MaterialTheme.colorScheme.onPrimary,
-                fontSize = 16.ssp
+                fontSize = 16.sp
             )
         }
     }
