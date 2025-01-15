@@ -84,7 +84,8 @@ class AddEditNoteViewModel(
                                 category = "",
                                 lastModified = DateTimeUtil.now(),
                                 colorRes = noteColor.value,
-                            )
+                            ),
+                            false
                         )
                         _eventFlow.emit(UiEvent.SaveNote)
                     } catch (e: Exception) {

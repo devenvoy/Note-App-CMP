@@ -22,28 +22,28 @@ class SplashScreenModel(
 
     fun isUserLoggedIn(): Boolean = pref.isLoggedIn
 
-    suspend fun syncDatabase() : Unit = withContext(Dispatchers.IO) {
+    suspend fun syncDatabase(): Unit = withContext(Dispatchers.IO) {
         try {
             val unsyncedNotes = noteDataSource.getUnSyncedNotes()
 
-            noteRemoteDao.upsert(unsyncedNotes,"")
+            noteRemoteDao.upsert(unsyncedNotes, pref.accessToken)
 
-            val result = noteRemoteDao.getNotes("")
+            val result = noteRemoteDao.getNotes(pref.accessToken)
 
             result.onSuccess { response ->
-                if(response.status){
-                    response.value?.forEach { note ->
-                        noteDataSource.insertNote(note)
+                if (response.status) {
+                    response.value?.notes?.forEach { note ->
+                        noteDataSource.insertNote(note, true)
                     }
-                }else{
-                    Logger.e("SyncError",null) { "${response.detail}" }
-                    Logger.e("SyncError",null) { "Failed to sync data" }
+                } else {
+                    Logger.e("SyncError", null) { "${response.detail}" }
+                    Logger.e("SyncError", null) { "Failed to sync data" }
                 }
             }.onError {
-                Logger.e("SyncError",null) { "Failed to sync data" }
+                Logger.e("SyncError", null) { "Failed to sync data" }
             }
         } catch (e: Exception) {
-            Logger.e("SyncError",e) { "Unexpected error occurred during sync" }
+            Logger.e("SyncError", e) { "Unexpected error occurred during sync" }
         }
     }
 }

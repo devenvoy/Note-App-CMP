@@ -28,7 +28,7 @@ fun <T> UiStateHandler(
             LaunchedEffect(uiState.timestamp) {
                 toaster.show(
                     message = uiState.message ?: "Unknown Error",
-                    duration = ToasterDefaults.DurationShort,
+                    duration = ToasterDefaults.DurationLong,
                     type = ToastType.Error
                 )
                 onErrorShowed()

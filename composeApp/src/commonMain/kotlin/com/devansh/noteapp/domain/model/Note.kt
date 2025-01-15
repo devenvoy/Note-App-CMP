@@ -10,14 +10,17 @@ import kotlinx.datetime.Instant
 import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
+@Serializable
 data class Note(
-    val id: Long?,
-    val title: String,
-    val content: String,
-    val colorRes: Long,
-    val category: String?,
-    val lastModified: LocalDateTime,
+    @SerialName("id") val id: Long?,
+    @SerialName("title") val title: String,
+    @SerialName("content") val content: String,
+    @SerialName("colorRes") val colorRes: Long,
+    @SerialName("category") val category: String?,
+    @SerialName("modifiedAt") val lastModified: LocalDateTime,
 ) {
     companion object {
         val colors = listOf(

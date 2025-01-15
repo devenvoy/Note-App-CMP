@@ -1,5 +1,6 @@
 package com.devansh.noteapp.data.remote
 
+import Note_App_CMP.composeApp.BuildConfig
 import com.devansh.noteapp.data.entity.ServerError
 import com.devansh.noteapp.data.entity.ServerResponse
 import com.devansh.noteapp.data.remote.utils.BaseGateway
@@ -15,9 +16,12 @@ import io.ktor.http.contentType
 class AuthDaoImpl(
     private val httpClient: HttpClient
 ) : AuthDao , BaseGateway(httpClient) {
+
+    private val login = "/auth/login"
+    private val register = "/auth/register"
     override suspend fun login(email: String, password: String): Result<ServerResponse<AuthResponse>, ServerError> {
         val result = tryToExecute<ServerResponse<AuthResponse>> {
-            post(""){
+            post(BuildConfig.BASE_URL+login){
                 contentType(ContentType.Application.Json)
                 setBody("""
                     {
@@ -32,7 +36,7 @@ class AuthDaoImpl(
 
     override suspend fun register(email: String, password: String): Result<ServerResponse<AuthResponse>, ServerError> {
         val result = tryToExecute<ServerResponse<AuthResponse>> {
-            post(""){
+            post(BuildConfig.BASE_URL+register){
                 contentType(ContentType.Application.Json)
                 setBody("""
                     {

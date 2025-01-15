@@ -37,7 +37,7 @@ class NoteDataSourceImpl(
             ?.toNote()
     }
 
-    override suspend fun insertNote(note: Note) {
+    override suspend fun insertNote(note: Note,synced:Boolean) {
         queries.insertNote(
             id = note.id,
             title = note.title,
@@ -45,7 +45,7 @@ class NoteDataSourceImpl(
             colorres = note.colorRes,
             category = note.category,
             last_modified = DateTimeUtil.toEpochMillis(note.lastModified),
-            isSynced = 0
+            isSynced = if(synced) 1 else 0
         )
     }
 
