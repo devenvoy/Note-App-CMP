@@ -128,11 +128,11 @@ kotlin {
 
             implementation(libs.kmp.date.time.picker)
 
-            implementation("network.chaintech:cmp-image-pick-n-crop:1.0.8")
+            implementation(libs.cmp.image.pick.n.crop)
 
-            // for network status
             implementation(libs.connectivity.core)
 
+            implementation("dev.chrisbanes.material3:material3-window-size-class-multiplatform:0.5.0")
         }
         iosMain.dependencies {
             implementation(libs.ktor.client.darwin)
@@ -150,14 +150,14 @@ kotlin {
 
 android {
     namespace = "com.devansh.noteapp"
-    compileSdk = libs.versions.android.compileSdk.get().toInt()
+    compileSdk = libs.versions.compileSdk.get().toInt()
 
     defaultConfig {
         applicationId = "com.devansh.noteapp"
-        minSdk = libs.versions.android.minSdk.get().toInt()
-        targetSdk = libs.versions.android.targetSdk.get().toInt()
-        versionCode = 1
-        versionName = "1.0"
+        minSdk = libs.versions.minSdk.get().toInt()
+        targetSdk = libs.versions.targetSdk.get().toInt()
+        versionCode = libs.versions.versionCode.get().toInt()
+        versionName = libs.versions.versionName.get()
     }
     packaging {
         resources {
@@ -186,7 +186,7 @@ compose.desktop {
         nativeDistributions {
             targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
             packageName = "com.devansh.noteapp"
-            packageVersion = "1.0.0"
+            packageVersion = libs.versions.versionName.get()
         }
     }
 }
@@ -200,8 +200,6 @@ sqldelight {
 }
 
 buildConfig {
-    // BuildConfig configuration here.
-    // https://github.com/gmazzo/gradle-buildconfig-plugin#usage-in-kts
     buildConfigField("APP_NAME", project.name)
     buildConfigField("APP_VERSION_CODE", project.version.toString())
     buildConfigField("APP_VERSION_NAME", project.version.toString())

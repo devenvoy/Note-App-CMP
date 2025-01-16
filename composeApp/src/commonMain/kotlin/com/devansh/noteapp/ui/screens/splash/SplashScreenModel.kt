@@ -28,20 +28,6 @@ class SplashScreenModel(
 
             noteRemoteDao.upsert(unsyncedNotes, pref.accessToken)
 
-            val result = noteRemoteDao.getNotes(pref.accessToken)
-
-            result.onSuccess { response ->
-                if (response.status) {
-                    response.value?.notes?.forEach { note ->
-                        noteDataSource.insertNote(note, true)
-                    }
-                } else {
-                    Logger.e("SyncError", null) { "${response.detail}" }
-                    Logger.e("SyncError", null) { "Failed to sync data" }
-                }
-            }.onError {
-                Logger.e("SyncError", null) { "Failed to sync data" }
-            }
         } catch (e: Exception) {
             Logger.e("SyncError", e) { "Unexpected error occurred during sync" }
         }

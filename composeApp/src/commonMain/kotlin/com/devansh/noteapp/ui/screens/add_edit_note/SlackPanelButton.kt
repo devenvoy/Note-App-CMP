@@ -5,7 +5,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
@@ -17,7 +17,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.dp
-import network.chaintech.sdpcomposemultiplatform.sdp
 
 @Composable
 fun SlackPanelButton(
@@ -29,12 +28,9 @@ fun SlackPanelButton(
 ) {
     Box(
         modifier = modifier
-            // Workaround to prevent the rich editor
-            // from losing focus when clicking on the button
-            // (Happens only on Desktop)
-            .size(24.dp)
+            .size(32.dp)
             .focusProperties { canFocus = false }
-            .clip(RoundedCornerShape(10.dp))
+            .clip(CircleShape)
             .clickable(
                 onClick = onClick,
                 enabled = true,

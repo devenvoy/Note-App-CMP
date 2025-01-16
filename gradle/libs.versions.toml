@@ -1,9 +1,15 @@
 [versions]
 agp = "8.7.3"
-android-compileSdk = "34"
-android-minSdk = "24"
-android-targetSdk = "34"
-androidx-activityCompose = "1.9.3"
+
+compileSdk = "35"
+maxkeppeler = "1.3.0"
+minSdk = "24"
+targetSdk = "35"
+
+versionName="1.0.2"
+versionCode="2"
+
+androidx-activityCompose = "1.10.0"
 androidx-appcompat = "1.7.0"
 androidx-constraintlayout = "2.2.0"
 androidx-core-ktx = "1.15.0"
@@ -37,6 +43,9 @@ navigationCompose = "2.8.5"
 voyager = "1.1.0-beta02"
 kotlin = "2.1.0"
 kotlinx-coroutines = "1.10.1"
+
+cmpImagePickNCrop = "1.0.8"
+pullToRefresh="1.4.0-beta03"
 
 ktor = "3.0.3"
 koin = "4.0.1"
@@ -72,8 +81,7 @@ androidx-lifecycle-viewmodel = { group = "org.jetbrains.androidx.lifecycle", nam
 androidx-lifecycle-runtime-compose = { group = "org.jetbrains.androidx.lifecycle", name = "lifecycle-runtime-compose", version.ref = "androidx-lifecycle" }
 kotlinx-coroutines-swing = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-swing", version.ref = "kotlinx-coroutines" }
 
-
-
+cmp-image-pick-n-crop = { module = "network.chaintech:cmp-image-pick-n-crop", version.ref = "cmpImagePickNCrop" }
 kmp-date-time-picker = { module = "network.chaintech:kmp-date-time-picker", version.ref = "kmpDateTimePicker" }
 
 compottie = { module = "io.github.alexzhirkevich:compottie", version.ref = "compottie" }

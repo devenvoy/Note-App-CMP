@@ -21,7 +21,7 @@ import org.koin.dsl.module
 val screenModelsModule = module {
     factory { SplashScreenModel(get(),get(),get()) }
     factory { AuthScreenModel(get(),get()) }
-    factory { HomeScreenModel(get()) }
+    factory { HomeScreenModel(get(),get(),get()) }
     factory { AddEditNoteViewModel(get()) }
 }
 
