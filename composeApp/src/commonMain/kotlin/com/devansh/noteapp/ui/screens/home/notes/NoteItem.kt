@@ -35,8 +35,6 @@ import kotlinx.serialization.json.JsonNull.content
 fun NoteItemUI(
     note: Note,
     modifier: Modifier = Modifier,
-    onDeleteClicked: () -> Unit,
-    onShareClicked: (String) -> Unit
 ) {
     Card(
         modifier = modifier,
@@ -68,33 +66,6 @@ fun NoteItemUI(
                     maxLines = 10,
                     overflow = TextOverflow.Ellipsis
                 )
-
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(top = 8.dp),
-                    horizontalArrangement = Arrangement.End
-                ) {
-                    IconButton(
-                        onClick = { onShareClicked(note.content) },
-                    ) {
-                        Icon(
-                            imageVector = Icons.Default.Share,
-                            contentDescription = "Share Note",
-                            tint = MaterialTheme.colorScheme.onSurface
-                        )
-                    }
-
-                    IconButton(
-                        onClick = onDeleteClicked,
-                    ) {
-                        Icon(
-                            imageVector = Icons.Default.Delete,
-                            contentDescription = "Delete Note",
-                            tint = MaterialTheme.colorScheme.onSurface
-                        )
-                    }
-                }
             }
         }
     }

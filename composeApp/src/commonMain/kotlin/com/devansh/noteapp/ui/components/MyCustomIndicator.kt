@@ -21,7 +21,6 @@ import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.unit.dp
 
 @OptIn(ExperimentalMaterial3Api::class)
-
 @Composable
 fun MyCustomIndicator(
     state: PullToRefreshState,
@@ -41,7 +40,7 @@ fun MyCustomIndicator(
             animationSpec = tween(durationMillis = 300),
         ) { refreshing ->
             if (refreshing) {
-                CircularProgressIndicator(Modifier.size(20.dp))
+                CircularProgressIndicator(Modifier.size(20.dp), strokeWidth = 2.dp)
             } else {
                 val animatedFraction = animateFloatAsState(
                     targetValue = state.distanceFraction.coerceIn(0f, 1f),

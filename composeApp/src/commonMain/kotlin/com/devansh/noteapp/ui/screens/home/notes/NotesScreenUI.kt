@@ -1,6 +1,8 @@
 package com.devansh.noteapp.ui.screens.home.notes
 
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -10,26 +12,22 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
 import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
 import androidx.compose.foundation.lazy.staggeredgrid.items
-import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.devansh.noteapp.domain.model.Note
 
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun NoteScreenContent(
     state: NoteListState,
     onNavigateToAddEditNote: (Long) -> Unit,
     isGridLayout: Boolean,
-    onDeleteNote: (Long) -> Unit
+    onLongPress: (Note) -> Unit
 ) {
-
     Column(modifier = Modifier.fillMaxSize()) {
-
         Spacer(modifier = Modifier.height(16.dp))
-
         LazyVerticalStaggeredGrid(
             columns = StaggeredGridCells.Fixed(if (isGridLayout) 2 else 1),
             modifier = Modifier.fillMaxSize()
@@ -40,11 +38,13 @@ fun NoteScreenContent(
                     modifier = Modifier
                         .padding(8.dp)
                         .fillMaxWidth()
-                        .clickable {
-                            onNavigateToAddEditNote(note.id ?: -1)
-                        },
-                    onShareClicked = { },
-                    onDeleteClicked = { note.id?.let { onDeleteNote(it) } }
+                        .combinedClickable(
+                            onClick = {
+                                onNavigateToAddEditNote(note.id ?: -1)
+                            },
+                            onLongClick = {
+                                onLongPress(note)
+                            })
                 )
                 Spacer(modifier = Modifier.height(16.dp))
             }

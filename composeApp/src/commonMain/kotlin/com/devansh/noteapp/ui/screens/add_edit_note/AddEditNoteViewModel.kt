@@ -51,18 +51,18 @@ class AddEditNoteViewModel(
 
     fun onEvent(event: AddEditNoteEvent) {
         when (event) {
-             is AddEditNoteEvent.EnteredTitle -> {
+            is AddEditNoteEvent.EnteredTitle -> {
                 _noteTitle.value = noteTitle.value.copy(text = event.newTitle)
             }
 
-             is AddEditNoteEvent.ChangeTitleFocus -> {
+            is AddEditNoteEvent.ChangeTitleFocus -> {
                 _noteTitle.value = noteTitle.value.copy(
                     isHintVisible = !event.focusState.isFocused && noteTitle.value.text.isBlank()
                 )
             }
 
             is AddEditNoteEvent.EnteredContent -> {
-                _noteContent.value =  event.newContent
+                _noteContent.value = event.newContent
             }
 
             is AddEditNoteEvent.ChangeContentFocus -> {
@@ -96,6 +96,16 @@ class AddEditNoteViewModel(
                 }
             }
 
+        }
+    }
+
+    fun deleteNoteById() {
+        screenModelScope.launch {
+            currentNoteId?.let {
+                if (it.toInt() != -1) {
+                    noteDataSource.deleteNoteById(it)
+                }
+            }
         }
     }
 
