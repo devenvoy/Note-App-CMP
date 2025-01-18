@@ -32,8 +32,10 @@ class HomeScreenModel(
     private val searchText = MutableStateFlow("")
     private val isSearchActive = MutableStateFlow(false)
 
-    var isGridLayout =  mutableStateOf(false)
-    var isRefreshing =  mutableStateOf(false)
+    val isGridLayout = pref.observableListType
+        .stateIn(screenModelScope, SharingStarted.WhileSubscribed(5000L), false)
+
+    var isRefreshing = mutableStateOf(false)
 
     val noteState =
         combine(_notes, searchText, isSearchActive) { list, text, isSearchActive ->
@@ -95,10 +97,10 @@ class HomeScreenModel(
                     Logger.e("SyncError", null) { "Failed to sync data" }
                 }
 
-            }catch (e:Exception){
+            } catch (e: Exception) {
                 Logger.e("SyncError", e) { "Unexpected error occurred during sync" }
-            }finally {
-                isRefreshing.value=false
+            } finally {
+                isRefreshing.value = false
             }
         }
     }

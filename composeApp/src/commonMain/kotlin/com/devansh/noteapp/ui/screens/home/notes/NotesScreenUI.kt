@@ -26,6 +26,7 @@ fun NoteScreenContent(
     isGridLayout: Boolean,
     onDeleteNote: (Long) -> Unit
 ) {
+
     val snackbarHostState = remember { SnackbarHostState() }
     val scope = rememberCoroutineScope()
 

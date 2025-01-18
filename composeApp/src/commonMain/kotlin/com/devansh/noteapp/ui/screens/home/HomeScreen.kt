@@ -9,9 +9,8 @@ import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ViewList
-import androidx.compose.material.icons.filled.GridView
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
@@ -34,10 +33,13 @@ import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
+import com.devansh.noteapp.domain.repo.AppCacheSetting
 import com.devansh.noteapp.domain.utils.koinScreenModel
 import com.devansh.noteapp.ui.components.ExpandableSearchView
 import com.devansh.noteapp.ui.components.MyCustomIndicator
+import com.devansh.noteapp.ui.screens.SettingScreen
 import com.devansh.noteapp.ui.screens.add_edit_note.AddEditNoteScreen
+import com.devansh.noteapp.ui.screens.core.ListType
 import com.devansh.noteapp.ui.screens.home.notes.NoteScreenContent
 import com.devansh.noteapp.ui.theme.getMontBFont
 import compose.icons.FontAwesomeIcons
@@ -45,16 +47,21 @@ import compose.icons.fontawesomeicons.Solid
 import compose.icons.fontawesomeicons.solid.Plus
 import kotlinx.coroutines.launch
 import network.chaintech.sdpcomposemultiplatform.ssp
+import org.koin.compose.koinInject
 
 class HomeScreen : Screen {
     @Composable
     override fun Content() {
         val navigator = LocalNavigator.currentOrThrow
         val homeScreenModel = koinScreenModel<HomeScreenModel>()
+        val pref = koinInject<AppCacheSetting>()
         HomeScreenContent(
             homeScreenModel = homeScreenModel,
             onNavigateToAddEditNote = {
                 navigator.push(AddEditNoteScreen(it))
+            },
+            goToSettings = {
+                navigator.push(SettingScreen())
             },
         )
     }
@@ -65,6 +72,7 @@ class HomeScreen : Screen {
 fun HomeScreenContent(
     homeScreenModel: HomeScreenModel,
     onNavigateToAddEditNote: (Long) -> Unit,
+    goToSettings: () -> Unit,
 ) {
     val scope = rememberCoroutineScope()
     val noteState by homeScreenModel.noteState.collectAsState()
@@ -97,13 +105,11 @@ fun HomeScreenContent(
                         imageVector = Icons.Filled.Search, contentDescription = "search"
                     )
                 }
-                IconButton(onClick = {
-                    homeScreenModel.isGridLayout.value = !homeScreenModel.isGridLayout.value
-                }) {
+                IconButton(onClick = goToSettings) {
                     Icon(
                         modifier = Modifier.size(24.dp),
-                        imageVector = if (homeScreenModel.isGridLayout.value) Icons.Filled.GridView else Icons.AutoMirrored.Filled.ViewList,
-                        contentDescription = "Add"
+                        imageVector = Icons.Filled.Settings,
+                        contentDescription = "setting"
                     )
                 }
             })
@@ -149,7 +155,7 @@ fun HomeScreenContent(
                 NoteScreenContent(
                     state = noteState,
                     onNavigateToAddEditNote = onNavigateToAddEditNote,
-                    isGridLayout = homeScreenModel.isGridLayout.value,
+                    isGridLayout = homeScreenModel.isGridLayout.collectAsState().value == ListType.GRID,
                     onDeleteNote = { id ->
                         homeScreenModel.deleteNoteById(id)
                     }

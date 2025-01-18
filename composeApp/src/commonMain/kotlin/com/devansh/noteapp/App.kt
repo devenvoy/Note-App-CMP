@@ -11,13 +11,7 @@ import org.koin.compose.KoinApplication
 @Composable
 @Preview
 fun App() {
-  NoteAppTheme {
-      KoinApplication(
-          application = {
-              modules(appModules)
-          }
-      ) {
-          Navigator(SplashScreen())
-      }
-  }
+    NoteAppTheme {
+        KoinApplication(application = { modules(appModules) }) { Navigator(SplashScreen()) }
+    }
 }
