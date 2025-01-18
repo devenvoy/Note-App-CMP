@@ -24,6 +24,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.text.font.FontWeight.Companion.W500
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import cafe.adriel.voyager.core.screen.Screen
@@ -37,6 +38,7 @@ import com.devansh.noteapp.ui.components.PrimaryButton
 import com.devansh.noteapp.ui.screens.auth.AuthScreen
 import com.devansh.noteapp.ui.screens.core.ListType
 import kotlinx.coroutines.launch
+import network.chaintech.sdpcomposemultiplatform.ssp
 import org.koin.compose.koinInject
 
 class SettingScreen : Screen {
@@ -72,12 +74,13 @@ class SettingScreen : Screen {
                         Column {
                             Text(
                                 "Settings",
-                                fontSize = if (scrollBehavior.state.collapsedFraction <= .75) 24.sp else 48.sp
+                                fontSize = if (scrollBehavior.state.collapsedFraction >= .75) 24.sp else 36.sp
                             )
                             AnimatedVisibility(scrollBehavior.state.collapsedFraction <= .75) {
                                 Text(
-                                    "logged in as," + pref.userEmail,
+                                    "User: " + pref.userEmail,
                                     fontSize = 16.sp,
+                                    modifier = Modifier.padding(start = 8.dp),
                                     color = MaterialTheme.colorScheme.onSurface.copy(.5f)
                                 )
                             }
@@ -112,8 +115,13 @@ class SettingScreen : Screen {
                 ) {
                     SettingsSwitch(
                         state = pref.observableAutoSyncDB.collectAsState(true).value,
-                        title = { Text(text = "Auto Sync") },
-                        subtitle = { Text("Sync Database with server") },
+                        title = { Text(text = "Auto Sync", fontSize = 14.ssp, fontWeight = W500) },
+                        subtitle = {
+                            Text(
+                                "Upload any unSynced or updated notes to server automatically before app start",
+                                fontSize = 10.ssp
+                            )
+                        },
                         onCheckedChange = {
                             pref.autoSyncDB = it
                         }
@@ -128,8 +136,8 @@ class SettingScreen : Screen {
                 ) {
                     SettingsSwitch(
                         state = pref.observableListType.collectAsState(ListType.GRID).value == ListType.GRID,
-                        title = { Text(text = "Notes Grid") },
-                        subtitle = { Text("show notes in grid or list") },
+                        title = { Text(text = "Notes Grid", fontSize = 14.ssp, fontWeight = W500) },
+                        subtitle = { Text("show notes in grid or list", fontSize = 10.ssp) },
                         onCheckedChange = {
                             pref.listType = if (it) 0 else 1
                         }

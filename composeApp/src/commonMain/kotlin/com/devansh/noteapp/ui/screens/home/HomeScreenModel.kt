@@ -74,7 +74,7 @@ class HomeScreenModel(
     fun deleteNoteById(id: Long) {
         screenModelScope.launch {
             noteDataSource.deleteNoteById(id)
-            loadNotes()
+            noteRemoteDao.deleteNote(id, pref.accessToken)
         }
     }
 

@@ -220,11 +220,7 @@ class HomeScreen : Screen {
                 modifier = Modifier.padding(it).fillMaxSize()
                     .background(MaterialTheme.colorScheme.background),
                 isRefreshing = homeScreenModel.isRefreshing.value,
-                onRefresh = {
-                    scope.launch {
-                        homeScreenModel.getAllNotes()
-                    }
-                },
+                onRefresh = { homeScreenModel.getAllNotes() },
                 state = state,
                 indicator = {
                     MyCustomIndicator(
