@@ -38,20 +38,30 @@ class AppCacheSettingImpl : AppCacheSetting {
 
     @OptIn(ExperimentalCoroutinesApi::class)
     override val observableListType: Flow<ListType>
-        get() = observableSettings.getIntFlow(SettingStorageKeys.LIST_TYPE_KEY.key,0)
+        get() = observableSettings.getIntFlow(SettingStorageKeys.LIST_TYPE_KEY.key, 0)
             .mapLatest { i -> ListType.entries.first { it.ordinal == i } }
 
     override var listType: Int
-        get() = settings[SettingStorageKeys.LIST_TYPE_KEY.key,0]
+        get() = settings[SettingStorageKeys.LIST_TYPE_KEY.key, 0]
         set(value) {
             settings[SettingStorageKeys.LIST_TYPE_KEY.key] = value
         }
 
+    override val userEmail: String
+        get() = settings[SettingStorageKeys.USER_EMAIL.key, ""]
+
     override val observableAutoSyncDB: Flow<Boolean>
-        get() = observableSettings.getBooleanFlow(SettingStorageKeys.AUTO_SYNC_WITH_REMOTE.key, true)
+        get() = observableSettings.getBooleanFlow(
+            SettingStorageKeys.AUTO_SYNC_WITH_REMOTE.key,
+            true
+        )
 
     override fun logout(callBack: () -> Unit) {
         settings.clear()
         callBack()
+    }
+
+    override fun setUserEmail(email: String) {
+        settings[SettingStorageKeys.USER_EMAIL.key] = email
     }
 }

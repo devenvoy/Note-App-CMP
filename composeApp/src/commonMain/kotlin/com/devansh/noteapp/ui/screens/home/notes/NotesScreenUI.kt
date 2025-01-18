@@ -16,7 +16,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.devansh.noteapp.ui.components.NoteItemUI
 
 
 @Composable
@@ -27,24 +26,7 @@ fun NoteScreenContent(
     onDeleteNote: (Long) -> Unit
 ) {
 
-    val snackbarHostState = remember { SnackbarHostState() }
-    val scope = rememberCoroutineScope()
-
     Column(modifier = Modifier.fillMaxSize()) {
-
-        /* AnimatedVisibility(
-             visible = state.isOrderSectionVisible,
-             enter = fadeIn() + slideInVertically(),
-             exit = fadeOut() + slideOutVertically()
-         ) {
-             OrderSection(
-                 modifier = Modifier
-                     .fillMaxWidth()
-                     .padding(vertical = 16.dp),
-                 noteOrder = state.noteOrder,
-                 onOrderChange = {               }
-             )
-         }*/
 
         Spacer(modifier = Modifier.height(16.dp))
 

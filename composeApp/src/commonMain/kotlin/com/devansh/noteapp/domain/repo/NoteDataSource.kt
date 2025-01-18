@@ -11,4 +11,5 @@ interface NoteDataSource {
     suspend fun getUnSyncedNotes(): List<Note>
     suspend fun getSyncedNotes() : List<Note>
     suspend fun markNoteAsSynced(id: Long)
+    suspend fun emptyNoteTable()
 }

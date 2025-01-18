@@ -15,5 +15,9 @@ interface AppCacheSetting {
     val observableListType : Flow<ListType>
     var listType : Int
 
+    val userEmail : String
+
     fun logout(callBack:()->Unit)
+
+    fun setUserEmail(email:String)
 }

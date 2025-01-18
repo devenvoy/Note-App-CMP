@@ -64,6 +64,7 @@ class AuthScreenModel(
             result.onSuccess { res ->
                 if (res.value == null) return@launch
                 pref.accessToken = res.value.authToken
+                pref.setUserEmail(res.value.user.email ?: "")
                 _authState.update { UiState.Success(res) }
             }.onError { e ->
                 _authState.update { UiState.Error(e.detail) }
@@ -79,7 +80,7 @@ class AuthScreenModel(
             result.onSuccess { response ->
                 pref.accessToken = response.value?.authToken.toString()
                 _authState.update { UiState.Success(response) }
-            }.onError { e->
+            }.onError { e ->
                 _authState.update { UiState.Error(e.detail) }
             }
         }

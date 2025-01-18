@@ -1,5 +1,6 @@
 package com.devansh.noteapp.ui.screens
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -19,6 +20,8 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.unit.dp
@@ -29,7 +32,11 @@ import cafe.adriel.voyager.navigator.currentOrThrow
 import com.alorma.compose.settings.ui.SettingsGroup
 import com.alorma.compose.settings.ui.SettingsSwitch
 import com.devansh.noteapp.domain.repo.AppCacheSetting
+import com.devansh.noteapp.domain.repo.NoteDataSource
+import com.devansh.noteapp.ui.components.PrimaryButton
+import com.devansh.noteapp.ui.screens.auth.AuthScreen
 import com.devansh.noteapp.ui.screens.core.ListType
+import kotlinx.coroutines.launch
 import org.koin.compose.koinInject
 
 class SettingScreen : Screen {
@@ -37,14 +44,23 @@ class SettingScreen : Screen {
     override fun Content() {
         val navigator = LocalNavigator.currentOrThrow
         val pref = koinInject<AppCacheSetting>()
+        val noteRepo = koinInject<NoteDataSource>()
+        val scope = rememberCoroutineScope()
         SettingScreenContent(pref,
-            navigateBack = { navigator.pop() }
+            navigateBack = { navigator.pop() },
+            logOut = {
+                pref.logout { scope.launch { noteRepo.emptyNoteTable() } }
+                navigator.replace(AuthScreen())
+            }
         )
     }
 
     @OptIn(ExperimentalMaterial3Api::class)
     @Composable
-    fun SettingScreenContent(pref: AppCacheSetting, navigateBack: () -> Unit) {
+    fun SettingScreenContent(
+        pref: AppCacheSetting, navigateBack: () -> Unit,
+        logOut: () -> Unit,
+    ) {
         val topAppBarState = rememberTopAppBarState()
         val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior(topAppBarState)
         Scaffold(
@@ -53,10 +69,19 @@ class SettingScreen : Screen {
                 LargeTopAppBar(
                     scrollBehavior = scrollBehavior,
                     title = {
-                        Text(
-                            "Settings",
-                            fontSize = if (scrollBehavior.state.collapsedFraction == 1f) 24.sp else 48.sp
-                        )
+                        Column {
+                            Text(
+                                "Settings",
+                                fontSize = if (scrollBehavior.state.collapsedFraction <= .75) 24.sp else 48.sp
+                            )
+                            AnimatedVisibility(scrollBehavior.state.collapsedFraction <= .75) {
+                                Text(
+                                    "logged in as," + pref.userEmail,
+                                    fontSize = 16.sp,
+                                    color = MaterialTheme.colorScheme.onSurface.copy(.5f)
+                                )
+                            }
+                        }
                     },
                     navigationIcon = {
                         Icon(
@@ -109,6 +134,14 @@ class SettingScreen : Screen {
                             pref.listType = if (it) 0 else 1
                         }
                     )
+                }
+
+                PrimaryButton(
+                    modifier = Modifier.padding(top = 60.dp).align(Alignment.CenterHorizontally),
+                    contentPadding = PaddingValues(horizontal = 30.dp),
+                    onClick = { logOut() }
+                ) {
+                    Text("Logout")
                 }
             }
         }

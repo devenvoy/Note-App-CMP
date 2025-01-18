@@ -42,3 +42,6 @@ WHERE id = ?;
 deleteNoteById:
 DELETE FROM noteEntity
 WHERE id = ?;
+
+emptyNoteTable:
+DELETE FROM noteEntity;
