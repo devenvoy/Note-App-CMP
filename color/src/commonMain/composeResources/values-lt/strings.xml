@@ -1,0 +1,17 @@
+<resources>
+
+    <string name="scd_color_dialog_alpha" >Alfa</string>
+    <string name="scd_color_dialog_red" >Raudona</string>
+    <string name="scd_color_dialog_green" >Žalia</string>
+    <string name="scd_color_dialog_blue" >Mėlyna</string>
+    <string name="scd_color_dialog_argb" >ARGB</string>
+    <string name="scd_color_dialog_color" >Spalva</string>
+    <string name="scd_color_dialog_template_colors" >Šablonų spalvos</string>
+    <string name="scd_color_dialog_custom_color" >Pasirinktinė spalva</string>
+    <string name="scd_color_dialog_no_color" >Joks spalvos</string>
+    <string name="scd_color_dialog_copy_color" >Kopijuoti spalvą.</string>
+    <string name="scd_color_dialog_paste_color" >Įklijuoti spalvą</string>
+    <string name="scd_color_dialog_clipboard_paste_invalid_color_code" >Įklijuokite galiojantį aRGB kodą.</string>
+    <string name="scd_color_dialog_clipboard_paste_invalid_empty" >Nieko neįklijuoti</string>
+
+</resources>

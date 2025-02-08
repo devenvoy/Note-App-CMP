@@ -1,0 +1,17 @@
+<resources>
+
+    <string name="scd_color_dialog_alpha" >Alpha</string>
+    <string name="scd_color_dialog_red" >紅色</string>
+    <string name="scd_color_dialog_green" >綠色</string>
+    <string name="scd_color_dialog_blue" >藍色</string>
+    <string name="scd_color_dialog_argb" >ARGB</string>
+    <string name="scd_color_dialog_color" >顏色</string>
+    <string name="scd_color_dialog_template_colors" >模板顏色</string>
+    <string name="scd_color_dialog_custom_color" >自訂顏色</string>
+    <string name="scd_color_dialog_no_color" >無色</string>
+    <string name="scd_color_dialog_copy_color" >複製顏色</string>
+    <string name="scd_color_dialog_paste_color" >貼上顏色</string>
+    <string name="scd_color_dialog_clipboard_paste_invalid_color_code" >請貼上有效的aRGB代碼。</string>
+    <string name="scd_color_dialog_clipboard_paste_invalid_empty" >無內容可貼上</string>
+
+</resources>

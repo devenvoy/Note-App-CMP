@@ -1,0 +1,17 @@
+<resources>
+
+    <string name="scd_color_dialog_alpha" >अल्फा</string>
+    <string name="scd_color_dialog_red" >लाल</string>
+    <string name="scd_color_dialog_green" >हरा</string>
+    <string name="scd_color_dialog_blue" >नीला</string>
+    <string name="scd_color_dialog_argb" >एआरजीबी</string>
+    <string name="scd_color_dialog_color" >रंग</string>
+    <string name="scd_color_dialog_template_colors" >टेम्पलेट रंगों</string>
+    <string name="scd_color_dialog_custom_color" >कस्टम रंग</string>
+    <string name="scd_color_dialog_no_color" >कोई रंग नहीं</string>
+    <string name="scd_color_dialog_copy_color" >वर्ण की कॉपी</string>
+    <string name="scd_color_dialog_paste_color" >रंग चिपकाएँ</string>
+    <string name="scd_color_dialog_clipboard_paste_invalid_color_code" >वैध aRGB-कोड पेस्ट करें।</string>
+    <string name="scd_color_dialog_clipboard_paste_invalid_empty" >कुछ पेस्ट करने के लिए नहीं</string>
+
+</resources>

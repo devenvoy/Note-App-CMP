@@ -1,0 +1,17 @@
+<resources>
+
+    <string name="scd_color_dialog_alpha" >Alpha</string>
+    <string name="scd_color_dialog_red" >Червен</string>
+    <string name="scd_color_dialog_green" >Зелен</string>
+    <string name="scd_color_dialog_blue" >Синьо</string>
+    <string name="scd_color_dialog_argb" >ARGB</string>
+    <string name="scd_color_dialog_color" >Цвят</string>
+    <string name="scd_color_dialog_template_colors" >Шаблонни цветове</string>
+    <string name="scd_color_dialog_custom_color" >Персонализиран цвят</string>
+    <string name="scd_color_dialog_no_color" >Няма цвят.</string>
+    <string name="scd_color_dialog_copy_color" >Копирай цвят</string>
+    <string name="scd_color_dialog_paste_color" >Поставяне на цвят</string>
+    <string name="scd_color_dialog_clipboard_paste_invalid_color_code" >Поставете валиден aRGB код.</string>
+    <string name="scd_color_dialog_clipboard_paste_invalid_empty" >Няма какво да поставям</string>
+
+</resources>

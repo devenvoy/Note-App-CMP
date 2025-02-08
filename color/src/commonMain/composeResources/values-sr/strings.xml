@@ -1,0 +1,17 @@
+<resources>
+
+    <string name="scd_color_dialog_alpha" >Alfa</string>
+    <string name="scd_color_dialog_red" >Crvena</string>
+    <string name="scd_color_dialog_green" >Zelena</string>
+    <string name="scd_color_dialog_blue" >Plavo.</string>
+    <string name="scd_color_dialog_argb" >ARGB</string>
+    <string name="scd_color_dialog_color" >Boja</string>
+    <string name="scd_color_dialog_template_colors" >Boje predloška</string>
+    <string name="scd_color_dialog_custom_color" >Prilagođena boja</string>
+    <string name="scd_color_dialog_no_color" >Bez boje</string>
+    <string name="scd_color_dialog_copy_color" >Kopiraj boju</string>
+    <string name="scd_color_dialog_paste_color" >Boja nalepljena</string>
+    <string name="scd_color_dialog_clipboard_paste_invalid_color_code" >Nalepite validan aRGB kod.</string>
+    <string name="scd_color_dialog_clipboard_paste_invalid_empty" >Ništa za nalepiti</string>
+
+</resources>

@@ -9,6 +9,8 @@ const val BabyBlueHex = 0xff81deea
 const val VioletHex = 0xffcf94da
 const val LightGreenHex = 0xffe7ed9b
 
+val Primary = Color(0xFF139CFF)
+
 val DarkPrimary = Color(0xFF1A73E8)
 val DarkSecondary = Color(0xFF536DFE)
 val DarkTertiary = Color(0xFFEC407A)
@@ -30,3 +32,16 @@ val LightOnSecondary = Color.White
 val LightOnTertiary = Color.White
 val LightOnBackground = Color(0xFF1C1B1F)
 val LightOnSurface = Color(0xFF1C1B1F)
+
+val MidnightBlue = Color(0xFF003366)
+val CrimsonRed = Color(0xFFDC143C)
+val RoyalPurple = Color(0xFF6A0DAD)
+val ForestGreen = Color(0xFF228B22)
+val Goldenrod = Color(0xFFDAA520)
+val SlateGray = Color(0xFF708090)
+val Coral = Color(0xFFFF7F50)
+val DarkOrchid = Color(0xFF9932CC)
+val Teal = Color(0xFF008080)
+val DeepPink = Color(0xFFFF1493)
+val DodgerBlue = Color(0xFF1E90FF)
+val Chocolate = Color(0xFFD2691E)

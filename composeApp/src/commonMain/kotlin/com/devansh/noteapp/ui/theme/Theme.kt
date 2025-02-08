@@ -6,6 +6,9 @@ import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
+import com.materialkolor.DynamicMaterialTheme
+import com.materialkolor.PaletteStyle
+import com.materialkolor.rememberDynamicMaterialThemeState
 
 private val DarkColorScheme = darkColorScheme(
     primary = DarkPrimary,
@@ -34,7 +37,7 @@ private val LightColorScheme = lightColorScheme(
 )
 
 
-@Composable
+/*@Composable
 fun NoteAppTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
     content: @Composable () -> Unit
@@ -48,5 +51,24 @@ fun NoteAppTheme(
         colorScheme = colorScheme,
         typography = Typography,
         content = content
+    )
+}*/
+
+
+@Composable
+fun NoteAppTheme(
+    darkTheme: Boolean = isSystemInDarkTheme(),
+    content: @Composable () -> Unit,
+) {
+    val dynamicThemeState = rememberDynamicMaterialThemeState(
+        isDark = darkTheme,
+        style = PaletteStyle.Neutral,
+        primary = LightPrimary,
+    )
+
+    DynamicMaterialTheme(
+        state = dynamicThemeState,
+        animate = true,
+        content = content,
     )
 }

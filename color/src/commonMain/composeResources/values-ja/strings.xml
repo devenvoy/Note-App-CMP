@@ -1,0 +1,17 @@
+<resources>
+
+    <string name="scd_color_dialog_alpha" >アルファ</string>
+    <string name="scd_color_dialog_red" >赤</string>
+    <string name="scd_color_dialog_green" >緑</string>
+    <string name="scd_color_dialog_blue" >青</string>
+    <string name="scd_color_dialog_argb" >ARGB</string>
+    <string name="scd_color_dialog_color" >カラー</string>
+    <string name="scd_color_dialog_template_colors" >テンプレートの色</string>
+    <string name="scd_color_dialog_custom_color" >カスタムカラー</string>
+    <string name="scd_color_dialog_no_color" >カラーなし</string>
+    <string name="scd_color_dialog_copy_color" >テキストを翻訳する：色のコピー</string>
+    <string name="scd_color_dialog_paste_color" >カラーを貼り付ける</string>
+    <string name="scd_color_dialog_clipboard_paste_invalid_color_code" >有効なaRGBコードを貼り付けてください。</string>
+    <string name="scd_color_dialog_clipboard_paste_invalid_empty" >貼り付けるものはありません。</string>
+
+</resources>

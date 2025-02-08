@@ -1,0 +1,17 @@
+<resources>
+
+    <string name="scd_color_dialog_alpha" >Alfa.</string>
+    <string name="scd_color_dialog_red" >Sarkanā</string>
+    <string name="scd_color_dialog_green" >Zaļš</string>
+    <string name="scd_color_dialog_blue" >Zils</string>
+    <string name="scd_color_dialog_argb" >ARGB</string>
+    <string name="scd_color_dialog_color" >Krāsa</string>
+    <string name="scd_color_dialog_template_colors" >Veidnes krāsas</string>
+    <string name="scd_color_dialog_custom_color" >Pielāgota krāsa</string>
+    <string name="scd_color_dialog_no_color" >Bez krāsas</string>
+    <string name="scd_color_dialog_copy_color" >Kopēt krāsu</string>
+    <string name="scd_color_dialog_paste_color" >Ielīmēt krāsu</string>
+    <string name="scd_color_dialog_clipboard_paste_invalid_color_code" >Ielīmējiet derīgu aRGB kodu.</string>
+    <string name="scd_color_dialog_clipboard_paste_invalid_empty" >Nav ko ielīmēt</string>
+
+</resources>

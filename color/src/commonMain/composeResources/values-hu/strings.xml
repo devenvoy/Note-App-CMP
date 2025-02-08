@@ -1,0 +1,17 @@
+<resources>
+
+    <string name="scd_color_dialog_alpha" >Alpha</string>
+    <string name="scd_color_dialog_red" >Piros</string>
+    <string name="scd_color_dialog_green" >Zöld</string>
+    <string name="scd_color_dialog_blue" >Kék</string>
+    <string name="scd_color_dialog_argb" >ARGB</string>
+    <string name="scd_color_dialog_color" >Szín</string>
+    <string name="scd_color_dialog_template_colors" >Sablon színek</string>
+    <string name="scd_color_dialog_custom_color" >Egyéni szín</string>
+    <string name="scd_color_dialog_no_color" >Nem szín</string>
+    <string name="scd_color_dialog_copy_color" >Szín másolása</string>
+    <string name="scd_color_dialog_paste_color" >Szín beillesztése</string>
+    <string name="scd_color_dialog_clipboard_paste_invalid_color_code" >Illessze be a helyes aRGB-kódot.</string>
+    <string name="scd_color_dialog_clipboard_paste_invalid_empty" >Nincs mit beilleszteni.</string>
+
+</resources>

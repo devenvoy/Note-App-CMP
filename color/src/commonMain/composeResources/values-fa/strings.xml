@@ -1,0 +1,18 @@
+<resources>
+
+    <string name="scd_color_dialog_alpha" >آلفا</string>
+    <string name="scd_color_dialog_red" >قرمز</string>
+    <string name="scd_color_dialog_green" >سبز</string>
+    <string name="scd_color_dialog_blue" >آبی</string>
+    <string name="scd_color_dialog_argb" >پارسی</string>
+    <string name="scd_color_dialog_color" >رنگ</string>
+    <string name="scd_color_dialog_template_colors" >رنگ‌های قالب</string>
+    <string name="scd_color_dialog_custom_color" >رنگ سفارشی</string>
+    <string name="scd_color_dialog_no_color" >هیچ رنگی</string>
+    <string name="scd_color_dialog_copy_color" >رونگ را کپی کنید.</string>
+    <string name="scd_color_dialog_paste_color" >Paste color
+رنگ را الصاق کنید</string>
+    <string name="scd_color_dialog_clipboard_paste_invalid_color_code" >کد aRGB معتبر را الصاق کنید.</string>
+    <string name="scd_color_dialog_clipboard_paste_invalid_empty" >چیزی برای جایگزینی وجود ندارد</string>
+
+</resources>

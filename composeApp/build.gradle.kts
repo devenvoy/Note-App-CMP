@@ -20,7 +20,7 @@ kotlin {
     androidTarget {
         @OptIn(ExperimentalKotlinGradlePluginApi::class)
         compilerOptions {
-            jvmTarget.set(JvmTarget.JVM_11)
+            jvmTarget.set(JvmTarget.JVM_17)
         }
     }
 
@@ -135,6 +135,9 @@ kotlin {
             implementation(libs.composeSettings.ui)
             implementation(libs.composeSettings.ui.extended)
             implementation("dev.chrisbanes.material3:material3-window-size-class-multiplatform:0.5.0")
+
+            implementation(libs.color.materialKolor)
+            implementation(project(":color"))
         }
         iosMain.dependencies {
             implementation(libs.ktor.client.darwin)
@@ -172,12 +175,14 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
+        isCoreLibraryDesugaringEnabled = true
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
 }
 
 dependencies {
+    coreLibraryDesugaring(libs.desugar)
     debugImplementation(compose.uiTooling)
 }
 
@@ -189,6 +194,11 @@ compose.desktop {
             targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
             packageName = "com.devansh.noteapp"
             packageVersion = libs.versions.versionName.get()
+
+            jvmArgs += listOf(
+                "--add-modules=java.sql",
+                "--add-opens=java.base/java.lang=ALL-UNNAMED"
+            )
         }
     }
 }

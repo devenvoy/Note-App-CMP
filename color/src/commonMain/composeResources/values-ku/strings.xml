@@ -1,0 +1,17 @@
+<resources>
+
+    <string name="scd_color_dialog_alpha" >Alpha</string>
+    <string name="scd_color_dialog_red" >Sor</string>
+    <string name="scd_color_dialog_green" >Sor</string>
+    <string name="scd_color_dialog_blue" >Şînêqêşîn</string>
+    <string name="scd_color_dialog_argb" >ARGB</string>
+    <string name="scd_color_dialog_color" >Reng</string>
+    <string name="scd_color_dialog_template_colors" >رەنگی ڕووکار</string>
+    <string name="scd_color_dialog_custom_color" >ڕەنگی تایبەتین</string>
+    <string name="scd_color_dialog_no_color" >هاوڕێیەکی ناوەنگاری.</string>
+    <string name="scd_color_dialog_copy_color" >ڕەنگ بنەڕەت بکەن.</string>
+    <string name="scd_color_dialog_paste_color" >ڕەنگ بکەوە</string>
+    <string name="scd_color_dialog_clipboard_paste_invalid_color_code" >Codeyek aRGB-ek derbasdar peyveki binivîse.</string>
+    <string name="scd_color_dialog_clipboard_paste_invalid_empty" >چیزێک بۆ لکاندن نییە</string>
+
+</resources>

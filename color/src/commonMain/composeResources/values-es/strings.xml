@@ -1,0 +1,17 @@
+<resources>
+
+    <string name="scd_color_dialog_alpha" >Alpha</string>
+    <string name="scd_color_dialog_red" >Rojo.</string>
+    <string name="scd_color_dialog_green" >Verde</string>
+    <string name="scd_color_dialog_blue" >Azul</string>
+    <string name="scd_color_dialog_argb" >ARGB</string>
+    <string name="scd_color_dialog_color" >Color</string>
+    <string name="scd_color_dialog_template_colors" >Colores de la plantilla</string>
+    <string name="scd_color_dialog_custom_color" >Color personalizado</string>
+    <string name="scd_color_dialog_no_color" >Sin color</string>
+    <string name="scd_color_dialog_copy_color" >Copiar color</string>
+    <string name="scd_color_dialog_paste_color" >Pegar color</string>
+    <string name="scd_color_dialog_clipboard_paste_invalid_color_code" >Pegar código aRGB válido.</string>
+    <string name="scd_color_dialog_clipboard_paste_invalid_empty" >Nada que pegar</string>
+
+</resources>

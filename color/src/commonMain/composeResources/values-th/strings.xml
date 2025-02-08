@@ -1,0 +1,18 @@
+<resources>
+
+    <string name="scd_color_dialog_alpha" >Alpha</string>
+    <string name="scd_color_dialog_red" >สีแดง</string>
+    <string name="scd_color_dialog_green" >เขียว</string>
+    <string name="scd_color_dialog_blue" >สีน้ำเงิน</string>
+    <string name="scd_color_dialog_argb" >ARGB</string>
+    <string name="scd_color_dialog_color" >สี</string>
+    <string name="scd_color_dialog_template_colors" >สีของเทมเพลต</string>
+    <string name="scd_color_dialog_custom_color" >สีที่กำหนดเอง</string>
+    <string name="scd_color_dialog_no_color" >ไม่มีสี</string>
+    <string name="scd_color_dialog_copy_color" >สำเนาสี</string>
+    <string name="scd_color_dialog_paste_color" >Paste color
+วางสี</string>
+    <string name="scd_color_dialog_clipboard_paste_invalid_color_code" >วางรหัส aRGB ที่ถูกต้อง</string>
+    <string name="scd_color_dialog_clipboard_paste_invalid_empty" >ไม่มีอะไรที่จะวาง</string>
+
+</resources>

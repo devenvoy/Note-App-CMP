@@ -1,0 +1,17 @@
+<resources>
+
+    <string name="scd_color_dialog_alpha" >Alpha</string>
+    <string name="scd_color_dialog_red" >Đỏ</string>
+    <string name="scd_color_dialog_green" >Màu xanh</string>
+    <string name="scd_color_dialog_blue" >Màu xanh</string>
+    <string name="scd_color_dialog_argb" >ARGB</string>
+    <string name="scd_color_dialog_color" >Màu sắc</string>
+    <string name="scd_color_dialog_template_colors" >Màu sắc mẫu (OK)</string>
+    <string name="scd_color_dialog_custom_color" >Tùy chỉnh màu sắc</string>
+    <string name="scd_color_dialog_no_color" >Không màu sắc.</string>
+    <string name="scd_color_dialog_copy_color" >Sao chép màu sắc</string>
+    <string name="scd_color_dialog_paste_color" >Màu dán</string>
+    <string name="scd_color_dialog_clipboard_paste_invalid_color_code" >Dán mã aRGB hợp lệ.</string>
+    <string name="scd_color_dialog_clipboard_paste_invalid_empty" >Không có gì để dán</string>
+
+</resources>

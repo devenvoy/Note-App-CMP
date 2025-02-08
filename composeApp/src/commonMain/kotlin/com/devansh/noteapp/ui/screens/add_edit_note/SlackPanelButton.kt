@@ -31,6 +31,10 @@ fun SlackPanelButton(
             .size(32.dp)
             .focusProperties { canFocus = false }
             .clip(CircleShape)
+            .background(
+                color = if (isSelected) MaterialTheme.colorScheme.primaryContainer
+                else Color.Transparent,
+            )
             .clickable(
                 onClick = onClick,
                 enabled = true,
@@ -42,12 +46,7 @@ fun SlackPanelButton(
             icon,
             contentDescription = icon.name,
             tint = tint ?: MaterialTheme.colorScheme.onSurface,
-            modifier = Modifier
-                .background(
-                    color = if (isSelected) MaterialTheme.colorScheme.secondary
-                    else Color.Transparent,
-                )
-                .padding(6.dp)
+            modifier = Modifier.size(28.dp).padding(6.dp)
         )
     }
 }

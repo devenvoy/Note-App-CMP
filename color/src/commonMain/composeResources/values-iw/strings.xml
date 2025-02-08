@@ -1,0 +1,17 @@
+<resources>
+
+    <string name="scd_color_dialog_alpha" >אלפא</string>
+    <string name="scd_color_dialog_red" >אדום</string>
+    <string name="scd_color_dialog_green" >ירוק</string>
+    <string name="scd_color_dialog_blue" >כחול</string>
+    <string name="scd_color_dialog_argb" >ARGB</string>
+    <string name="scd_color_dialog_color" >צבע</string>
+    <string name="scd_color_dialog_template_colors" >צבעי התבנית</string>
+    <string name="scd_color_dialog_custom_color" >צבע מותאם</string>
+    <string name="scd_color_dialog_no_color" >אין צבע</string>
+    <string name="scd_color_dialog_copy_color" >העתק צבע</string>
+    <string name="scd_color_dialog_paste_color" >הדבק צבע</string>
+    <string name="scd_color_dialog_clipboard_paste_invalid_color_code" >הדבק קוד aRGB תקין.</string>
+    <string name="scd_color_dialog_clipboard_paste_invalid_empty" >אין דבר להדביק</string>
+
+</resources>

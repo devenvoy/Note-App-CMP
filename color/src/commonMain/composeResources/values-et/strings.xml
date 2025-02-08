@@ -1,0 +1,17 @@
+<resources>
+
+    <string name="scd_color_dialog_alpha" >Alpha</string>
+    <string name="scd_color_dialog_red" >Punane</string>
+    <string name="scd_color_dialog_green" >Roheline</string>
+    <string name="scd_color_dialog_blue" >Sinine</string>
+    <string name="scd_color_dialog_argb" >ARGB</string>
+    <string name="scd_color_dialog_color" >Värv</string>
+    <string name="scd_color_dialog_template_colors" >Mallis värvid</string>
+    <string name="scd_color_dialog_custom_color" >Erisära</string>
+    <string name="scd_color_dialog_no_color" >Värv puudub</string>
+    <string name="scd_color_dialog_copy_color" >Kopeeri värv</string>
+    <string name="scd_color_dialog_paste_color" >Värvi kopeerimine</string>
+    <string name="scd_color_dialog_clipboard_paste_invalid_color_code" >Kleebi kehtiv aRGB-kood.</string>
+    <string name="scd_color_dialog_clipboard_paste_invalid_empty" >Midagi kleepida</string>
+
+</resources>

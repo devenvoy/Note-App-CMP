@@ -1,0 +1,17 @@
+<resources>
+
+    <string name="scd_color_dialog_alpha" >Альфа</string>
+    <string name="scd_color_dialog_red" >Червоний</string>
+    <string name="scd_color_dialog_green" >Зелений</string>
+    <string name="scd_color_dialog_blue" >Синій</string>
+    <string name="scd_color_dialog_argb" >ARGB</string>
+    <string name="scd_color_dialog_color" >Колір</string>
+    <string name="scd_color_dialog_template_colors" >Кольори шаблону</string>
+    <string name="scd_color_dialog_custom_color" >Спеціальний колір</string>
+    <string name="scd_color_dialog_no_color" >Без кольору</string>
+    <string name="scd_color_dialog_copy_color" >Копіювати колір</string>
+    <string name="scd_color_dialog_paste_color" >Вставити колір</string>
+    <string name="scd_color_dialog_clipboard_paste_invalid_color_code" >Вставте дійсний aRGB-код.</string>
+    <string name="scd_color_dialog_clipboard_paste_invalid_empty" >Нічого немає для вставки</string>
+
+</resources>

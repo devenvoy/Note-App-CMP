@@ -31,14 +31,14 @@ materialcolors = "1.0.0"
 multiplatformSettingsNoArg = "1.0.0"
 mvvmCore = "0.16.1"
 retrofit = "2.9.0"
-room = "2.7.0-alpha12"
+room = "2.7.0-alpha13"
 ksp = "2.1.0-1.0.29"
 sdpSspComposeMultiplatform = "1.0.4"
 sqlite = "2.5.0-SNAPSHOT"
 google-play-services = "23.6.0"
 
 #Navigation
-navigationCompose = "2.8.5"
+navigationCompose = "2.8.6"
 
 voyager = "1.1.0-beta02"
 kotlin = "2.1.0"
@@ -64,8 +64,10 @@ richeditorCompose = "1.0.0-rc10"
 sqlDelight = "2.0.2"
 composeIcons = "1.1.1"
 fontawesomecompose = "1.0.0"
-compose-settings="2.9.0"
-
+compose-settings="2.10.0"
+desugar = "2.1.4"
+uiTestJunit4Android = "1.7.7"
+materialKolor = "2.0.0"
 
 [libraries]
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
@@ -82,8 +84,13 @@ androidx-lifecycle-viewmodel = { group = "org.jetbrains.androidx.lifecycle", nam
 androidx-lifecycle-runtime-compose = { group = "org.jetbrains.androidx.lifecycle", name = "lifecycle-runtime-compose", version.ref = "androidx-lifecycle" }
 kotlinx-coroutines-swing = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-swing", version.ref = "kotlinx-coroutines" }
 
+color-materialKolor = { group="com.materialkolor",name="material-kolor" ,version.ref="materialKolor"}
 cmp-image-pick-n-crop = { module = "network.chaintech:cmp-image-pick-n-crop", version.ref = "cmpImagePickNCrop" }
 kmp-date-time-picker = { module = "network.chaintech:kmp-date-time-picker", version.ref = "kmpDateTimePicker" }
+
+androidx-window = { module = "androidx.window:window", version.require = "1.3.0" }
+window-size = { group = "dev.chrisbanes.material3", name = "material3-window-size-class-multiplatform", version= "0.5.0" }
+desugar = { group = "com.android.tools", name = "desugar_jdk_libs", version.ref = "desugar" }
 
 compottie = { module = "io.github.alexzhirkevich:compottie", version.ref = "compottie" }
 compottie-dot = { module = "io.github.alexzhirkevich:compottie-dot", version.ref = "compottie" }
@@ -120,6 +127,7 @@ ktor-client-darwin = { module = "io.ktor:ktor-client-darwin", version.ref = "kto
 ktor-serialization-kotlinx-json = { module = "io.ktor:ktor-serialization-kotlinx-json", version.ref = "ktor" }
 runtime = { module = "app.cash.sqldelight:runtime", version.ref = "sqlDelight" }
 
+serialization = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-core", version.ref = "kotlinxSerializationJsonVersion" }
 kotlinx-serialization-json-v141 = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinxSerializationJsonVersion" }
 multiplatform-settings-coroutines = { module = "com.russhwolf:multiplatform-settings-coroutines", version.ref = "multiplatformSettingsNoArg" }
 multiplatform-settings-no-arg = { module = "com.russhwolf:multiplatform-settings-no-arg", version.ref = "multiplatformSettingsNoArg" }
@@ -170,6 +178,7 @@ multiplatformSettings = { module = "com.russhwolf:multiplatform-settings", versi
 kstore = { module = "io.github.xxfast:kstore", version.ref = "kstore" }
 
 composeIcons-fontAwesome = { module = "br.com.devsrsouza.compose.icons:font-awesome", version.ref = "composeIcons" }
+androidx-ui-test-junit4-android = { group = "androidx.compose.ui", name = "ui-test-junit4-android", version.ref = "uiTestJunit4Android" }
 
 
 [plugins]

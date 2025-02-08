@@ -19,6 +19,8 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.PlusOne
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -52,6 +54,7 @@ import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight.Companion.W500
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
@@ -157,13 +160,11 @@ class HomeScreen : Screen {
             floatingActionButton = {
                 FloatingActionButton(
                     modifier = Modifier.imePadding(),
-                    onClick = { onNavigateToAddEditNote(-1) },
-                    containerColor = MaterialTheme.colorScheme.primary,
-                    contentColor = Color.White
+                    onClick = { onNavigateToAddEditNote(-1) }
                 ) {
                     Icon(
                         modifier = Modifier.size(24.dp),
-                        imageVector = FontAwesomeIcons.Solid.Plus,
+                        imageVector = Icons.Default.Add,
                         contentDescription = "Save Note"
                     )
                 }
@@ -296,7 +297,7 @@ fun NoteMenuBottomSheet(
                     ) {
 
                         Image(
-                            modifier = Modifier.size(28.dp),
+                            modifier = Modifier.size(32.dp),
                             painter = painterResource(Res.drawable.ic_menu_edit),
                             contentDescription = "edit"
                         )
@@ -305,7 +306,7 @@ fun NoteMenuBottomSheet(
                             modifier = Modifier.padding(horizontal = 16.dp),
                             text = "Edit",
                             style = TextStyle(
-                                fontSize = 14.ssp,
+                                fontSize = 16.sp,
                                 fontWeight = W500,
                                 color = Color.Black
                             )
@@ -327,7 +328,7 @@ fun NoteMenuBottomSheet(
                 ) {
 
                     Image(
-                        modifier = Modifier.size(28.dp),
+                        modifier = Modifier.size(32.dp),
                         painter = painterResource(Res.drawable.ic_menu_copy),
                         contentDescription = "copy"
                     )
@@ -336,7 +337,7 @@ fun NoteMenuBottomSheet(
                         modifier = Modifier.padding(horizontal = 16.dp),
                         text = "Copy",
                         style = TextStyle(
-                            fontSize = 14.ssp,
+                            fontSize = 16.sp,
                             fontWeight = W500,
                             color = Color.Black
                         )
@@ -357,7 +358,7 @@ fun NoteMenuBottomSheet(
                 ) {
 
                     Image(
-                        modifier = Modifier.size(28.dp),
+                        modifier = Modifier.size(32.dp),
                         painter = painterResource(Res.drawable.ic_menu_share),
                         contentDescription = "edit"
                     )
@@ -366,7 +367,7 @@ fun NoteMenuBottomSheet(
                         modifier = Modifier.padding(horizontal = 16.dp),
                         text = "Share",
                         style = TextStyle(
-                            fontSize = 14.ssp,
+                            fontSize = 16.sp,
                             fontWeight = W500,
                             color = Color.Black
                         )
@@ -391,7 +392,7 @@ fun NoteMenuBottomSheet(
                 ) {
 
                     Image(
-                        modifier = Modifier.size(28.dp),
+                        modifier = Modifier.size(32.dp),
                         painter = painterResource(Res.drawable.ic_menu_delete),
                         contentDescription = "edit"
                     )
@@ -400,7 +401,7 @@ fun NoteMenuBottomSheet(
                         modifier = Modifier.padding(horizontal = 16.dp),
                         text = "Delete",
                         style = TextStyle(
-                            fontSize = 14.ssp,
+                            fontSize = 16.sp,
                             fontWeight = W500,
                             color = Color.Black
                         )

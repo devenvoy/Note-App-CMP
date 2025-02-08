@@ -1,0 +1,17 @@
+<resources>
+
+    <string name="scd_color_dialog_alpha" >Альфа</string>
+    <string name="scd_color_dialog_red" >Қызыл</string>
+    <string name="scd_color_dialog_green" >Жасыл</string>
+    <string name="scd_color_dialog_blue" >Көк</string>
+    <string name="scd_color_dialog_argb" >ARGB</string>
+    <string name="scd_color_dialog_color" >Реңк</string>
+    <string name="scd_color_dialog_template_colors" >Көрнекті бойынша түстер</string>
+    <string name="scd_color_dialog_custom_color" >Жеке түс</string>
+    <string name="scd_color_dialog_no_color" >Өрнекті түссіз</string>
+    <string name="scd_color_dialog_copy_color" >Көшірме реңк</string>
+    <string name="scd_color_dialog_paste_color" >Түс тапсырыныз</string>
+    <string name="scd_color_dialog_clipboard_paste_invalid_color_code" >Қате арғыб шифрін жайып қойыңыз.</string>
+    <string name="scd_color_dialog_clipboard_paste_invalid_empty" >Жабыстар жоқ</string>
+
+</resources>

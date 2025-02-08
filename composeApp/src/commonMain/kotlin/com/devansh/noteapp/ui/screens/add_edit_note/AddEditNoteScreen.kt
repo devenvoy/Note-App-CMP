@@ -159,9 +159,7 @@ class AddEditNoteScreen(private val noteId: Long) : Screen {
                                 richTextState.toHtml()
                             )
                         )
-                    },
-                    containerColor = MaterialTheme.colorScheme.primary,
-                    contentColor = Color.White
+                    }
                 ) {
                     Icon(
                         modifier = Modifier.size(28.dp),
@@ -169,7 +167,8 @@ class AddEditNoteScreen(private val noteId: Long) : Screen {
                         contentDescription = "Save Note"
                     )
                 }
-            }) { padding ->
+            })
+        { padding ->
 
             Toaster(
                 state = toasterState,
@@ -272,6 +271,7 @@ class AddEditNoteScreen(private val noteId: Long) : Screen {
                         .fillMaxWidth()
                         .padding(top = 8.dp)
                 )
+
                 Spacer(Modifier.height(12.dp))
 
                 HintUI(

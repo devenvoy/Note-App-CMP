@@ -1,0 +1,17 @@
+<resources>
+
+    <string name="scd_color_dialog_alpha" >Alpha</string>
+    <string name="scd_color_dialog_red" >Röd</string>
+    <string name="scd_color_dialog_green" >Grön</string>
+    <string name="scd_color_dialog_blue" >Blå</string>
+    <string name="scd_color_dialog_argb" >ARGB</string>
+    <string name="scd_color_dialog_color" >Färg</string>
+    <string name="scd_color_dialog_template_colors" >Färger på mallen</string>
+    <string name="scd_color_dialog_custom_color" >Anpassad färg</string>
+    <string name="scd_color_dialog_no_color" >Ingen färg</string>
+    <string name="scd_color_dialog_copy_color" >Kopiera färg</string>
+    <string name="scd_color_dialog_paste_color" >Klistra in färg</string>
+    <string name="scd_color_dialog_clipboard_paste_invalid_color_code" >Klistra in giltig aRGB-kod.</string>
+    <string name="scd_color_dialog_clipboard_paste_invalid_empty" >Inget att klistra in</string>
+
+</resources>

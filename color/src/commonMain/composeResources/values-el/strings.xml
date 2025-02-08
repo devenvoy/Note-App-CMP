@@ -1,0 +1,17 @@
+<resources>
+
+    <string name="scd_color_dialog_alpha" >Άλφα</string>
+    <string name="scd_color_dialog_red" >Κόκκινο</string>
+    <string name="scd_color_dialog_green" >Πράσινο</string>
+    <string name="scd_color_dialog_blue" >Μπλε</string>
+    <string name="scd_color_dialog_argb" >ARGB</string>
+    <string name="scd_color_dialog_color" >Χρώμα</string>
+    <string name="scd_color_dialog_template_colors" >Χρώματα προτύπου</string>
+    <string name="scd_color_dialog_custom_color" >Προσαρμοσμένος χρωματισμός</string>
+    <string name="scd_color_dialog_no_color" >Κανένα χρώμα</string>
+    <string name="scd_color_dialog_copy_color" >Αντιγραφή χρώματος</string>
+    <string name="scd_color_dialog_paste_color" >Επικόλληση χρώματος</string>
+    <string name="scd_color_dialog_clipboard_paste_invalid_color_code" >Επικολλήστε έναν έγκυρο κωδικό aRGB.</string>
+    <string name="scd_color_dialog_clipboard_paste_invalid_empty" >Τίποτα να επικολληθεί</string>
+
+</resources>

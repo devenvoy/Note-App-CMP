@@ -1,0 +1,17 @@
+<resources>
+
+    <string name="scd_color_dialog_alpha" >Alpha</string>
+    <string name="scd_color_dialog_red" >Deargh</string>
+    <string name="scd_color_dialog_green" >Glas</string>
+    <string name="scd_color_dialog_blue" >Gorm</string>
+    <string name="scd_color_dialog_argb" >ARGB</string>
+    <string name="scd_color_dialog_color" >Dath</string>
+    <string name="scd_color_dialog_template_colors" >Dathanna Sgìreadh</string>
+    <string name="scd_color_dialog_custom_color" >Dath a chriathar</string>
+    <string name="scd_color_dialog_no_color" >Gun dath</string>
+    <string name="scd_color_dialog_copy_color" >Dathan a cheàrradh</string>
+    <string name="scd_color_dialog_paste_color" >Glas a thaghadh</string>
+    <string name="scd_color_dialog_clipboard_paste_invalid_color_code" >Cuir a-steach còd aRGB-ùr.</string>
+    <string name="scd_color_dialog_clipboard_paste_invalid_empty" >Chan eil dad ri phàsadh.</string>
+
+</resources>
