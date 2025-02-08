@@ -20,7 +20,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.PlusOne
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -58,6 +57,8 @@ import androidx.compose.ui.unit.sp
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
+import com.devansh.noteapp.di.platform_di.isDesktop
+import com.devansh.noteapp.di.platform_di.shareText
 import com.devansh.noteapp.domain.model.Note
 import com.devansh.noteapp.domain.repo.AppCacheSetting
 import com.devansh.noteapp.domain.utils.koinScreenModel
@@ -77,6 +78,7 @@ import com.mohamedrejeb.richeditor.model.rememberRichTextState
 import compose.icons.FontAwesomeIcons
 import compose.icons.fontawesomeicons.Solid
 import compose.icons.fontawesomeicons.solid.Plus
+import io.ktor.util.Platform
 import kotlinx.coroutines.launch
 import network.chaintech.sdpcomposemultiplatform.ssp
 import note_app_cmp.composeapp.generated.resources.Res
@@ -191,13 +193,18 @@ class HomeScreen : Screen {
                             onNavigateToAddEditNote(selectedNote?.id ?: -1)
                             dismissSheet()
                         },
-                        onShareClick = {},
+                        onShareClick = {
+                            shareText(
+                                text = "${selectedNote?.title} \n\n ${richContent.toText()}",
+                                mimeType = "plain/text"
+                            )
+                        },
                         onDeleteClick = {
                             homeScreenModel.deleteNoteById(selectedNote?.id!!)
                             toasterState.show(
                                 "Note deleted successfully",
                                 duration = ToasterDefaults.DurationLong,
-                                type = ToastType.Warning
+                                type = ToastType.Error
                             )
                             dismissSheet()
                         },
@@ -242,11 +249,12 @@ class HomeScreen : Screen {
                 )
 
                 Toaster(
+                    modifier = Modifier.navigationBarsPadding(),
                     state = toasterState,
                     richColors = true,
                     darkTheme = isSystemInDarkTheme(),
                     showCloseButton = true,
-                    alignment = Alignment.Center,
+                    alignment = Alignment.BottomCenter,
                 )
             }
         }
@@ -346,32 +354,34 @@ fun NoteMenuBottomSheet(
             }
 
             // share
-            SecondaryOutlinedButton(
-                modifier = Modifier.fillMaxWidth(),
-                onClick = onShareClick,
-                contentPadding = PaddingValues(8.dp),
-                border = BorderStroke(1.dp, Color(0xffF9F8FA)),
-            ) {
-                Row(
+            if(isDesktop().not()){
+                SecondaryOutlinedButton(
                     modifier = Modifier.fillMaxWidth(),
-                    verticalAlignment = Alignment.CenterVertically,
+                    onClick = onShareClick,
+                    contentPadding = PaddingValues(8.dp),
+                    border = BorderStroke(1.dp, Color(0xffF9F8FA)),
                 ) {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        verticalAlignment = Alignment.CenterVertically,
+                    ) {
 
-                    Image(
-                        modifier = Modifier.size(32.dp),
-                        painter = painterResource(Res.drawable.ic_menu_share),
-                        contentDescription = "edit"
-                    )
-
-                    Text(
-                        modifier = Modifier.padding(horizontal = 16.dp),
-                        text = "Share",
-                        style = TextStyle(
-                            fontSize = 16.sp,
-                            fontWeight = W500,
-                            color = Color.Black
+                        Image(
+                            modifier = Modifier.size(32.dp),
+                            painter = painterResource(Res.drawable.ic_menu_share),
+                            contentDescription = "edit"
                         )
-                    )
+
+                        Text(
+                            modifier = Modifier.padding(horizontal = 16.dp),
+                            text = "Share",
+                            style = TextStyle(
+                                fontSize = 16.sp,
+                                fontWeight = W500,
+                                color = Color.Black
+                            )
+                        )
+                    }
                 }
             }
 

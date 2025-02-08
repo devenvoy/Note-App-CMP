@@ -8,3 +8,8 @@ import org.koin.dsl.module
 actual fun platformModule(): Module = module {
     single { NoteDatabase(DatabaseDriverFactory().createDriver()) }
 }
+
+actual fun shareText(text: String, mimeType: String) {
+}
+
+actual fun isDesktop(): Boolean = true
