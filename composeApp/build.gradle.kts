@@ -1,6 +1,5 @@
+import com.android.build.gradle.ProguardFiles.getDefaultProguardFile
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
-import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
-import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
@@ -11,18 +10,13 @@ plugins {
 
     alias(libs.plugins.kotlinxSerialization)
     alias(libs.plugins.sqldelight)
-    alias(libs.plugins.ksp)
+//    alias(libs.plugins.ksp)
     alias(libs.plugins.buildConfig)
 
 }
 
 kotlin {
-    androidTarget {
-        @OptIn(ExperimentalKotlinGradlePluginApi::class)
-        compilerOptions {
-            jvmTarget.set(JvmTarget.JVM_17)
-        }
-    }
+    androidTarget()
 
     listOf(
         iosX64(),
@@ -32,157 +26,183 @@ kotlin {
         iosTarget.binaries.framework {
             baseName = "ComposeApp"
             isStatic = true
+            linkerOpts.add("-lsqlite3")
         }
     }
 
-    jvm("desktop")
+    jvm()
 
     sourceSets {
-        val desktopMain by getting
 
         androidMain.dependencies {
+            implementation(libs.androidx.appcompat)
+            implementation(libs.androidx.activity.compose)
+            implementation(libs.kotlinx.coroutines.android)
+
+            implementation(libs.koin.android)
+            implementation(libs.koin.androidx.compose)
 
             implementation(libs.ktor.client.android)
-            implementation(libs.sqldelight.android)
 
-            // built in
+            implementation(libs.sqldelight.android.driver)
+
             implementation(compose.preview)
             implementation(libs.androidx.activity.compose)
-            implementation(libs.ktor.client.okhttp)
-            implementation("com.github.chuckerteam.chucker:library:4.1.0")
+
+            implementation("com.github.chuckerteam.chucker:library:4.2.0")
         }
+
         commonMain.dependencies {
 
+            implementation(libs.sqldelight.runtime)
             implementation(libs.sqldelight.coroutines)
-            implementation(libs.kotlinx.coroutines.core)
-            implementation(libs.ktor.client.core)
-            implementation(libs.ktor.client.content.negotiation)
-            implementation(libs.ktor.serialization.kotlinx.json)
-            implementation(libs.runtime)
-            implementation(libs.kotlinx.datetime)
-            implementation(libs.koin.core)
 
-            implementation(libs.voyager.navigator)
-            implementation(libs.voyager.screenModel)
+            implementation(libs.kotlinx.datetime)
+            implementation(libs.kotlinx.coroutines.core)
+            implementation(libs.kotlinx.serialization.json)
+            implementation(libs.androidx.navigation.compose)
+
+            implementation(libs.bundles.ktor.common)
+
+            implementation(libs.kotlinx.datetime)
 
             implementation(libs.sdp.ssp.compose.multiplatform)
 
             // build in
-            implementation(compose.runtime)
-            implementation(compose.foundation)
-            implementation(compose.material3)
+
             implementation(compose.ui)
+            implementation(compose.runtime)
+            implementation(compose.animation)
+            implementation(compose.foundation)
             implementation(compose.components.resources)
+            implementation(compose.materialIconsExtended)
             implementation(compose.components.uiToolingPreview)
             implementation(libs.androidx.lifecycle.viewmodel)
             implementation(libs.androidx.lifecycle.runtime.compose)
 
+            implementation(libs.material3.adaptive)
+            implementation(libs.material3.expressive)
+            implementation(libs.material3.adaptive.layout)
+            implementation(libs.material3.adaptive.navigation)
+            implementation(libs.material3.adaptive.navigation.suite)
 
-            implementation(libs.composeIcons.fontAwesome)
-            implementation(libs.richeditor.compose)
+            implementation(libs.kotlin.logging)
 
-            implementation(libs.voyager.navigator)
-            implementation(libs.voyager.screenModel)
-            implementation(libs.voyager.transitions)
-            implementation(libs.voyager.tabNavigator)
+            implementation(libs.coil.compose)
 
-            implementation(libs.koin.core)
-            implementation(libs.koin.compose)
+          api(libs.koin.core)
+          implementation(libs.koin.compose)
+          implementation(libs.koin.compose.viewmodel)
 
             implementation(compose.material3)
             implementation(compose.materialIconsExtended)
-            implementation(libs.mvvm.core)
 
             // #1 - Basic settings
             implementation(libs.multiplatform.settings.no.arg)
-
-            // #2 - For custom class serialization
-            implementation(libs.kotlinx.serialization.json.v141)
-            implementation(libs.multiplatform.settings.serialization)
-
-            // #3 - For observing values as flows
             implementation(libs.multiplatform.settings.coroutines)
 
             implementation(libs.kotlinx.datetime)
 
             implementation(libs.sdp.ssp.compose.multiplatform)
-            implementation(libs.sonner)
 
-            implementation(libs.room.runtime)
             implementation(libs.sqlite.bundled)
 
-            implementation(libs.retrofit)
 
             implementation(libs.coil.compose)
-            implementation(libs.coil.network.ktor)
 
-            implementation(libs.ktor.client.core)
-            implementation(libs.ktor.client.logging)
-            implementation(libs.ktor.serialization.kotlinx.json)
-            implementation(libs.ktor.client.content.negotiation)
-            implementation(libs.ktor.client.encoding)
-            implementation(libs.ktor.client.serialization)
+            implementation(libs.sonner)
+            implementation(libs.color.materialKolor)
 
-            implementation(libs.kermit)
-            implementation(libs.kstore)
-
-            implementation(libs.kmp.date.time.picker)
-
-            implementation(libs.cmp.image.pick.n.crop)
-
-            implementation(libs.connectivity.core)
-
+            implementation(libs.richeditor.compose)
             implementation(libs.composeSettings.ui)
             implementation(libs.composeSettings.ui.extended)
-            implementation("dev.chrisbanes.material3:material3-window-size-class-multiplatform:0.5.0")
 
-            implementation(libs.color.materialKolor)
-            implementation(project(":color"))
+            implementation("io.github.jan-tennert.supabase:compose-auth:3.2.2")
+            implementation("io.github.jan-tennert.supabase:compose-auth-ui:3.2.2")
+
         }
+
         iosMain.dependencies {
             implementation(libs.ktor.client.darwin)
-            implementation(libs.sqldelight.native)
+            implementation(libs.sqldelight.native.driver)
+
+            implementation(libs.touchlab.stately.isolate)
+            implementation(libs.touchlab.stately.iso.collections)
         }
 
-        desktopMain.dependencies {
-            implementation(libs.sqldelight.jvm)
+       jvmMain.dependencies {
+
+            implementation(libs.sqldelight.sqlite.driver)
+            implementation(libs.slf4j.simple)
+            implementation(libs.ktor.client.java)
+
             implementation(compose.desktop.currentOs)
             implementation(libs.kotlinx.coroutines.swing)
-            implementation(libs.ktor.client.okhttp)
         }
+        /*
+                val mobileAndJvmMain by creating {
+                    dependsOn(commonMain.get())
+                    dependencies {
+                        implementation(libs.sqlite.bundled)
+                    }
+                }
+                androidMain.get().dependsOn(mobileAndJvmMain)
+                iosMain.get().dependsOn(mobileAndJvmMain)
+                jvmMain.get().dependsOn(mobileAndJvmMain)*/
     }
 }
 
 android {
     namespace = "com.devansh.noteapp"
-    compileSdk = libs.versions.compileSdk.get().toInt()
+    compileSdk = libs.versions.android.compileSdk.get().toInt()
+
+//    sourceSets["main"].manifest.srcFile("src/androidMain/AndroidManifest.xml")
+//    sourceSets["main"].res.srcDirs("src/androidMain/res")
+//    sourceSets["main"].resources.srcDirs("src/commonMain/resources")
 
     defaultConfig {
         applicationId = "com.devansh.noteapp"
-        minSdk = libs.versions.minSdk.get().toInt()
-        targetSdk = libs.versions.targetSdk.get().toInt()
-        versionCode = libs.versions.versionCode.get().toInt()
-        versionName = libs.versions.versionName.get()
+        minSdk = libs.versions.android.minSdk.get().toInt()
+        targetSdk = libs.versions.android.targetSdk.get().toInt()
+        versionCode = 1
+        versionName = "1.0.0"
     }
     packaging {
         resources {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
         }
     }
+    signingConfigs {
+        /* named("debug") {
+             storeFile = file("assemble/android/debug.keystore")
+             keyAlias = "androiddebugkey"
+             storePassword = "android"
+             keyPassword = "android"
+         }*/
+    }
     buildTypes {
-        getByName("release") {
-            isMinifyEnabled = false
+        named("debug") {
+//            applicationIdSuffix = ".debug"
+            signingConfig = signingConfigs.getByName("debug")
+        }
+        named("release") {
+            isDebuggable = false
+            isMinifyEnabled = true
+            isShrinkResources = true
+            proguardFiles(
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+                "assemble/proguard-rules.pro"
+            )
         }
     }
     compileOptions {
-        isCoreLibraryDesugaringEnabled = true
-        sourceCompatibility = JavaVersion.VERSION_17
-        targetCompatibility = JavaVersion.VERSION_17
+//        isCoreLibraryDesugaringEnabled = true
+        sourceCompatibility(libs.versions.android.jvmTarget.get())
+        targetCompatibility(libs.versions.android.jvmTarget.get())
     }
 }
 
 dependencies {
-    coreLibraryDesugaring(libs.desugar)
     debugImplementation(compose.uiTooling)
 }
 
@@ -193,12 +213,26 @@ compose.desktop {
         nativeDistributions {
             targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
             packageName = "com.devansh.noteapp"
-            packageVersion = libs.versions.versionName.get()
-
-            jvmArgs += listOf(
-                "--add-modules=java.sql",
-                "--add-opens=java.base/java.lang=ALL-UNNAMED"
+            packageVersion = "1.0.0"
+            description = "Compose Multiplatform App"
+            copyright = "© 2024 My Name. All rights reserved."
+            windows {
+                shortcut = true
+                dirChooser = true
+            }
+            modules(
+                "java.sql",
+                "java.prefs",
+                "java.net.http",
+                "java.management",
+                "jdk.unsupported",
+                "java.instrument",
+                "jdk.security.auth",
             )
+        }
+        buildTypes.release.proguard {
+            obfuscate.set(false)
+            configurationFiles.from(project.file("assemble/proguard-rules.pro"))
         }
     }
 }
@@ -207,13 +241,16 @@ sqldelight {
     databases {
         create("NoteDatabase") {
             packageName = "com.devansh.noteapp"
+            generateAsync.set(true)
         }
     }
 }
 
 buildConfig {
+    packageName = "com.jignesh.society"
     buildConfigField("APP_NAME", project.name)
-    buildConfigField("APP_VERSION_CODE", project.version.toString())
-    buildConfigField("APP_VERSION_NAME", project.version.toString())
-    buildConfigField("BASE_URL", "https://notes-ktor-api.onrender.com")
+    buildConfigField("APP_VERSION", provider { "${project.version}" })
+    buildConfigField("APP_SECRET", "Z3JhZGxlLWphdmEtYnVpbGRjb25maWctcGx1Z2lu")
+    buildConfigField("BASE_URL", "https://m0s0wkg40gsws8g00c4cs8ww.65.109.173.240.sslip.io")
+    buildConfigField<String>("OPTIONAL", null)
 }

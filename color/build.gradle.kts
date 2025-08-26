@@ -8,14 +8,13 @@ plugins {
 }
 
 android {
-    namespace = Modules.COLOR.namespace
+    namespace = "com.maxkeppeler.sheets.color"
     compileSdk = 35
 
     defaultConfig {
         minSdk = 21
     }
     compileOptions {
-        isCoreLibraryDesugaringEnabled = true
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
     }
@@ -27,9 +26,7 @@ android {
 }
 
 kotlin {
-    androidTarget {
-        publishAllLibraryVariants()
-    }
+    androidTarget ()
     jvm()
 
     iosX64()
@@ -40,7 +37,6 @@ kotlin {
     macosArm64()
 
     js(IR) {
-        moduleName = Modules.COLOR.moduleName
         browser()
         binaries.executable()
     }
@@ -49,7 +45,7 @@ kotlin {
 
     sourceSets {
         androidMain.dependencies {
-            implementation(libs.androidx.ui.test.junit4.android)
+//            implementation(libs.androidx.ui.test.junit4.android)
         }
         commonMain.dependencies {
             implementation(compose.runtime)
@@ -57,13 +53,9 @@ kotlin {
             implementation(compose.material3)
             implementation(compose.components.resources)
 
-            implementation(libs.serialization)
+//            implementation(libs.serialization)
 
             api(project(":sheetCore"))
         }
     }
-}
-
-dependencies {
-    coreLibraryDesugaring(libs.desugar)
 }

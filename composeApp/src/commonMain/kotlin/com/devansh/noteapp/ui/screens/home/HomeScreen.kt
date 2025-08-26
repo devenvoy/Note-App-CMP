@@ -47,26 +47,19 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.ClipEntry
 import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight.Companion.W500
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import cafe.adriel.voyager.core.screen.Screen
-import cafe.adriel.voyager.navigator.LocalNavigator
-import cafe.adriel.voyager.navigator.currentOrThrow
 import com.devansh.noteapp.di.platform_di.isDesktop
 import com.devansh.noteapp.di.platform_di.shareText
 import com.devansh.noteapp.domain.model.Note
 import com.devansh.noteapp.domain.repo.AppCacheSetting
-import com.devansh.noteapp.domain.utils.koinScreenModel
 import com.devansh.noteapp.ui.components.ExpandableSearchView
 import com.devansh.noteapp.ui.components.MyCustomIndicator
 import com.devansh.noteapp.ui.components.SecondaryOutlinedButton
-import com.devansh.noteapp.ui.screens.SettingScreen
-import com.devansh.noteapp.ui.screens.add_edit_note.AddEditNoteScreen
 import com.devansh.noteapp.ui.screens.core.ListType
 import com.devansh.noteapp.ui.screens.home.notes.NoteScreenContent
 import com.devansh.noteapp.ui.theme.getMontBFont
@@ -75,10 +68,6 @@ import com.dokar.sonner.Toaster
 import com.dokar.sonner.ToasterDefaults
 import com.dokar.sonner.rememberToasterState
 import com.mohamedrejeb.richeditor.model.rememberRichTextState
-import compose.icons.FontAwesomeIcons
-import compose.icons.fontawesomeicons.Solid
-import compose.icons.fontawesomeicons.solid.Plus
-import io.ktor.util.Platform
 import kotlinx.coroutines.launch
 import network.chaintech.sdpcomposemultiplatform.ssp
 import note_app_cmp.composeapp.generated.resources.Res
@@ -88,41 +77,41 @@ import note_app_cmp.composeapp.generated.resources.ic_menu_edit
 import note_app_cmp.composeapp.generated.resources.ic_menu_share
 import org.jetbrains.compose.resources.painterResource
 import org.koin.compose.koinInject
+import org.koin.compose.viewmodel.koinViewModel
 
-class HomeScreen : Screen {
-    @Composable
-    override fun Content() {
-        val navigator = LocalNavigator.currentOrThrow
-        val homeScreenModel = koinScreenModel<HomeScreenModel>()
-        val pref = koinInject<AppCacheSetting>()
-        HomeScreenContent(
-            homeScreenModel = homeScreenModel,
-            onNavigateToAddEditNote = {
-                navigator.push(AddEditNoteScreen(it))
-            },
-            goToSettings = {
-                navigator.push(SettingScreen())
-            },
-        )
-    }
+@Composable
+fun HomeScreen() {
+    val homeScreenModel = koinViewModel<HomeScreenModel>()
+    val pref = koinInject<AppCacheSetting>()
+    HomeScreenContent(
+        homeScreenModel = homeScreenModel,
+        onNavigateToAddEditNote = {
+//                navigator.push(AddEditNoteScreen(it))
+        },
+        goToSettings = {
+//                navigator.push(SettingScreen())
+        },
+    )
+}
 
-    @OptIn(ExperimentalMaterial3Api::class)
-    @Composable
-    fun HomeScreenContent(
-        homeScreenModel: HomeScreenModel,
-        onNavigateToAddEditNote: (Long) -> Unit,
-        goToSettings: () -> Unit,
-    ) {
-        val scope = rememberCoroutineScope()
-        val noteState by homeScreenModel.noteState.collectAsState()
-        val state = rememberPullToRefreshState()
-        val clipboardManager = LocalClipboardManager.current
-        val sheetState = rememberModalBottomSheetState()
-        var selectedNote by remember { mutableStateOf<Note?>(null) }
-        var isBottomSheetVisible by remember { mutableStateOf(false) }
-        val toasterState = rememberToasterState()
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun HomeScreenContent(
+    homeScreenModel: HomeScreenModel,
+    onNavigateToAddEditNote: (Long) -> Unit,
+    goToSettings: () -> Unit,
+) {
+    val scope = rememberCoroutineScope()
+    val noteState by homeScreenModel.noteState.collectAsState()
+    val state = rememberPullToRefreshState()
+    val clipboardManager = LocalClipboardManager.current
+    val sheetState = rememberModalBottomSheetState()
+    var selectedNote by remember { mutableStateOf<Note?>(null) }
+    var isBottomSheetVisible by remember { mutableStateOf(false) }
+    val toasterState = rememberToasterState()
 
-        Scaffold(topBar = {
+    Scaffold(
+        topBar = {
             ExpandableSearchView(
                 modifier = Modifier.fillMaxWidth(),
                 expandedInitially = noteState.isSearchActive,
@@ -135,7 +124,8 @@ class HomeScreen : Screen {
                     homeScreenModel.onSearchTextChange("")
                 },
             ) {
-                TopAppBar(colors = TopAppBarDefaults.topAppBarColors(
+                TopAppBar(
+                    colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = MaterialTheme.colorScheme.surface,
                     titleContentColor = MaterialTheme.colorScheme.onSurface,
                     actionIconContentColor = MaterialTheme.colorScheme.primary,
@@ -159,104 +149,103 @@ class HomeScreen : Screen {
                 })
             }
         },
-            floatingActionButton = {
-                FloatingActionButton(
-                    modifier = Modifier.imePadding(),
-                    onClick = { onNavigateToAddEditNote(-1) }
-                ) {
-                    Icon(
-                        modifier = Modifier.size(24.dp),
-                        imageVector = Icons.Default.Add,
-                        contentDescription = "Save Note"
-                    )
-                }
-            }) {
+        floatingActionButton = {
+            FloatingActionButton(
+                modifier = Modifier.imePadding(),
+                onClick = { onNavigateToAddEditNote(-1) }
+            ) {
+                Icon(
+                    modifier = Modifier.size(24.dp),
+                    imageVector = Icons.Default.Add,
+                    contentDescription = "Save Note"
+                )
+            }
+        }) {
 
-            if (isBottomSheetVisible && selectedNote != null) {
-                val richContent = rememberRichTextState().setHtml(selectedNote?.content ?: "")
-                val dismissSheet = {
-                    scope.launch { sheetState.hide() }
-                    isBottomSheetVisible = false
-                    selectedNote = null
-                }
+        if (isBottomSheetVisible && selectedNote != null) {
+            val richContent = rememberRichTextState().setHtml(selectedNote?.content ?: "")
+            val dismissSheet = {
+                scope.launch { sheetState.hide() }
+                isBottomSheetVisible = false
+                selectedNote = null
+            }
 
-                ModalBottomSheet(
-                    onDismissRequest = {
+            ModalBottomSheet(
+                onDismissRequest = {
+                    dismissSheet()
+                },
+                sheetState = sheetState,
+                tonalElevation = 0.dp,
+                dragHandle = null
+            ) {
+                NoteMenuBottomSheet(
+                    onEditClick = {
+                        onNavigateToAddEditNote(selectedNote?.id ?: -1)
                         dismissSheet()
                     },
-                    sheetState = sheetState,
-                    tonalElevation = 0.dp,
-                    dragHandle = null
-                ) {
-                    NoteMenuBottomSheet(
-                        onEditClick = {
-                            onNavigateToAddEditNote(selectedNote?.id ?: -1)
-                            dismissSheet()
-                        },
-                        onShareClick = {
-                            shareText(
-                                text = "${selectedNote?.title} \n\n ${richContent.toText()}",
-                                mimeType = "plain/text"
-                            )
-                        },
-                        onDeleteClick = {
-                            homeScreenModel.deleteNoteById(selectedNote?.id!!)
-                            toasterState.show(
-                                "Note deleted successfully",
-                                duration = ToasterDefaults.DurationLong,
-                                type = ToastType.Error
-                            )
-                            dismissSheet()
-                        },
-                        onCopyClick = {
-                            clipboardManager.setText(
-                                AnnotatedString("${selectedNote?.title} \n\n ${richContent.toText()}")
-                            )
-                            toasterState.show(
-                                "Copied to clipboard",
-                                duration = ToasterDefaults.DurationShort,
-                                type = ToastType.Info
-                            )
-                            dismissSheet()
-                        },
-                        showEditOption = true
-                    )
+                    onShareClick = {
+                        shareText(
+                            text = "${selectedNote?.title} \n\n ${richContent.toText()}",
+                            mimeType = "plain/text"
+                        )
+                    },
+                    onDeleteClick = {
+                        homeScreenModel.deleteNoteById(selectedNote?.id!!)
+                        toasterState.show(
+                            "Note deleted successfully",
+                            duration = ToasterDefaults.DurationLong,
+                            type = ToastType.Error
+                        )
+                        dismissSheet()
+                    },
+                    onCopyClick = {
+                        clipboardManager.setText(
+                            AnnotatedString("${selectedNote?.title} \n\n ${richContent.toText()}")
+                        )
+                        toasterState.show(
+                            "Copied to clipboard",
+                            duration = ToasterDefaults.DurationShort,
+                            type = ToastType.Info
+                        )
+                        dismissSheet()
+                    },
+                    showEditOption = true
+                )
+            }
+        }
+
+        PullToRefreshBox(
+            modifier = Modifier.padding(it).fillMaxSize()
+                .background(MaterialTheme.colorScheme.background),
+            isRefreshing = homeScreenModel.isRefreshing.value,
+            onRefresh = { homeScreenModel.getAllNotes() },
+            state = state,
+            indicator = {
+                MyCustomIndicator(
+                    modifier = Modifier.align(Alignment.TopCenter),
+                    isRefreshing = homeScreenModel.isRefreshing.value,
+                    state = state
+                )
+            },
+        ) {
+            NoteScreenContent(
+                state = noteState,
+                onNavigateToAddEditNote = onNavigateToAddEditNote,
+                isGridLayout = homeScreenModel.isGridLayout.collectAsState().value == ListType.GRID,
+                onLongPress = {
+                    selectedNote = it
+                    isBottomSheetVisible = true
                 }
-            }
+            )
 
-            PullToRefreshBox(
-                modifier = Modifier.padding(it).fillMaxSize()
-                    .background(MaterialTheme.colorScheme.background),
-                isRefreshing = homeScreenModel.isRefreshing.value,
-                onRefresh = { homeScreenModel.getAllNotes() },
-                state = state,
-                indicator = {
-                    MyCustomIndicator(
-                        modifier = Modifier.align(Alignment.TopCenter),
-                        isRefreshing = homeScreenModel.isRefreshing.value,
-                        state = state
-                    )
-                },
-            ) {
-                NoteScreenContent(
-                    state = noteState,
-                    onNavigateToAddEditNote = onNavigateToAddEditNote,
-                    isGridLayout = homeScreenModel.isGridLayout.collectAsState().value == ListType.GRID,
-                    onLongPress = {
-                        selectedNote = it
-                        isBottomSheetVisible = true
-                    }
-                )
-
-                Toaster(
-                    modifier = Modifier.navigationBarsPadding(),
-                    state = toasterState,
-                    richColors = true,
-                    darkTheme = isSystemInDarkTheme(),
-                    showCloseButton = true,
-                    alignment = Alignment.BottomCenter,
-                )
-            }
+            Toaster(
+                modifier = Modifier.navigationBarsPadding(),
+                state = toasterState,
+                richColors = true,
+                darkTheme = isSystemInDarkTheme(),
+                showCloseButton = true,
+                alignment = Alignment.BottomCenter,
+            )
         }
     }
 }
@@ -354,7 +343,7 @@ fun NoteMenuBottomSheet(
             }
 
             // share
-            if(isDesktop().not()){
+            if (isDesktop().not()) {
                 SecondaryOutlinedButton(
                     modifier = Modifier.fillMaxWidth(),
                     onClick = onShareClick,

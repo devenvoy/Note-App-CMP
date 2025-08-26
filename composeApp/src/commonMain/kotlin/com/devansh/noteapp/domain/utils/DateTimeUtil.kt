@@ -1,10 +1,13 @@
 package com.devansh.noteapp.domain.utils
 
-import kotlinx.datetime.Clock
 import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toInstant
 import kotlinx.datetime.toLocalDateTime
+import kotlin.time.Clock
+import kotlin.time.ExperimentalTime
+
+@OptIn(ExperimentalTime::class)
 
 object DateTimeUtil {
     fun now():LocalDateTime{

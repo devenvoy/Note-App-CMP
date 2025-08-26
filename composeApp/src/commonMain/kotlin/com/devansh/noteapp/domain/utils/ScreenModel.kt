@@ -1,5 +1,6 @@
 package com.devansh.noteapp.domain.utils
 
+/*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
@@ -43,4 +44,4 @@ public inline fun <reified T : ScreenModel> Navigator.koinNavigatorScreenModel(
             currentParameters?.invoke() ?: emptyParametersHolder()
         }
     }
-}
+}*/

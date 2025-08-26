@@ -5,16 +5,12 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SecondaryTabRow
@@ -32,83 +28,55 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.max
 import androidx.compose.ui.unit.sp
-import cafe.adriel.voyager.core.screen.Screen
-import cafe.adriel.voyager.navigator.LocalNavigator
-import cafe.adriel.voyager.navigator.currentOrThrow
-import com.devansh.noteapp.domain.utils.koinScreenModel
-import com.devansh.noteapp.ui.components.CustomInputField
-import com.devansh.noteapp.ui.components.CustomInputPasswordField
 import com.devansh.noteapp.ui.components.PrimaryButton
 import com.devansh.noteapp.ui.components.UiStateHandler
-import com.devansh.noteapp.ui.screens.home.HomeScreen
-import compose.icons.FontAwesomeIcons
-import compose.icons.fontawesomeicons.Regular
-import compose.icons.fontawesomeicons.regular.Envelope
-import kotlinx.coroutines.launch
+import io.github.jan.supabase.compose.auth.ui.annotations.AuthUiExperimental
+import io.github.jan.supabase.compose.auth.ui.email.OutlinedEmailField
+import io.github.jan.supabase.compose.auth.ui.password.OutlinedPasswordField
+import org.koin.compose.viewmodel.koinViewModel
 
-class AuthScreen : Screen {
+@Composable
+fun AuthScreen() {
+    AuthScreenContent() {}
+}
 
-    @Composable
-    override fun Content() {
-        val navigator = LocalNavigator.currentOrThrow
-        AuthScreenContent(
-            onSuccess = {
-                navigator.replace(HomeScreen())
-            }
-        )
-    }
-
-    @OptIn(ExperimentalMaterial3Api::class)
-    @Composable
-    fun AuthScreenContent(onSuccess: () -> Unit) {
-        val scope = rememberCoroutineScope()
-        val tabs by remember { mutableStateOf(listOf(TabItem.Login, TabItem.Register)) }
-        val pagerState = rememberPagerState(pageCount = { tabs.size })
-        val authViewModel = koinScreenModel<AuthScreenModel>()
-        Scaffold(
-            topBar = {
-                TopAppBar(
-                    title = {
-                        Text("Authentication")
-                    }
-                )
-            }
-        ) { sPad ->
-            Box(modifier = Modifier.padding(sPad).fillMaxSize()) {
-                Column {
-                    Tabs(tabs = tabs,
-                        pagerState = pagerState,
-                        onClick = { scope.launch { pagerState.animateScrollToPage(it) } })
-                    TabsContent(
-                        modifier = Modifier.weight(1f),
-                        authViewModel = authViewModel,
-                        tabs = tabs,
-                        pagerState = pagerState,
-                    )
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun AuthScreenContent(onSuccess: () -> Unit) {
+    val scope = rememberCoroutineScope()
+//    val tabs by remember { mutableStateOf(listOf(TabItem.Login, TabItem.Register)) }
+//    val pagerState = rememberPagerState(pageCount = { tabs.size })
+    val authViewModel = koinViewModel<AuthScreenModel>()
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                title = {
+                    Text("Authentication")
                 }
-                UiStateHandler(
-                    uiState = authViewModel.authState.collectAsState().value,
-                    onErrorShowed = {},
-                    content = {
-                        onSuccess()
-                    }
-                )
-            }
+            )
         }
-    }
-
-
-    @Composable
-    fun TabsContent(
-        modifier: Modifier = Modifier,
-        pagerState: PagerState,
-        tabs: List<TabItem>,
-        authViewModel: AuthScreenModel,
-    ) {
-        HorizontalPager(modifier = modifier, state = pagerState) { page ->
-            tabs[page].screen(authViewModel)
+    ) { sPad ->
+        Box(modifier = Modifier.padding(sPad).fillMaxSize()) {
+            /*         Column {
+                         Tabs(
+                             tabs = tabs,
+                             pagerState = pagerState,
+                             onClick = { scope.launch { pagerState.animateScrollToPage(it) } })
+                         TabsContent(
+                             modifier = Modifier.weight(1f),
+                             authViewModel = authViewModel,
+                             tabs = tabs,
+                             pagerState = pagerState,
+                         )
+                     }*/
+            UiStateHandler(
+                uiState = authViewModel.authState.collectAsState().value,
+                onErrorShowed = {},
+                content = {
+                    onSuccess()
+                }
+            )
         }
     }
 
@@ -117,7 +85,7 @@ class AuthScreen : Screen {
     fun Tabs(
         pagerState: PagerState,
         onClick: (Int) -> Unit,
-        tabs: List<TabItem>
+        tabs: List<String>
     ) {
         SecondaryTabRow(
             selectedTabIndex = pagerState.currentPage,
@@ -129,28 +97,14 @@ class AuthScreen : Screen {
                     onClick = { onClick(index) },
                     modifier = Modifier.padding(12.dp)
                 ) {
-                    Text(text = tab.title)
+                    Text(text = tab)
                 }
             }
         }
     }
-
-
-    sealed class TabItem(
-        var icon: Int,
-        var title: String,
-        var screen: @Composable (AuthScreenModel) -> Unit
-    ) {
-        data object Login : TabItem(0, "Login", { viewModel ->
-            loginScreenContent(viewModel)
-        })
-
-        data object Register : TabItem(0, "Register", { viewModel ->
-            registerScreenContent(viewModel)
-        })
-    }
 }
 
+@OptIn(AuthUiExperimental::class, ExperimentalMaterial3Api::class)
 @Composable
 fun loginScreenContent(viewModel: AuthScreenModel) {
 
@@ -161,26 +115,19 @@ fun loginScreenContent(viewModel: AuthScreenModel) {
         verticalArrangement = Arrangement.spacedBy(8.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        CustomInputField(
-            fieldTitle = "Email",
-            textFieldValue = email,
+
+        OutlinedEmailField(
+            value = email,
             onValueChange = viewModel::onLoginEmailChange,
             placeholder = { Text("Enter email") },
-            trailingIcon = {
-                Icon(
-                    modifier = Modifier.size(20.dp),
-                    imageVector = FontAwesomeIcons.Regular.Envelope,
-                    tint = MaterialTheme.colorScheme.onBackground,
-                    contentDescription = "Email icon",
-                )
-            },
+            label = { Text("Email") },
         )
-        CustomInputPasswordField(
-            fieldTitle = "Password",
-            textFieldValue = password,
+
+        OutlinedPasswordField(
+            value = password,
             onValueChange = viewModel::onLoginPasswordChange,
             placeholder = { Text("Password") },
-            isPasswordField = true
+            label = { Text("Password") }
         )
 
         PrimaryButton(
@@ -200,6 +147,7 @@ fun loginScreenContent(viewModel: AuthScreenModel) {
     }
 }
 
+@OptIn(AuthUiExperimental::class, ExperimentalMaterial3Api::class)
 @Composable
 fun registerScreenContent(viewModel: AuthScreenModel) {
 
@@ -211,33 +159,25 @@ fun registerScreenContent(viewModel: AuthScreenModel) {
         verticalArrangement = Arrangement.spacedBy(8.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        CustomInputField(
-            fieldTitle = "Email",
-            textFieldValue = email,
+        OutlinedEmailField(
+            value = email,
             onValueChange = viewModel::onRegisterEmailChange,
             placeholder = { Text("Enter email") },
-            trailingIcon = {
-                Icon(
-                    modifier = Modifier.size(20.dp),
-                    imageVector = FontAwesomeIcons.Regular.Envelope,
-                    tint = MaterialTheme.colorScheme.onBackground,
-                    contentDescription = "Email icon",
-                )
-            },
+            label = { Text("Email") },
         )
-        CustomInputPasswordField(
-            fieldTitle = "Password",
-            textFieldValue = password,
+
+        OutlinedPasswordField(
+            value = password,
             onValueChange = viewModel::onRegisterPasswordChange,
             placeholder = { Text("Password") },
-            isPasswordField = true
+            label = { Text("Password") },
         )
-        CustomInputPasswordField(
-            fieldTitle = "Confirm Password",
-            textFieldValue = confirmPwd,
+
+        OutlinedPasswordField(
+            value = confirmPwd,
             onValueChange = viewModel::onRegisterConfirmPasswordChange,
             placeholder = { Text("confirm Password") },
-            isPasswordField = true
+            label = { Text("Confirm Password") },
         )
 
         PrimaryButton(

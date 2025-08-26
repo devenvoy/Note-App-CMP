@@ -12,6 +12,7 @@ import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import kotlin.time.ExperimentalTime
 
 @Serializable
 data class Note(
@@ -36,6 +37,7 @@ data class Note(
 }
 
 
+@OptIn(ExperimentalTime::class)
 fun NoteEntity.toNote() = Note(
     id = id,
     title = title,

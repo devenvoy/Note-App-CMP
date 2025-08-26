@@ -1,6 +1,5 @@
 package com.devansh.noteapp.data.remote.utils
 
-import co.touchlab.kermit.Logger
 import com.devansh.noteapp.data.entity.InternetException
 import com.devansh.noteapp.data.entity.ServerError
 import com.devansh.noteapp.data.entity.UnknownErrorException
@@ -29,21 +28,21 @@ abstract class BaseGateway(val client: HttpClient) {
     suspend inline fun <reified T> tryToExecute(method: HttpClient.() -> HttpResponse): Result<T, ServerError> {
         return try {
             val response: HttpResponse = client.method()
-            Logger.d("Response: $response \n")
+            println("Response: $response \n")
             if (!response.status.isSuccess()) {
                 val networkError = response.body<ServerError>()
-                Logger.e("Response Error: $networkError")
+                println("Response Error: $networkError")
                 return Result.Error(networkError)
             }
             val responseBody: T = response.body()
-            Logger.d("Response Body: $responseBody")
+            println("Response Body: $responseBody")
             Result.Success(responseBody)
         } catch (e: ClientRequestException) {
             val networkError = e.response.body<ServerError>()
-            Logger.e("Response Error: $networkError")
+            println("Response Error: $networkError")
             Result.Error(networkError)
         } catch (e: InternetException.NoInternetException) {
-            Logger.e("Response Error: ${e.message}")
+            println("Response Error: ${e.message}")
             Result.Error(
                 ServerError(
                     code = 400,
@@ -52,7 +51,7 @@ abstract class BaseGateway(val client: HttpClient) {
                 )
             )
         } catch (e: SerializationException) {
-            Logger.e("Response Error: ${e.message}")
+            println("Response Error: ${e.message}")
             Result.Error(
                 ServerError(
                     code = 400,
@@ -61,7 +60,7 @@ abstract class BaseGateway(val client: HttpClient) {
                 )
             )
         } catch (e: Exception) {
-            Logger.e("Response Error: ${e.message}")
+            println("Response Error: ${e.message}")
             Result.Error(
                 ServerError(
                     code = 400,

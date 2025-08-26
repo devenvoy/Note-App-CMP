@@ -1,7 +1,7 @@
 package com.devansh.noteapp.ui.screens.auth
 
-import cafe.adriel.voyager.core.model.ScreenModel
-import cafe.adriel.voyager.core.model.screenModelScope
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.devansh.noteapp.data.remote.utils.onError
 import com.devansh.noteapp.data.remote.utils.onSuccess
 import com.devansh.noteapp.domain.repo.AppCacheSetting
@@ -9,14 +9,14 @@ import com.devansh.noteapp.domain.repo.AuthDao
 import com.devansh.noteapp.ui.components.AuthScreenState
 import com.devansh.noteapp.ui.components.UiState
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class AuthScreenModel(
     private val pref: AppCacheSetting,
     private val authDao: AuthDao
-) : ScreenModel {
+) : ViewModel() {
 
     private val _loginEmail = MutableStateFlow("")
     val loginEmail = _loginEmail.asStateFlow()
@@ -58,7 +58,7 @@ class AuthScreenModel(
 
     fun login() {
         _authState.update { UiState.Loading }
-        screenModelScope.launch {
+        viewModelScope.launch {
             if (!validateLoginInputs()) return@launch
             val result = authDao.login(_loginEmail.value, _loginPassword.value)
             result.onSuccess { res ->
@@ -74,7 +74,7 @@ class AuthScreenModel(
 
     fun register() {
         _authState.update { UiState.Loading }
-        screenModelScope.launch {
+        viewModelScope.launch {
             if (!validateRegisterInputs()) return@launch
             val result = authDao.register(_registerEmail.value, _registerPassword.value)
             result.onSuccess { response ->

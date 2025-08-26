@@ -19,11 +19,7 @@ actual fun getHttpClient(): HttpClient {
             level = LogLevel.ALL
         }
         install(ContentNegotiation) {
-            json(
-                json = Json {
-                    ignoreUnknownKeys = true
-                }
-            )
+            json(json = Json { ignoreUnknownKeys = true })
         }
         if (isDebugBuild(NoteApp.AppContext)) {
             engine {

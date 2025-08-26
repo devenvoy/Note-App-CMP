@@ -11,9 +11,8 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.pulltorefresh.PullToRefreshDefaults
 import androidx.compose.material3.pulltorefresh.PullToRefreshState
-import androidx.compose.material3.pulltorefresh.pullToRefreshIndicator
+import androidx.compose.material3.pulltorefresh.pullToRefresh
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -28,10 +27,10 @@ fun MyCustomIndicator(
     modifier: Modifier = Modifier,
 ) {
     Box(
-        modifier = modifier.pullToRefreshIndicator(
+        modifier = modifier.pullToRefresh(
             state = state,
             isRefreshing = isRefreshing,
-            containerColor = PullToRefreshDefaults.containerColor,
+            onRefresh = {}
         ),
         contentAlignment = Alignment.Center
     ) {

@@ -1,7 +1,5 @@
 package com.devansh.noteapp.data.remote
 
-import Note_App_CMP.composeApp.BuildConfig
-import co.touchlab.kermit.Logger
 import com.devansh.noteapp.data.entity.ServerError
 import com.devansh.noteapp.data.entity.ServerResponse
 import com.devansh.noteapp.data.remote.utils.BaseGateway
@@ -9,7 +7,11 @@ import com.devansh.noteapp.data.remote.utils.Result
 import com.devansh.noteapp.domain.model.GetNotesResponse
 import com.devansh.noteapp.domain.model.Note
 import com.devansh.noteapp.domain.repo.NoteRemoteDao
+import com.jignesh.society.BuildConfig
 import io.ktor.client.HttpClient
+import io.ktor.client.plugins.logging.DEFAULT
+import io.ktor.client.plugins.logging.Logger
+import io.ktor.client.plugins.logging.SIMPLE
 import io.ktor.client.request.delete
 import io.ktor.client.request.get
 import io.ktor.client.request.header
@@ -17,6 +19,7 @@ import io.ktor.client.request.post
 import io.ktor.client.request.setBody
 import io.ktor.http.ContentType
 import io.ktor.http.contentType
+import kotlin.math.log
 
 class NoteRemoteDaoImpl(
     private val httpClient: HttpClient
@@ -32,7 +35,7 @@ class NoteRemoteDaoImpl(
                 }
             }
         }catch (e: Exception) {
-            Logger.e("network", e) { "${e.message}" }
+            Logger.SIMPLE.log("network ${e.message}")
         }
     }
 
@@ -54,7 +57,7 @@ class NoteRemoteDaoImpl(
                 }
             }
         } catch (e: Exception) {
-            Logger.e("network", e) { "${e.message}" }
+            Logger.SIMPLE.log("network ${e.message}")
         }
     }
 }

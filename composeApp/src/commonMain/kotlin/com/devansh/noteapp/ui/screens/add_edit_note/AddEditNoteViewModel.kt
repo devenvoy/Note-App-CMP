@@ -2,8 +2,8 @@ package com.devansh.noteapp.ui.screens.add_edit_note
 
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
-import cafe.adriel.voyager.core.model.ScreenModel
-import cafe.adriel.voyager.core.model.screenModelScope
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.devansh.noteapp.domain.model.Note
 import com.devansh.noteapp.domain.repo.NoteDataSource
 import com.devansh.noteapp.domain.utils.DateTimeUtil
@@ -15,7 +15,7 @@ import kotlinx.coroutines.launch
 
 class AddEditNoteViewModel(
     private val noteDataSource: NoteDataSource
-) : ScreenModel {
+) : ViewModel() {
 
     private val _noteTitle = mutableStateOf(NoteTextFieldState(hint = "Enter title"))
     val noteTitle: State<NoteTextFieldState> = _noteTitle
@@ -33,7 +33,7 @@ class AddEditNoteViewModel(
 
     fun initState(noteId: Long) {
         if (noteId != -1L) {
-            screenModelScope.launch {
+            viewModelScope.launch {
                 noteDataSource.getNoteById(noteId)?.also { note ->
                     currentNoteId = note.id
                     _noteTitle.value = noteTitle.value.copy(
@@ -74,7 +74,7 @@ class AddEditNoteViewModel(
             }
 
             is AddEditNoteEvent.SaveNote -> {
-                screenModelScope.launch {
+                viewModelScope.launch {
                     try {
                         noteDataSource.insertNote(
                             Note(
@@ -100,7 +100,7 @@ class AddEditNoteViewModel(
     }
 
     fun deleteNoteById() {
-        screenModelScope.launch {
+        viewModelScope.launch {
             currentNoteId?.let {
                 if (it.toInt() != -1) {
                     noteDataSource.deleteNoteById(it)

@@ -23,14 +23,13 @@ plugins {
 }
 
 android {
-    namespace = Modules.CORE.namespace
-    compileSdk = 34
+    namespace = "com.maxkeppeler.sheets.core"
+    compileSdk = 35
 
     defaultConfig {
         minSdk = 21
     }
     compileOptions {
-        isCoreLibraryDesugaringEnabled = true
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
     }
@@ -42,9 +41,7 @@ android {
 }
 
 kotlin {
-    androidTarget {
-        publishAllLibraryVariants()
-    }
+    androidTarget()
     jvm()
 
     iosX64()
@@ -55,7 +52,6 @@ kotlin {
     macosArm64()
 
     js(IR) {
-        moduleName = Modules.CORE.moduleName
         browser()
         binaries.executable()
     }
@@ -71,11 +67,10 @@ kotlin {
             implementation(compose.components.resources)
 
             implementation(libs.kotlinx.datetime)
-            implementation(libs.serialization)
         }
 
         androidMain.orNull?.dependencies {
-            implementation(libs.androidx.window)
+//            implementation(libs.androidx.window)
         }
 
         val nonMacosMain by creating {
@@ -87,7 +82,7 @@ kotlin {
             jsMain.orNull?.dependsOn(this)
 
             dependencies {
-                implementation(libs.window.size)
+//                implementation(libs.window.size)
             }
         }
 
@@ -98,8 +93,4 @@ kotlin {
             jsMain.orNull?.dependsOn(this)
         }
     }
-}
-
-dependencies {
-    coreLibraryDesugaring(libs.desugar)
 }

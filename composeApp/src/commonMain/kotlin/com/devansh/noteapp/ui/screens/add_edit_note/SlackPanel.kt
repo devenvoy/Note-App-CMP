@@ -1,3 +1,4 @@
+/*
 package com.devansh.noteapp.ui.screens.add_edit_note
 
 import androidx.compose.foundation.background
@@ -268,4 +269,4 @@ fun SlackPanel(
         )
 
     }
-}
+}*/

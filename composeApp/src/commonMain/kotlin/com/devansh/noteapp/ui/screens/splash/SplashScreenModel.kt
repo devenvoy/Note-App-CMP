@@ -1,10 +1,7 @@
 package com.devansh.noteapp.ui.screens.splash
 
-import cafe.adriel.voyager.core.model.ScreenModel
+import androidx.lifecycle.ViewModel
 import co.touchlab.kermit.Logger
-import co.touchlab.kermit.Logger.Companion.e
-import com.devansh.noteapp.data.remote.utils.onError
-import com.devansh.noteapp.data.remote.utils.onSuccess
 import com.devansh.noteapp.domain.repo.AppCacheSetting
 import com.devansh.noteapp.domain.repo.NoteDataSource
 import com.devansh.noteapp.domain.repo.NoteRemoteDao
@@ -16,7 +13,7 @@ class SplashScreenModel(
     private val pref: AppCacheSetting,
     private val noteDataSource: NoteDataSource,
     private val noteRemoteDao: NoteRemoteDao
-) : ScreenModel {
+) : ViewModel() {
 
     fun isSyncAutoEnable(): Boolean = pref.autoSyncDB
 

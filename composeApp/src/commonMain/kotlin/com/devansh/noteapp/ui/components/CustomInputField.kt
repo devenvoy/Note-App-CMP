@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.icons.Icons
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.LocalTextStyle
@@ -32,10 +33,6 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import compose.icons.FontAwesomeIcons
-import compose.icons.fontawesomeicons.Solid
-import compose.icons.fontawesomeicons.solid.Eye
-import compose.icons.fontawesomeicons.solid.EyeSlash
 
 @Composable
 fun CustomInputField(
@@ -86,82 +83,6 @@ fun CustomInputField(
                 imeAction = ImeAction.Next
             ),
             supportingText = supportingText,
-            textStyle = LocalTextStyle.current.copy(
-                fontSize = 12.sp,
-            ),
-            placeholder = placeholder,
-        )
-    }
-}
-
-@Composable
-fun CustomInputPasswordField(
-    fieldTitle: String,
-    textFieldValue: String,
-    onValueChange: (String) -> Unit,
-    minHeight: Dp = 56.dp,
-    singleLine: Boolean = true,
-    placeholder: @Composable (() -> Unit)? = null,
-    isPasswordField: Boolean = false,
-    isEnable: Boolean = true
-) {
-    // State to manage password visibility
-    var passwordVisible by remember { mutableStateOf(false) }
-    val keyboardController = LocalSoftwareKeyboardController.current
-
-    Column(
-        modifier = Modifier
-            .widthIn(max =400.dp, min = Dp.Infinity)
-            .background(MaterialTheme.colorScheme.background),
-        verticalArrangement = Arrangement.spacedBy(8.dp)
-    ) {
-        Text(
-            text = fieldTitle,
-            modifier = Modifier.padding(start = 2.dp),
-            color = MaterialTheme.colorScheme.onBackground,
-            fontSize = 14.sp
-        )
-        OutlinedTextField(
-            value = textFieldValue,
-            onValueChange = onValueChange,
-            shape = RoundedCornerShape(8.dp),
-            trailingIcon = {
-                if (isPasswordField) {
-                    val visibilityIcon =
-                        if (passwordVisible) FontAwesomeIcons.Solid.Eye else FontAwesomeIcons.Solid.EyeSlash
-
-                    IconButton(
-                        onClick = { passwordVisible = !passwordVisible }
-                    ) {
-                        Icon(
-                            modifier = Modifier.size(24.dp),
-                            imageVector = visibilityIcon,
-                            contentDescription = if (passwordVisible) "Hide password" else "Show password",
-                            tint = MaterialTheme.colorScheme.onBackground,
-                        )
-                    }
-                }
-            },
-            enabled = isEnable,
-            colors = OutlinedTextFieldDefaults.colors(
-                focusedContainerColor = MaterialTheme.colorScheme.onBackground.copy(.1f),
-                unfocusedContainerColor = MaterialTheme.colorScheme.onBackground.copy(.1f),
-                unfocusedBorderColor = MaterialTheme.colorScheme.onBackground.copy(alpha = .7f)
-            ),
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(minHeight),
-            singleLine = singleLine,
-            keyboardOptions = KeyboardOptions(
-                keyboardType = if (isPasswordField && !passwordVisible) KeyboardType.Password else KeyboardType.Text,
-                imeAction = ImeAction.Done
-            ),
-            keyboardActions = KeyboardActions(
-                onDone = {
-                    keyboardController?.hide()
-                }
-            ),
-            visualTransformation = if (isPasswordField && !passwordVisible) PasswordVisualTransformation() else VisualTransformation.None,
             textStyle = LocalTextStyle.current.copy(
                 fontSize = 12.sp,
             ),

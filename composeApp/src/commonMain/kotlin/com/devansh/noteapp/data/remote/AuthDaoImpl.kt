@@ -1,12 +1,12 @@
 package com.devansh.noteapp.data.remote
 
-import Note_App_CMP.composeApp.BuildConfig
 import com.devansh.noteapp.data.entity.ServerError
 import com.devansh.noteapp.data.entity.ServerResponse
 import com.devansh.noteapp.data.remote.utils.BaseGateway
 import com.devansh.noteapp.data.remote.utils.Result
 import com.devansh.noteapp.domain.model.AuthResponse
 import com.devansh.noteapp.domain.repo.AuthDao
+import com.jignesh.society.BuildConfig
 import io.ktor.client.HttpClient
 import io.ktor.client.request.post
 import io.ktor.client.request.setBody

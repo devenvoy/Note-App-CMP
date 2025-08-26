@@ -1,8 +1,8 @@
 package com.devansh.noteapp.ui.screens.home
 
 import androidx.compose.runtime.mutableStateOf
-import cafe.adriel.voyager.core.model.ScreenModel
-import cafe.adriel.voyager.core.model.screenModelScope
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import co.touchlab.kermit.Logger
 import com.devansh.noteapp.data.remote.utils.onError
 import com.devansh.noteapp.data.remote.utils.onSuccess
@@ -23,7 +23,7 @@ class HomeScreenModel(
     private val pref: AppCacheSetting,
     private val noteDataSource: NoteDataSource,
     private val noteRemoteDao: NoteRemoteDao
-) : ScreenModel {
+) : ViewModel() {
 
     // use case
     private val searchNotes = SearchNotes()
@@ -33,7 +33,7 @@ class HomeScreenModel(
     private val isSearchActive = MutableStateFlow(false)
 
     val isGridLayout = pref.observableListType
-        .stateIn(screenModelScope, SharingStarted.WhileSubscribed(5000L), false)
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000L), false)
 
     var isRefreshing = mutableStateOf(false)
 
@@ -44,7 +44,7 @@ class HomeScreenModel(
                 searchText = text,
                 isSearchActive = isSearchActive
             )
-        }.stateIn(screenModelScope, SharingStarted.WhileSubscribed(5000L), NoteListState())
+        }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000L), NoteListState())
 
 
     init {
@@ -53,7 +53,7 @@ class HomeScreenModel(
     }
 
     private fun loadNotes() {
-        screenModelScope.launch {
+        viewModelScope.launch {
             noteDataSource.getAllNotes().collect { newList ->
                 _notes.update { newList }
             }
@@ -72,14 +72,14 @@ class HomeScreenModel(
     }
 
     fun deleteNoteById(id: Long) {
-        screenModelScope.launch {
+        viewModelScope.launch {
             noteDataSource.deleteNoteById(id)
             noteRemoteDao.deleteNote(id, pref.accessToken)
         }
     }
 
     fun getAllNotes() {
-        screenModelScope.launch {
+        viewModelScope.launch {
             try {
                 isRefreshing.value = true
                 val result = noteRemoteDao.getNotes(pref.accessToken)
