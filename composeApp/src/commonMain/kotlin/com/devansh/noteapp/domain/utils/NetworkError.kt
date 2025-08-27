@@ -1,4 +1,4 @@
-package com.devansh.noteapp.data.remote.utils
+package com.devansh.noteapp.domain.utils
 
 enum class NetworkError : Error {
     REQUEST_TIMEOUT,

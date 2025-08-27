@@ -1,7 +1,7 @@
-package com.devansh.noteapp.data.entity
+package com.devansh.noteapp.domain.entity
 
 
-import com.devansh.noteapp.data.remote.utils.Error
+import com.devansh.noteapp.domain.utils.Error
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 

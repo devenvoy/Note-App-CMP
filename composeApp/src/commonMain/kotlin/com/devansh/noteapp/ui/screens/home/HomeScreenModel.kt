@@ -4,8 +4,8 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import co.touchlab.kermit.Logger
-import com.devansh.noteapp.data.remote.utils.onError
-import com.devansh.noteapp.data.remote.utils.onSuccess
+import com.devansh.noteapp.domain.utils.onError
+import com.devansh.noteapp.domain.utils.onSuccess
 import com.devansh.noteapp.domain.model.Note
 import com.devansh.noteapp.domain.repo.AppCacheSetting
 import com.devansh.noteapp.domain.repo.NoteDataSource

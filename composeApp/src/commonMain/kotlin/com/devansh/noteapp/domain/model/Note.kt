@@ -6,7 +6,7 @@ import com.devansh.noteapp.ui.theme.LightGreenHex
 import com.devansh.noteapp.ui.theme.RedOrangeHex
 import com.devansh.noteapp.ui.theme.RedPinkHex
 import com.devansh.noteapp.ui.theme.VioletHex
-import kotlinx.datetime.Instant
+import kotlin.time.Instant
 import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime

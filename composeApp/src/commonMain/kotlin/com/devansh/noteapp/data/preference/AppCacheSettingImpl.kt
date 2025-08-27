@@ -1,6 +1,7 @@
 package com.devansh.noteapp.data.preference
 
 import com.devansh.noteapp.domain.repo.AppCacheSetting
+import com.devansh.noteapp.domain.utils.UnitCBF
 import com.devansh.noteapp.ui.screens.core.ListType
 import com.russhwolf.settings.ExperimentalSettingsApi
 import com.russhwolf.settings.ObservableSettings
@@ -54,7 +55,7 @@ class AppCacheSettingImpl : AppCacheSetting {
             true
         )
 
-    override fun logout(callBack: () -> Unit) {
+    override fun logout(callBack: UnitCBF) {
         settings.clear()
         callBack()
     }

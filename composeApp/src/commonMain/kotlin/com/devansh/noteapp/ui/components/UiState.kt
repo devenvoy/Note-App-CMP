@@ -2,7 +2,7 @@
 
 package com.devansh.noteapp.ui.components
 
-import com.devansh.noteapp.data.entity.ServerResponse
+import com.devansh.noteapp.domain.entity.ServerResponse
 import com.devansh.noteapp.domain.model.AuthResponse
 import kotlinx.datetime.Instant
 import kotlin.time.Clock

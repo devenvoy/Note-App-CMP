@@ -1,10 +1,10 @@
-package com.devansh.noteapp.data.remote.utils
+package com.devansh.noteapp.domain.utils
 
 
 sealed interface Result<out D, out E: Error> {
     data class Success<out D>(val data: D): Result<D, Nothing>
     data object Loading : Result<Nothing, Nothing>
-    data class Error<out E: com.devansh.noteapp.data.remote.utils.Error>(val error: E):
+    data class Error<out E: com.devansh.noteapp.domain.utils.Error>(val error: E):
         Result<Nothing, E>
 }
 

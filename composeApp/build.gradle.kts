@@ -7,10 +7,9 @@ plugins {
     alias(libs.plugins.composeMultiplatform)
     alias(libs.plugins.composeCompiler)
 
-
     alias(libs.plugins.kotlinxSerialization)
     alias(libs.plugins.sqldelight)
-//    alias(libs.plugins.ksp)
+    alias(libs.plugins.hot.reload)
     alias(libs.plugins.buildConfig)
 
 }
@@ -57,26 +56,18 @@ kotlin {
             implementation(libs.sqldelight.runtime)
             implementation(libs.sqldelight.coroutines)
 
-            implementation(libs.kotlinx.datetime)
             implementation(libs.kotlinx.coroutines.core)
             implementation(libs.kotlinx.serialization.json)
             implementation(libs.androidx.navigation.compose)
 
             implementation(libs.bundles.ktor.common)
 
-            implementation(libs.kotlinx.datetime)
-
-            implementation(libs.sdp.ssp.compose.multiplatform)
-
-            // build in
-
             implementation(compose.ui)
             implementation(compose.runtime)
             implementation(compose.animation)
             implementation(compose.foundation)
-            implementation(compose.components.resources)
             implementation(compose.materialIconsExtended)
-            implementation(compose.components.uiToolingPreview)
+
             implementation(libs.androidx.lifecycle.viewmodel)
             implementation(libs.androidx.lifecycle.runtime.compose)
 
@@ -88,14 +79,9 @@ kotlin {
 
             implementation(libs.kotlin.logging)
 
-            implementation(libs.coil.compose)
-
-          api(libs.koin.core)
-          implementation(libs.koin.compose)
-          implementation(libs.koin.compose.viewmodel)
-
-            implementation(compose.material3)
-            implementation(compose.materialIconsExtended)
+            api(libs.koin.core)
+            implementation(libs.koin.compose)
+            implementation(libs.koin.compose.viewmodel)
 
             // #1 - Basic settings
             implementation(libs.multiplatform.settings.no.arg)
@@ -106,7 +92,6 @@ kotlin {
             implementation(libs.sdp.ssp.compose.multiplatform)
 
             implementation(libs.sqlite.bundled)
-
 
             implementation(libs.coil.compose)
 
@@ -125,30 +110,17 @@ kotlin {
         iosMain.dependencies {
             implementation(libs.ktor.client.darwin)
             implementation(libs.sqldelight.native.driver)
-
             implementation(libs.touchlab.stately.isolate)
             implementation(libs.touchlab.stately.iso.collections)
         }
 
-       jvmMain.dependencies {
-
-            implementation(libs.sqldelight.sqlite.driver)
+        jvmMain.dependencies {
             implementation(libs.slf4j.simple)
             implementation(libs.ktor.client.java)
-
             implementation(compose.desktop.currentOs)
+            implementation(libs.sqldelight.sqlite.driver)
             implementation(libs.kotlinx.coroutines.swing)
         }
-        /*
-                val mobileAndJvmMain by creating {
-                    dependsOn(commonMain.get())
-                    dependencies {
-                        implementation(libs.sqlite.bundled)
-                    }
-                }
-                androidMain.get().dependsOn(mobileAndJvmMain)
-                iosMain.get().dependsOn(mobileAndJvmMain)
-                jvmMain.get().dependsOn(mobileAndJvmMain)*/
     }
 }
 
