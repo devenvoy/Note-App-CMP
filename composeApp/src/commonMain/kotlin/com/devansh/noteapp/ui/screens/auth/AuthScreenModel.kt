@@ -2,8 +2,8 @@ package com.devansh.noteapp.ui.screens.auth
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.devansh.noteapp.data.remote.utils.onError
-import com.devansh.noteapp.data.remote.utils.onSuccess
+import com.devansh.noteapp.domain.utils.onError
+import com.devansh.noteapp.domain.utils.onSuccess
 import com.devansh.noteapp.domain.repo.AppCacheSetting
 import com.devansh.noteapp.domain.repo.AuthDao
 import com.devansh.noteapp.ui.components.AuthScreenState

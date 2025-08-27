@@ -1,9 +1,9 @@
 package com.devansh.noteapp.data.remote
 
-import com.devansh.noteapp.data.entity.ServerError
-import com.devansh.noteapp.data.entity.ServerResponse
-import com.devansh.noteapp.data.remote.utils.BaseGateway
-import com.devansh.noteapp.data.remote.utils.Result
+import com.devansh.noteapp.domain.entity.ServerError
+import com.devansh.noteapp.domain.entity.ServerResponse
+import com.devansh.noteapp.domain.utils.BaseGateway
+import com.devansh.noteapp.domain.utils.Result
 import com.devansh.noteapp.domain.model.AuthResponse
 import com.devansh.noteapp.domain.repo.AuthDao
 import com.jignesh.society.BuildConfig

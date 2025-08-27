@@ -7,9 +7,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.widthIn
-import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PagerState
-import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -20,8 +18,6 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -29,6 +25,10 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavGraphBuilder
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.composable
+import com.devansh.noteapp.navigation.NavRoute
 import com.devansh.noteapp.ui.components.PrimaryButton
 import com.devansh.noteapp.ui.components.UiStateHandler
 import io.github.jan.supabase.compose.auth.ui.annotations.AuthUiExperimental
@@ -36,9 +36,10 @@ import io.github.jan.supabase.compose.auth.ui.email.OutlinedEmailField
 import io.github.jan.supabase.compose.auth.ui.password.OutlinedPasswordField
 import org.koin.compose.viewmodel.koinViewModel
 
-@Composable
-fun AuthScreen() {
+fun NavGraphBuilder.authScreen(navHostController: NavHostController) {
+    composable<NavRoute.Auth> {
     AuthScreenContent() {}
+    }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -49,13 +50,7 @@ fun AuthScreenContent(onSuccess: () -> Unit) {
 //    val pagerState = rememberPagerState(pageCount = { tabs.size })
     val authViewModel = koinViewModel<AuthScreenModel>()
     Scaffold(
-        topBar = {
-            TopAppBar(
-                title = {
-                    Text("Authentication")
-                }
-            )
-        }
+        topBar = { TopAppBar(title = { Text("Authentication") }) }
     ) { sPad ->
         Box(modifier = Modifier.padding(sPad).fillMaxSize()) {
             /*         Column {

@@ -53,10 +53,16 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight.Companion.W500
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavGraphBuilder
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.composable
 import com.devansh.noteapp.di.platform_di.isDesktop
 import com.devansh.noteapp.di.platform_di.shareText
 import com.devansh.noteapp.domain.model.Note
 import com.devansh.noteapp.domain.repo.AppCacheSetting
+import com.devansh.noteapp.domain.utils.LongCBF
+import com.devansh.noteapp.domain.utils.UnitCBF
+import com.devansh.noteapp.navigation.NavRoute
 import com.devansh.noteapp.ui.components.ExpandableSearchView
 import com.devansh.noteapp.ui.components.MyCustomIndicator
 import com.devansh.noteapp.ui.components.SecondaryOutlinedButton
@@ -79,27 +85,24 @@ import org.jetbrains.compose.resources.painterResource
 import org.koin.compose.koinInject
 import org.koin.compose.viewmodel.koinViewModel
 
-@Composable
-fun HomeScreen() {
-    val homeScreenModel = koinViewModel<HomeScreenModel>()
-    val pref = koinInject<AppCacheSetting>()
-    HomeScreenContent(
-        homeScreenModel = homeScreenModel,
-        onNavigateToAddEditNote = {
-//                navigator.push(AddEditNoteScreen(it))
-        },
-        goToSettings = {
-//                navigator.push(SettingScreen())
-        },
-    )
+fun NavGraphBuilder.homeScreen(mainNavController: NavHostController) {
+    composable<NavRoute.HomeScreen> {
+        val homeScreenModel = koinViewModel<HomeScreenModel>()
+        val pref = koinInject<AppCacheSetting>()
+        HomeScreenContent(
+            homeScreenModel = homeScreenModel,
+            onNavigateToAddEditNote = { mainNavController.navigate(NavRoute.AddNote) },
+            goToSettings = { mainNavController.navigate(NavRoute.Setting) },
+        )
+    }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreenContent(
     homeScreenModel: HomeScreenModel,
-    onNavigateToAddEditNote: (Long) -> Unit,
-    goToSettings: () -> Unit,
+    onNavigateToAddEditNote: LongCBF,
+    goToSettings: UnitCBF,
 ) {
     val scope = rememberCoroutineScope()
     val noteState by homeScreenModel.noteState.collectAsState()

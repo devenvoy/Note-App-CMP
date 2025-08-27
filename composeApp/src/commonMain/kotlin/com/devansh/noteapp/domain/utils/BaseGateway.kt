@@ -1,8 +1,8 @@
-package com.devansh.noteapp.data.remote.utils
+package com.devansh.noteapp.domain.utils
 
-import com.devansh.noteapp.data.entity.InternetException
-import com.devansh.noteapp.data.entity.ServerError
-import com.devansh.noteapp.data.entity.UnknownErrorException
+import com.devansh.noteapp.domain.entity.InternetException
+import com.devansh.noteapp.domain.entity.ServerError
+import com.devansh.noteapp.domain.entity.UnknownErrorException
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.plugins.ClientRequestException

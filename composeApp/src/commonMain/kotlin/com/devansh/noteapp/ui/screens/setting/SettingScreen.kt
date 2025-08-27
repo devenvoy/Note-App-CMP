@@ -1,4 +1,4 @@
-package com.devansh.noteapp.ui.screens
+package com.devansh.noteapp.ui.screens.setting
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.clickable
@@ -29,27 +29,22 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.alorma.compose.settings.ui.SettingsGroup
 import com.alorma.compose.settings.ui.SettingsSwitch
-import com.devansh.noteapp.domain.repo.AppCacheSetting
-import com.devansh.noteapp.domain.repo.NoteDataSource
 import com.devansh.noteapp.ui.components.PrimaryButton
 import com.devansh.noteapp.ui.screens.core.ListType
-import kotlinx.coroutines.launch
 import network.chaintech.sdpcomposemultiplatform.ssp
-import org.koin.compose.koinInject
+import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 fun SettingScreen() {
-    val pref = koinInject<AppCacheSetting>()
-    val noteRepo = koinInject<NoteDataSource>()
+    val viewModel = koinViewModel<SettingViewModel>()
     val scope = rememberCoroutineScope()
+
     SettingScreenContent(
-        pref,
-        navigateBack = {
-//            navigator.pop()
-        },
+        viewModel = viewModel,
+        navigateBack = {},//            navigator.pop()        }
         logOut = {
-            pref.logout { scope.launch { noteRepo.emptyNoteTable() } }
-//            navigator.replace(AuthScreen())
+            viewModel.logOut()
+            //            navigator.replace(AuthScreen())
         }
     )
 }
@@ -58,7 +53,8 @@ fun SettingScreen() {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SettingScreenContent(
-    pref: AppCacheSetting, navigateBack: () -> Unit,
+    viewModel: SettingViewModel,
+    navigateBack: () -> Unit,
     logOut: () -> Unit,
 ) {
     val topAppBarState = rememberTopAppBarState()
@@ -71,12 +67,12 @@ fun SettingScreenContent(
                 title = {
                     Column {
                         Text(
-                            "Settings",
+                            text = "Settings",
                             fontSize = if (scrollBehavior.state.collapsedFraction >= .75) 24.sp else 36.sp
                         )
                         AnimatedVisibility(scrollBehavior.state.collapsedFraction <= .75) {
                             Text(
-                                "User: " + pref.userEmail,
+                                text = "User: " + viewModel.userEmail,
                                 fontSize = 16.sp,
                                 modifier = Modifier.padding(start = 8.dp),
                                 color = MaterialTheme.colorScheme.onSurface.copy(.5f)
@@ -112,7 +108,7 @@ fun SettingScreenContent(
                 contentPadding = PaddingValues(horizontal = 8.dp),
             ) {
                 SettingsSwitch(
-                    state = pref.observableAutoSyncDB.collectAsState(true).value,
+                    state = viewModel.autoSyncDB.collectAsState(true).value,
                     title = { Text(text = "Auto Sync", fontSize = 14.ssp, fontWeight = W500) },
                     subtitle = {
                         Text(
@@ -120,9 +116,7 @@ fun SettingScreenContent(
                             fontSize = 10.ssp
                         )
                     },
-                    onCheckedChange = {
-                        pref.autoSyncDB = it
-                    }
+                    onCheckedChange = viewModel::updateAutoSyncDB
                 )
             }
 
@@ -133,11 +127,11 @@ fun SettingScreenContent(
                 contentPadding = PaddingValues(horizontal = 8.dp),
             ) {
                 SettingsSwitch(
-                    state = pref.observableListType.collectAsState(ListType.GRID).value == ListType.GRID,
+                    state = viewModel.listType.collectAsState(ListType.GRID).value == ListType.GRID,
                     title = { Text(text = "Notes Grid", fontSize = 14.ssp, fontWeight = W500) },
                     subtitle = { Text("show notes in grid or list", fontSize = 10.ssp) },
                     onCheckedChange = {
-                        pref.listType = if (it) 0 else 1
+                        viewModel.updateListType(if (it) ListType.GRID else ListType.LIST)
                     }
                 )
             }

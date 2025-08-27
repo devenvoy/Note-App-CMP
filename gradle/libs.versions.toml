@@ -19,7 +19,7 @@ dokka = "2.0.0"
 filekit = "0.10.0"
 koin = "4.1.0"
 
-kotlin = "2.2.0"
+kotlin = "2.2.10"
 buildConfig = "5.6.7"
 
 kotlin-logging = "7.0.13"
@@ -90,7 +90,6 @@ composeSettings-ui = { group = "com.github.alorma.compose-settings", name = "ui-
 composeSettings-ui-extended = { group = "com.github.alorma.compose-settings", name = "ui-tiles-extended", version.ref = "compose-settings" }
 
 richeditor-compose = { module = "com.mohamedrejeb.richeditor:richeditor-compose", version.ref = "richeditorCompose" }
-androidx-compose-material3 = { module = "androidx.compose.material3:material3", version.ref="material3" }
 
 androidx-activity-compose = { module = "androidx.activity:activity-compose", version.ref = "androidx-activity" }
 androidx-appcompat = { module = "androidx.appcompat:appcompat", version.ref = "androidx-appcompat" }
@@ -142,13 +141,11 @@ touchlab-stately-isolate = { module = "co.touchlab:stately-isolate", version.ref
 touchlab-stately-iso-collections = { module = "co.touchlab:stately-iso-collections", version.ref = "touchlab-stately" }
 touchlab-stately-iso-collections-js = { module = "co.touchlab:stately-iso-collections-js", version.ref = "touchlab-stately" }
 
+material3-expressive = { module = "org.jetbrains.compose.material3:material3", version.ref = "material3" }
 material3-adaptive = { module = "org.jetbrains.compose.material3.adaptive:adaptive", version.ref = "adaptive" }
 material3-adaptive-layout = { module = "org.jetbrains.compose.material3.adaptive:adaptive-layout", version.ref = "adaptive" }
 material3-adaptive-navigation = { module = "org.jetbrains.compose.material3.adaptive:adaptive-navigation", version.ref = "adaptive" }
-material3-expressive = { module = "org.jetbrains.compose.material3:material3", version.ref = "material3" }
 material3-adaptive-navigation-suite = { module = "org.jetbrains.compose.material3:material3-adaptive-navigation-suite", version.ref = "material3AdaptiveNavigationSuite" }
-
-
 
 
 [plugins]

@@ -1,5 +1,6 @@
 package com.devansh.noteapp.domain.repo
 
+import com.devansh.noteapp.domain.utils.UnitCBF
 import com.devansh.noteapp.ui.screens.core.ListType
 import kotlinx.coroutines.flow.Flow
 
@@ -17,7 +18,7 @@ interface AppCacheSetting {
 
     val userEmail : String
 
-    fun logout(callBack:()->Unit)
+    fun logout(callBack: UnitCBF)
 
     fun setUserEmail(email:String)
 }

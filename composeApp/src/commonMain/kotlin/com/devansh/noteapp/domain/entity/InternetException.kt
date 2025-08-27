@@ -1,4 +1,4 @@
-package com.devansh.noteapp.data.entity
+package com.devansh.noteapp.domain.entity
 
 sealed class InternetException : Exception() {
     class WifiDisabledException : InternetException()
