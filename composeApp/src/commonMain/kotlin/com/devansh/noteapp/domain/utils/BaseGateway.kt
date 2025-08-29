@@ -32,7 +32,7 @@ abstract class BaseGateway(val client: HttpClient) {
             if (!response.status.isSuccess()) {
                 val networkError = response.body<ServerError>()
                 println("Response Error: $networkError")
-                return Result.Error(networkError)
+                return Result.Failure(networkError)
             }
             val responseBody: T = response.body()
             println("Response Body: $responseBody")
@@ -40,10 +40,10 @@ abstract class BaseGateway(val client: HttpClient) {
         } catch (e: ClientRequestException) {
             val networkError = e.response.body<ServerError>()
             println("Response Error: $networkError")
-            Result.Error(networkError)
+            Result.Failure(networkError)
         } catch (e: InternetException.NoInternetException) {
             println("Response Error: ${e.message}")
-            Result.Error(
+            Result.Failure(
                 ServerError(
                     code = 400,
                     value = null,
@@ -52,7 +52,7 @@ abstract class BaseGateway(val client: HttpClient) {
             )
         } catch (e: SerializationException) {
             println("Response Error: ${e.message}")
-            Result.Error(
+            Result.Failure(
                 ServerError(
                     code = 400,
                     value = null,
@@ -61,7 +61,7 @@ abstract class BaseGateway(val client: HttpClient) {
             )
         } catch (e: Exception) {
             println("Response Error: ${e.message}")
-            Result.Error(
+            Result.Failure(
                 ServerError(
                     code = 400,
                     value = null,

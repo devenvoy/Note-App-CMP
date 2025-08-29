@@ -11,18 +11,19 @@ import com.devansh.noteapp.domain.repo.AuthDao
 import com.devansh.noteapp.domain.repo.NoteDataSource
 import com.devansh.noteapp.domain.repo.NoteRemoteDao
 import com.devansh.noteapp.ui.screens.add_edit_note.AddEditNoteViewModel
-import com.devansh.noteapp.ui.screens.auth.AuthScreenModel
+import com.devansh.noteapp.ui.screens.auth.AuthViewModel
 import com.devansh.noteapp.ui.screens.home.HomeScreenModel
 import com.devansh.noteapp.ui.screens.splash.SplashScreenModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
+import org.koin.core.module.dsl.viewModel
 import org.koin.dsl.module
 
 val screenModelsModule = module {
-    factory { SplashScreenModel(get(),get(),get()) }
-    factory { AuthScreenModel(get(),get()) }
-    factory { HomeScreenModel(get(),get(),get()) }
-    factory { AddEditNoteViewModel(get()) }
+    viewModel { SplashScreenModel(get(),get(),get()) }
+    viewModel { AuthViewModel(get(),get()) }
+    viewModel { HomeScreenModel(get(),get(),get()) }
+    viewModel { AddEditNoteViewModel(get()) }
 }
 
 val repositoryModule = module {
@@ -44,7 +45,7 @@ val dataModule = module {
 }
 
 val appModules = listOf(
-    platformModule(),  // for database
+    platformModule(),
     dataModule,
     repositoryModule,
     screenModelsModule,

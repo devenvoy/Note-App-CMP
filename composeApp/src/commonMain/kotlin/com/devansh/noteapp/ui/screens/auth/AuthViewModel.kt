@@ -4,7 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.devansh.noteapp.domain.repo.AppCacheSetting
 import com.devansh.noteapp.domain.repo.AuthDao
-import com.devansh.noteapp.domain.utils.onError
+import com.devansh.noteapp.domain.utils.onFailure
 import com.devansh.noteapp.domain.utils.onSuccess
 import com.devansh.noteapp.ui.components.AuthScreenState
 import com.devansh.noteapp.ui.components.UiState
@@ -13,7 +13,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-class AuthScreenModel(
+class AuthViewModel(
     private val pref: AppCacheSetting,
     private val authDao: AuthDao
 ) : ViewModel() {
@@ -66,7 +66,7 @@ class AuthScreenModel(
                 pref.accessToken = res.value.authToken
                 pref.setUserEmail(res.value.user.email ?: "")
                 _authState.update { UiState.Success(res) }
-            }.onError { e ->
+            }.onFailure { e ->
                 _authState.update { UiState.Error(e.detail) }
             }
         }
@@ -80,7 +80,7 @@ class AuthScreenModel(
             result.onSuccess { response ->
                 pref.accessToken = response.value?.authToken.toString()
                 _authState.update { UiState.Success(response) }
-            }.onError { e ->
+            }.onFailure { e ->
                 _authState.update { UiState.Error(e.detail) }
             }
         }
