@@ -66,6 +66,7 @@ kotlin {
             implementation(compose.runtime)
             implementation(compose.animation)
             implementation(compose.foundation)
+            implementation(compose.components.resources)
             implementation(compose.materialIconsExtended)
 
             implementation(libs.androidx.lifecycle.viewmodel)

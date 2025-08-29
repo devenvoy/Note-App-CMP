@@ -9,6 +9,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ButtonElevation
+import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
@@ -21,20 +22,17 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
+@OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun PrimaryButton(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
-    shape: Shape = RoundedCornerShape(8.dp),
     colors: ButtonColors = ButtonDefaults.buttonColors(
         contentColor = Color.White,
-        containerColor = MaterialTheme.colorScheme.primary,
-
-        ),
-    elevation: ButtonElevation? = ButtonDefaults.buttonElevation(
-        defaultElevation = 1.dp
+        containerColor = MaterialTheme.colorScheme.primary
     ),
+    elevation: ButtonElevation? = ButtonDefaults.buttonElevation(1.dp),
     border: BorderStroke? = null,
     contentPadding: PaddingValues = PaddingValues(vertical = 10.dp),
     interactionSource: MutableInteractionSource? = null,
@@ -46,7 +44,7 @@ fun PrimaryButton(
         enabled = enabled,
         contentPadding = contentPadding,
         colors = colors,
-        shape = shape,
+        shapes = ButtonDefaults.shapes(),
         elevation = elevation,
         border = border,
         interactionSource = interactionSource,

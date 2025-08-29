@@ -6,7 +6,9 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
-import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.ContainedLoadingIndicator
+import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -36,6 +38,7 @@ fun NavGraphBuilder.splashScreen(navController: NavHostController) {
     }
 }
 
+@OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun SplashScreen(navToHome: UnitCBF, navToAuth: UnitCBF) {
 
@@ -65,7 +68,10 @@ fun SplashScreen(navToHome: UnitCBF, navToAuth: UnitCBF) {
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            CircularProgressIndicator()
+            ContainedLoadingIndicator(
+                containerColor = Color.Transparent,
+                indicatorColor = MaterialTheme.colorScheme.primary,
+            )
             Spacer(modifier = Modifier.height(10.sdp))
             Text(
                 text = loadingMessage,

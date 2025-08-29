@@ -2,10 +2,10 @@ package com.devansh.noteapp.ui.screens.auth
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.devansh.noteapp.domain.utils.onError
-import com.devansh.noteapp.domain.utils.onSuccess
 import com.devansh.noteapp.domain.repo.AppCacheSetting
 import com.devansh.noteapp.domain.repo.AuthDao
+import com.devansh.noteapp.domain.utils.onError
+import com.devansh.noteapp.domain.utils.onSuccess
 import com.devansh.noteapp.ui.components.AuthScreenState
 import com.devansh.noteapp.ui.components.UiState
 import kotlinx.coroutines.flow.MutableStateFlow
