@@ -9,10 +9,14 @@ import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.ui.text.font.FontFamily
 import com.materialkolor.LocalDynamicMaterialThemeSeed
 import com.materialkolor.PaletteStyle
 import com.materialkolor.ktx.animateColorScheme
 import com.materialkolor.rememberDynamicMaterialThemeState
+import note_app_cmp.composeapp.generated.resources.Res
+import note_app_cmp.composeapp.generated.resources.geomanist_regular
+import org.jetbrains.compose.resources.Font
 
 private val DarkColorScheme = darkColorScheme(
     primary = DarkPrimary,
@@ -72,15 +76,19 @@ fun NoteAppTheme(
     )
 
     val colorScheme = dynamicThemeState.colorScheme
-    val scheme =
-        if (!false) {
-            colorScheme
-        } else {
+    val scheme = if (!false) {
+        colorScheme
+    } else {
             animateColorScheme(colorScheme = colorScheme, animationSpec = { spring() })
         }
 
+    val geoManistRegular = Font(Res.font.geomanist_regular)
+    val geoManistMedium = Font(Res.font.geomanist_regular)
     CompositionLocalProvider(LocalDynamicMaterialThemeSeed provides dynamicThemeState.seedColor) {
         MaterialExpressiveTheme(
+            typography = MaterialTheme.typography.map(
+                FontFamily(listOf(geoManistRegular, geoManistMedium))
+            ),
             colorScheme = scheme,
             content = content,
         )

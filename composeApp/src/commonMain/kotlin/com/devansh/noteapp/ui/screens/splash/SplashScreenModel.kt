@@ -20,13 +20,13 @@ class SplashScreenModel(
     fun isUserLoggedIn(): Boolean = pref.isLoggedIn
 
     suspend fun syncDatabase(): Unit = withContext(Dispatchers.IO) {
-        try {
+        /*try {
             val unsyncedNotes = noteDataSource.getUnSyncedNotes()
 
             noteRemoteDao.upsert(unsyncedNotes, pref.accessToken)
 
         } catch (e: Exception) {
             Logger.e("SyncError", e) { "Unexpected error occurred during sync" }
-        }
+        }*/
     }
 }

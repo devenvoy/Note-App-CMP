@@ -5,16 +5,20 @@ import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.BottomSheetDefaults
@@ -39,6 +43,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
@@ -95,11 +100,16 @@ fun AuthScreenContent(
     }
 
     Box(
-        modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center
+        modifier = Modifier.imePadding().fillMaxSize()
+            .background(MaterialTheme.colorScheme.background), contentAlignment = Alignment.Center
     ) {
 
         AnimatedVisibility(visible = showLoader) {
-            ContainedLoadingIndicator()
+            ContainedLoadingIndicator(
+                modifier = Modifier.size(100.dp),
+                containerColor = Color.Transparent,
+                indicatorColor = MaterialTheme.colorScheme.primary,
+            )
         }
 
         if (showFill) {
@@ -107,20 +117,57 @@ fun AuthScreenContent(
         }
 
         AnimatedVisibility(
+            visible = selectedTabIndex == 0,
+            enter = fadeIn() + slideInVertically { -it },
+            exit = fadeOut() + slideOutVertically { -it },
+            modifier = Modifier.align(Alignment.TopStart).padding(top = 100.dp, start = 20.dp)
+        ) {
+            Column {
+                Text(
+                    text = "Let's Login",
+                    style = MaterialTheme.typography.headlineLarge.copy(fontSize = 42.sp),
+                    color = MaterialTheme.colorScheme.background,
+                )
+                Text(
+                    text = "And, keep safe ideas",
+                    color = MaterialTheme.colorScheme.background,
+                )
+            }
+        }
+        AnimatedVisibility(
+            visible = selectedTabIndex == 1,
+            enter = fadeIn() + slideInVertically { it },
+            exit = fadeOut() + slideOutVertically { it },
+            modifier = Modifier.align(Alignment.TopStart).padding(top = 100.dp, start = 20.dp)
+        ) {
+            Column {
+                Text(
+                    text = "Register Here",
+                    style = MaterialTheme.typography.headlineLarge.copy(fontSize = 42.sp),
+                    color = MaterialTheme.colorScheme.background,
+                )
+                Text(
+                    text = "Join us and start noting.",
+                    color = MaterialTheme.colorScheme.background,
+                )
+            }
+        }
+
+        AnimatedVisibility(
             modifier = Modifier.align(Alignment.BottomCenter),
             visible = showContent,
-            enter = slideInVertically(
-                initialOffsetY = { it },
-            ) + fadeIn()
+            enter = slideInVertically { it } + fadeIn()
         ) {
             Column(
-                modifier = Modifier.widthIn(max = 500.dp).fillMaxHeight(.65f).padding(top = 10.dp)
+                modifier = Modifier.widthIn(max = 500.dp).heightIn(min = 600.dp, max = 800.dp)
+                    .padding(top = 10.dp)
                     .clip(RoundedCornerShape(topStart = 25.dp, topEnd = 25.dp))
                     .background(MaterialTheme.colorScheme.background),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
 
                 BottomSheetDefaults.DragHandle()
+
                 AuthTabs(
                     selectedTabIndex = selectedTabIndex,
                     onClick = { ix -> selectedTabIndex = ix },
@@ -232,8 +279,9 @@ fun BoxScope.FillAnimationBox(fillProgress: Float) {
     }.coerceAtLeast(1f)
 
     Box(
-        modifier = Modifier.matchParentSize().background(
-            Brush.radialGradient(
+        modifier = Modifier.matchParentSize()
+            .background(
+                Brush.radialGradient(
                 colors = listOf(
                     MaterialTheme.colorScheme.primary.copy(alpha = 0.8f),
                     MaterialTheme.colorScheme.background

@@ -47,7 +47,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalClipboardManager
+import androidx.compose.ui.platform.LocalClipboard
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight.Companion.W500
@@ -56,6 +56,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
+import com.devansh.noteapp.di.platform_di.clipEntryOf
 import com.devansh.noteapp.di.platform_di.isDesktop
 import com.devansh.noteapp.di.platform_di.shareText
 import com.devansh.noteapp.domain.model.Note
@@ -68,7 +69,6 @@ import com.devansh.noteapp.ui.components.MyCustomIndicator
 import com.devansh.noteapp.ui.components.SecondaryOutlinedButton
 import com.devansh.noteapp.ui.screens.core.ListType
 import com.devansh.noteapp.ui.screens.home.notes.NoteScreenContent
-import com.devansh.noteapp.ui.theme.getMontBFont
 import com.dokar.sonner.ToastType
 import com.dokar.sonner.Toaster
 import com.dokar.sonner.ToasterDefaults
@@ -107,7 +107,7 @@ fun HomeScreenContent(
     val scope = rememberCoroutineScope()
     val noteState by homeScreenModel.noteState.collectAsState()
     val state = rememberPullToRefreshState()
-    val clipboardManager = LocalClipboardManager.current
+    val clipboard = LocalClipboard.current
     val sheetState = rememberModalBottomSheetState()
     var selectedNote by remember { mutableStateOf<Note?>(null) }
     var isBottomSheetVisible by remember { mutableStateOf(false) }
@@ -133,7 +133,7 @@ fun HomeScreenContent(
                     titleContentColor = MaterialTheme.colorScheme.onSurface,
                     actionIconContentColor = MaterialTheme.colorScheme.primary,
                 ), title = {
-                    Text(text = "Notes", fontSize = 16.ssp, fontFamily = getMontBFont())
+                        Text(text = "Notes", fontSize = 16.ssp)
                 }, actions = {
                     IconButton(onClick = {
                         homeScreenModel.onToggleSearch()
@@ -202,9 +202,10 @@ fun HomeScreenContent(
                         dismissSheet()
                     },
                     onCopyClick = {
-                        clipboardManager.setText(
-                            AnnotatedString("${selectedNote?.title} \n\n ${richContent.toText()}")
-                        )
+                        scope.launch {
+                            clipboard.setClipEntry(clipEntryOf(AnnotatedString("${selectedNote?.title} \n\n ${richContent.toText()}").text))
+                        }
+
                         toasterState.show(
                             "Copied to clipboard",
                             duration = ToasterDefaults.DurationShort,

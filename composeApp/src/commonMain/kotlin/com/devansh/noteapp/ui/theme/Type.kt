@@ -1,52 +1,29 @@
 package com.devansh.noteapp.ui.theme
 
 import androidx.compose.material3.Typography
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.sp
-import note_app_cmp.composeapp.generated.resources.Res
-import note_app_cmp.composeapp.generated.resources.montserratbold
-import note_app_cmp.composeapp.generated.resources.montserratregular
-import note_app_cmp.composeapp.generated.resources.montserratsemibold
-import note_app_cmp.composeapp.generated.resources.roboto_medium_numbers
-import org.jetbrains.compose.resources.Font
 
-val Typography = Typography(
-    bodyLarge = TextStyle(
-        fontFamily = FontFamily.Default,
-        fontWeight = FontWeight.Normal,
-        fontSize = 16.sp,
-        lineHeight = 24.sp,
-        letterSpacing = 0.5.sp
-    )
-    /* Other default text styles to override
-    titleLarge = TextStyle(
-        fontFamily = FontFamily.Default,
-        fontWeight = FontWeight.Normal,
-        fontSize = 22.sp,
-        lineHeight = 28.sp,
-        letterSpacing = 0.sp
-    ),
-    labelSmall = TextStyle(
-        fontFamily = FontFamily.Default,
-        fontWeight = FontWeight.Medium,
-        fontSize = 11.sp,
-        lineHeight = 16.sp,
-        letterSpacing = 0.5.sp
-    )
-    */
-)
-
-@Composable
-fun getMontRFont() = FontFamily(Font(Res.font.montserratregular))
-
-@Composable
-fun getMontBFont() = FontFamily(Font(Res.font.montserratbold))
-
-@Composable
-fun getMontSBFont() = FontFamily(Font(Res.font.montserratsemibold))
-
-@Composable
-fun getRobotoMFont() = FontFamily(Font(Res.font.roboto_medium_numbers))
+fun Typography.map(fontFamily: FontFamily): Typography {
+    val typography = this
+    if (typography.bodyLarge.fontFamily != fontFamily) {
+        return Typography(
+            displayLarge = typography.displayLarge.copy(fontFamily = fontFamily),
+            displayMedium = typography.displayMedium.copy(fontFamily = fontFamily),
+            displaySmall = typography.displaySmall.copy(fontFamily = fontFamily),
+            headlineLarge = typography.headlineLarge.copy(fontFamily = fontFamily),
+            headlineMedium = typography.headlineMedium.copy(fontFamily = fontFamily),
+            headlineSmall = typography.headlineSmall.copy(fontFamily = fontFamily),
+            titleLarge = typography.titleLarge.copy(fontFamily = fontFamily),
+            titleMedium = typography.titleMedium.copy(fontFamily = fontFamily),
+            titleSmall = typography.titleSmall.copy(fontFamily = fontFamily),
+            bodyLarge = typography.bodyLarge.copy(fontFamily = fontFamily),
+            bodyMedium = typography.bodyMedium.copy(fontFamily = fontFamily),
+            bodySmall = typography.bodySmall.copy(fontFamily = fontFamily),
+            labelLarge = typography.labelLarge.copy(fontFamily = fontFamily),
+            labelMedium = typography.labelMedium.copy(fontFamily = fontFamily),
+            labelSmall = typography.labelSmall.copy(fontFamily = fontFamily)
+        )
+    } else {
+        return typography
+    }
+}
