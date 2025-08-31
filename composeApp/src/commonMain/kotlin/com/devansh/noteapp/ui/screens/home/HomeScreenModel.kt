@@ -74,7 +74,7 @@ class HomeScreenModel(
     fun deleteNoteById(id: Long) {
         viewModelScope.launch {
             noteDataSource.deleteNoteById(id)
-            noteRemoteDao.deleteNote(id, pref.accessToken)
+            noteRemoteDao.deleteNote(id, pref.accessToken.toString())
         }
     }
 
@@ -82,7 +82,7 @@ class HomeScreenModel(
         viewModelScope.launch {
             try {
                 isRefreshing.value = true
-                val result = noteRemoteDao.getNotes(pref.accessToken)
+                val result = noteRemoteDao.getNotes(pref.accessToken.toString())
 
                 result.onSuccess { response ->
                     if (response.status) {

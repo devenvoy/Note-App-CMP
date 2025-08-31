@@ -20,10 +20,16 @@ class AppCacheSettingImpl : AppCacheSetting {
     private val settings: Settings by lazy { Settings() }
     private val observableSettings: ObservableSettings by lazy { settings as ObservableSettings }
 
-    override var accessToken: String
-        get() = settings[SettingStorageKeys.ACCESS_TOKEN.key] ?: ""
+    override var accessToken: String?
+        get() = settings[SettingStorageKeys.ACCESS_TOKEN.key]
         set(value) {
             settings[SettingStorageKeys.ACCESS_TOKEN.key] = value
+        }
+
+    override var refreshToken: String?
+        get() = settings[SettingStorageKeys.REFRESH_TOKEN.key]
+        set(value) {
+            settings[SettingStorageKeys.REFRESH_TOKEN.key] = value
         }
 
     override val isLoggedIn: Boolean

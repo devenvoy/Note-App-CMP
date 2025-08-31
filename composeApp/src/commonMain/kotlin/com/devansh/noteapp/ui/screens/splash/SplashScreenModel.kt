@@ -1,32 +1,49 @@
 package com.devansh.noteapp.ui.screens.splash
 
 import androidx.lifecycle.ViewModel
-import co.touchlab.kermit.Logger
+import androidx.lifecycle.viewModelScope
 import com.devansh.noteapp.domain.repo.AppCacheSetting
-import com.devansh.noteapp.domain.repo.NoteDataSource
-import com.devansh.noteapp.domain.repo.NoteRemoteDao
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.IO
-import kotlinx.coroutines.withContext
+import com.devansh.noteapp.domain.repo.AuthService
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.launch
+import com.devansh.noteapp.domain.utils.Result
+import kotlinx.coroutines.flow.update
 
 class SplashScreenModel(
     private val pref: AppCacheSetting,
-    private val noteDataSource: NoteDataSource,
-    private val noteRemoteDao: NoteRemoteDao
+    private val authService: AuthService
 ) : ViewModel() {
+
+    private val _uiState = MutableStateFlow<SplashUiState>(SplashUiState.Loading)
+    val uiState: StateFlow<SplashUiState> = _uiState
 
     fun isSyncAutoEnable(): Boolean = pref.autoSyncDB
 
-    fun isUserLoggedIn(): Boolean = pref.isLoggedIn
+    fun checkAuth() {
+        viewModelScope.launch {
+            val refreshToken = pref.refreshToken
 
-    suspend fun syncDatabase(): Unit = withContext(Dispatchers.IO) {
-        /*try {
-            val unsyncedNotes = noteDataSource.getUnSyncedNotes()
+            if (refreshToken.isNullOrBlank()) {
+                _uiState.value = SplashUiState.NavigateToLogin
+                return@launch
+            }
 
-            noteRemoteDao.upsert(unsyncedNotes, pref.accessToken)
+            when (val result = authService.refreshAuth(refreshToken)) {
+                is Result.Success -> {
+                    pref.accessToken = result.data.accessToken
+                    pref.refreshToken = result.data.refreshToken
+                    _uiState.update { SplashUiState.NavigateToHome }
+                }
 
-        } catch (e: Exception) {
-            Logger.e("SyncError", e) { "Unexpected error occurred during sync" }
-        }*/
+                is Result.Failure -> {
+                    pref.accessToken = null
+                    pref.refreshToken = null
+                    _uiState.update { SplashUiState.NavigateToLogin }
+                }
+
+                Result.Loading -> _uiState.update { SplashUiState.Loading }
+            }
+        }
     }
 }

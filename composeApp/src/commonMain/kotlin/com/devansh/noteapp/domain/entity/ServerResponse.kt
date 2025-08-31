@@ -7,24 +7,16 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class  ServerResponse<T>(
-    @SerialName("statusCode")
-    val code: Int?,
-    @SerialName("data")
-    val value: T? = null,
-    @SerialName("message")
-    val detail: String?,
-    @SerialName("isSuccessful")
-    val status: Boolean=false
+    @SerialName("statusCode") val code: Int?,
+    @SerialName("data") val value: T? = null,
+    @SerialName("message") val detail: String?,
+    @SerialName("isSuccessful") val status: Boolean = false
 )
 
 @Serializable
 data class  ServerError(
-    @SerialName("statusCode")
-    val code: Int?,
-    @SerialName("data")
-    val value: Map<String, String>? = null,
-    @SerialName("message")
-    val detail: String?,
-    @SerialName("isSuccessful")
-    val status: Boolean = false
+    @SerialName("statusCode") val code: Int?,
+    @SerialName("data") val value: Map<String, String>? = null,
+    @SerialName("message") val detail: String?,
+    @SerialName("isSuccessful") val status: Boolean = false
 ): Error

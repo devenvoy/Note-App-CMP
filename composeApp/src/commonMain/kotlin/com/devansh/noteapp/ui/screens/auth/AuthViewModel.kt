@@ -3,69 +3,56 @@ package com.devansh.noteapp.ui.screens.auth
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.devansh.noteapp.domain.repo.AppCacheSetting
-import com.devansh.noteapp.domain.repo.AuthDao
+import com.devansh.noteapp.domain.repo.AuthService
 import com.devansh.noteapp.domain.utils.onFailure
 import com.devansh.noteapp.domain.utils.onSuccess
-import com.devansh.noteapp.ui.components.AuthScreenState
 import com.devansh.noteapp.ui.components.UiState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlin.time.ExperimentalTime
 
+typealias AuthScreenState = UiState<String>
+
+@OptIn(ExperimentalTime::class)
 class AuthViewModel(
     private val pref: AppCacheSetting,
-    private val authDao: AuthDao
+    private val authService: AuthService
 ) : ViewModel() {
 
-    private val _loginEmail = MutableStateFlow("")
-    val loginEmail = _loginEmail.asStateFlow()
+    private val _email = MutableStateFlow("")
+    val email = _email.asStateFlow()
 
-    private val _loginPassword = MutableStateFlow("")
-    val loginPassword = _loginPassword.asStateFlow()
+    private val _password = MutableStateFlow("")
+    val password = _password.asStateFlow()
 
-    private val _registerEmail = MutableStateFlow("")
-    val registerEmail = _registerEmail.asStateFlow()
-
-    private val _registerPassword = MutableStateFlow("")
-    val registerPassword = _registerPassword.asStateFlow()
-
-    private val _registerConfirmPwd = MutableStateFlow("")
-    val registerConfirmPwd = _registerConfirmPwd.asStateFlow()
+    private val _confirmPassword = MutableStateFlow("")
+    val confirmPassword = _confirmPassword.asStateFlow()
 
     private val _authState = MutableStateFlow<AuthScreenState>(UiState.Idle)
     val authState = _authState.asStateFlow()
 
-    fun onLoginEmailChange(email: String) {
-        _loginEmail.update { email }
+    fun onEmailChange(email: String) {
+        _email.update { email }
     }
 
-    fun onLoginPasswordChange(password: String) {
-        _loginPassword.update { password }
+    fun onPasswordChange(password: String) {
+        _password.update { password }
     }
 
-    fun onRegisterEmailChange(email: String) {
-        _registerEmail.update { email }
-    }
-
-    fun onRegisterPasswordChange(password: String) {
-        _registerPassword.update { password }
-    }
-
-    fun onRegisterConfirmPasswordChange(password: String) {
-        _registerConfirmPwd.update { password }
+    fun onConfirmPasswordChanged(password: String) {
+        _confirmPassword.update { password }
     }
 
     fun login() {
         _authState.update { UiState.Loading }
         viewModelScope.launch {
             if (!validateLoginInputs()) return@launch
-            val result = authDao.login(_loginEmail.value, _loginPassword.value)
+            val result = authService.login(_email.value, _password.value)
             result.onSuccess { res ->
-                if (res.value == null) return@launch
-                pref.accessToken = res.value.authToken
-                pref.setUserEmail(res.value.user.email ?: "")
-                _authState.update { UiState.Success(res) }
+                pref.accessToken = res.accessToken
+                _authState.update { UiState.Success("Logged in successfully") }
             }.onFailure { e ->
                 _authState.update { UiState.Error(e.detail) }
             }
@@ -76,10 +63,10 @@ class AuthViewModel(
         _authState.update { UiState.Loading }
         viewModelScope.launch {
             if (!validateRegisterInputs()) return@launch
-            val result = authDao.register(_registerEmail.value, _registerPassword.value)
+            val result = authService.login(_email.value, _password.value)
             result.onSuccess { response ->
-                pref.accessToken = response.value?.authToken.toString()
-                _authState.update { UiState.Success(response) }
+                pref.accessToken = response.accessToken
+                _authState.update { UiState.Success("Account created successfully") }
             }.onFailure { e ->
                 _authState.update { UiState.Error(e.detail) }
             }
@@ -93,17 +80,17 @@ class AuthViewModel(
 
     private fun validateLoginInputs(): Boolean {
         return when {
-            _loginEmail.value.isBlank() -> {
+            _email.value.isBlank() -> {
                 _authState.update { UiState.Error("Email cannot be empty") }
                 false
             }
 
-            !isValidEmail(_loginEmail.value) -> {
+            !isValidEmail(_email.value) -> {
                 _authState.update { UiState.Error("Invalid email format") }
                 false
             }
 
-            _loginPassword.value.isBlank() -> {
+            _password.value.isBlank() -> {
                 _authState.update { UiState.Error("Password cannot be empty") }
                 false
             }
@@ -114,22 +101,22 @@ class AuthViewModel(
 
     private fun validateRegisterInputs(): Boolean {
         return when {
-            _registerEmail.value.isBlank() -> {
+            _email.value.isBlank() -> {
                 _authState.update { UiState.Error("Email cannot be empty") }
                 false
             }
 
-            !isValidEmail(_registerEmail.value) -> {
+            !isValidEmail(_email.value) -> {
                 _authState.update { UiState.Error("Invalid email format") }
                 false
             }
 
-            _registerPassword.value.isBlank() -> {
+            _password.value.isBlank() -> {
                 _authState.update { UiState.Error("Password cannot be empty") }
                 false
             }
 
-            _registerPassword.value != _registerConfirmPwd.value -> {
+            _password.value != _confirmPassword.value -> {
                 _authState.update { UiState.Error("Passwords do not match") }
                 false
             }

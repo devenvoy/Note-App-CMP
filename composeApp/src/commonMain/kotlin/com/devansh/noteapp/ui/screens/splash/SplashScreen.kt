@@ -9,6 +9,8 @@ import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -34,30 +36,40 @@ fun NavGraphBuilder.splashScreen(navController: NavHostController) {
 @Composable
 fun SplashScreen(navToHome: UnitCBF, navToAuth: UnitCBF) {
 
-    val screenModel = koinViewModel<SplashScreenModel>()
+    val viewModel = koinViewModel<SplashScreenModel>()
+    val uiState by viewModel.uiState.collectAsState()
 
     LaunchedEffect(Unit) {
-        if (screenModel.isUserLoggedIn()) {
-            if (screenModel.isSyncAutoEnable()) {
-                screenModel.syncDatabase()
-            }
-            delay(500L)
-            navToHome()
-        } else {
-            delay(500L)
-            navToAuth()
-        }
+        viewModel.checkAuth()
     }
 
-    Box(
-        modifier = Modifier.fillMaxSize()
-            .background(MaterialTheme.colorScheme.background),
-        contentAlignment = Alignment.Center
-    ) {
-        ContainedLoadingIndicator(
-            modifier = Modifier.size(100.dp),
-            containerColor = Color.Transparent,
-            indicatorColor = MaterialTheme.colorScheme.primary,
-        )
+    when (uiState) {
+        SplashUiState.Loading -> {
+            Box(
+                modifier = Modifier.fillMaxSize()
+                    .background(MaterialTheme.colorScheme.background),
+                contentAlignment = Alignment.Center
+            ) {
+                ContainedLoadingIndicator(
+                    modifier = Modifier.size(100.dp),
+                    containerColor = Color.Transparent,
+                    indicatorColor = MaterialTheme.colorScheme.primary,
+                )
+            }
+        }
+
+        SplashUiState.NavigateToHome -> {
+            LaunchedEffect(Unit) {
+                delay(500L)
+                navToHome()
+            }
+        }
+
+        SplashUiState.NavigateToLogin -> {
+            LaunchedEffect(Unit) {
+                delay(500L)
+                navToAuth()
+            }
+        }
     }
 }

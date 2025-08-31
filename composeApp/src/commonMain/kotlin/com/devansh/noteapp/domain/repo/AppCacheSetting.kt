@@ -6,12 +6,15 @@ import kotlinx.coroutines.flow.Flow
 
 interface AppCacheSetting {
 
-    var accessToken: String
+    var accessToken: String?
+
+    var refreshToken: String?
+
+    var autoSyncDB: Boolean
 
     val isLoggedIn: Boolean
 
     val observableAutoSyncDB : Flow<Boolean>
-    var autoSyncDB : Boolean
 
     val observableListType : Flow<ListType>
     var listType : Int

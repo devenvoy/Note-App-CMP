@@ -134,6 +134,7 @@ fun AuthScreenContent(
                 )
             }
         }
+
         AnimatedVisibility(
             visible = selectedTabIndex == 1,
             enter = fadeIn() + slideInVertically { it },
@@ -183,7 +184,8 @@ fun AuthScreenContent(
         UiStateHandler(
             uiState = authViewModel.authState.collectAsState().value,
             onErrorShowed = {},
-            content = { onSuccess() })
+            content = { onSuccess() }
+        )
     }
 }
 
@@ -212,9 +214,9 @@ fun AuthTabs(
 @Composable
 fun LoginScreenContent(viewModel: AuthViewModel, isLogin: Boolean) {
 
-    val email by viewModel.registerEmail.collectAsState()
-    val password by viewModel.registerPassword.collectAsState()
-    val confirmPwd by viewModel.registerConfirmPwd.collectAsState()
+    val email by viewModel.email.collectAsState()
+    val password by viewModel.password.collectAsState()
+    val confirmPwd by viewModel.confirmPassword.collectAsState()
 
     val inputModifier = Modifier.fillMaxWidth(.9f)
 
@@ -227,7 +229,7 @@ fun LoginScreenContent(viewModel: AuthViewModel, isLogin: Boolean) {
             modifier = inputModifier,
             value = email,
             shape = MaterialTheme.shapes.medium,
-            onValueChange = viewModel::onRegisterEmailChange,
+            onValueChange = viewModel::onEmailChange,
             placeholder = { Text("Enter email") },
             label = { Text("Email") },
         )
@@ -236,7 +238,7 @@ fun LoginScreenContent(viewModel: AuthViewModel, isLogin: Boolean) {
             modifier = inputModifier,
             value = password,
             shape = MaterialTheme.shapes.medium,
-            onValueChange = viewModel::onRegisterPasswordChange,
+            onValueChange = viewModel::onPasswordChange,
             placeholder = { Text("Password") },
             label = { Text("Password") },
         )
@@ -246,7 +248,7 @@ fun LoginScreenContent(viewModel: AuthViewModel, isLogin: Boolean) {
                 modifier = inputModifier,
                 value = confirmPwd,
                 shape = MaterialTheme.shapes.medium,
-                onValueChange = viewModel::onRegisterConfirmPasswordChange,
+                onValueChange = viewModel::onConfirmPasswordChanged,
                 placeholder = { Text("confirm Password") },
                 label = { Text("Confirm Password") },
             )
