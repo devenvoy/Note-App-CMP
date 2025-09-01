@@ -6,7 +6,6 @@ import com.devansh.noteapp.NoteDatabase
 import com.devansh.noteapp.domain.model.Note
 import com.devansh.noteapp.domain.model.toNote
 import com.devansh.noteapp.domain.repo.NoteDataSource
-import com.devansh.noteapp.domain.utils.DateTimeUtil
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
@@ -31,7 +30,7 @@ class NoteDataSourceImpl(
             }
     }
 
-    override suspend fun getNoteById(id: Long): Note? {
+    override suspend fun getNoteById(id: String): Note? {
         return queries.getNoteById(id = id)
             .executeAsOneOrNull()
             ?.toNote()
@@ -39,17 +38,18 @@ class NoteDataSourceImpl(
 
     override suspend fun insertNote(note: Note, synced: Boolean) {
         queries.insertNote(
-            id = note.id,
+            id = note.id.toString(),
             title = note.title,
             content = note.content,
-            colorres = note.colorRes,
-            category = note.category,
-            last_modified = DateTimeUtil.toEpochMillis(note.lastModified),
-            isSynced = if (synced) 1 else 0
+            ownerId = note.ownerId,
+            colorRes = note.colorRes,
+            categoryId = note.category,
+            categoryName = note.categoryName,
+            isSynced = if (synced) 1 else 0,
         )
     }
 
-    override suspend fun deleteNoteById(id: Long) {
+    override suspend fun deleteNoteById(id: String) {
         queries.deleteNoteById(id = id)
     }
 
@@ -66,8 +66,8 @@ class NoteDataSourceImpl(
             .map { it.toNote() }
     }
 
-    override suspend fun markNoteAsSynced(id: Long) {
-        queries.markNoteAsSync(id)
+    override suspend fun markNoteAsSynced(id: String) {
+        queries.markNoteAsSynced(id)
     }
 
     override suspend fun emptyNoteTable() {

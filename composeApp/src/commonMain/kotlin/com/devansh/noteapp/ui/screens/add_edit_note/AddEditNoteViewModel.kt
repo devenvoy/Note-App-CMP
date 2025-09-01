@@ -1,12 +1,10 @@
 package com.devansh.noteapp.ui.screens.add_edit_note
 
-import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.devansh.noteapp.domain.model.Note
 import com.devansh.noteapp.domain.repo.NoteDataSource
-import com.devansh.noteapp.domain.utils.DateTimeUtil
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
@@ -17,11 +15,9 @@ class AddEditNoteViewModel(
     private val noteDataSource: NoteDataSource
 ) : ViewModel() {
 
-    private val _noteTitle = mutableStateOf(NoteTextFieldState(hint = "Enter title"))
-    val noteTitle: State<NoteTextFieldState> = _noteTitle
+    val noteTitle = mutableStateOf(NoteTextFieldState(hint = "Enter title"))
 
-    private val _noteContent = mutableStateOf("")
-    val noteContent = _noteContent
+    val noteContent = mutableStateOf("")
 
     private val _noteColor = MutableStateFlow(Note.generateRandomColor())
     val noteColor = _noteColor.asStateFlow()
@@ -29,19 +25,18 @@ class AddEditNoteViewModel(
     private val _eventFlow = MutableSharedFlow<UiEvent>()
     val eventFlow = _eventFlow.asSharedFlow()
 
-    private var currentNoteId: Long? = null
+    private var currentNoteId: String? = null
 
-    fun initState(noteId: Long) {
-        if (noteId != -1L) {
+    fun initState(noteId: String?) {
+        if (noteId != null) {
             viewModelScope.launch {
                 noteDataSource.getNoteById(noteId)?.also { note ->
                     currentNoteId = note.id
-                    _noteTitle.value = noteTitle.value.copy(
-                        text = note.title,
-                        isHintVisible = false
-                    )
 
-                    _noteContent.value = note.content
+                    noteTitle.value =
+                        noteTitle.value.copy(text = note.title, isHintVisible = false)
+
+                    noteContent.value = note.content
 
                     _noteColor.value = note.colorRes
                 }
@@ -52,17 +47,17 @@ class AddEditNoteViewModel(
     fun onEvent(event: AddEditNoteEvent) {
         when (event) {
             is AddEditNoteEvent.EnteredTitle -> {
-                _noteTitle.value = noteTitle.value.copy(text = event.newTitle)
+                noteTitle.value = noteTitle.value.copy(text = event.newTitle)
             }
 
             is AddEditNoteEvent.ChangeTitleFocus -> {
-                _noteTitle.value = noteTitle.value.copy(
+                noteTitle.value = noteTitle.value.copy(
                     isHintVisible = !event.focusState.isFocused && noteTitle.value.text.isBlank()
                 )
             }
 
             is AddEditNoteEvent.EnteredContent -> {
-                _noteContent.value = event.newContent
+                noteContent.value = event.newContent
             }
 
             is AddEditNoteEvent.ChangeContentFocus -> {
@@ -81,8 +76,7 @@ class AddEditNoteViewModel(
                                 id = currentNoteId,
                                 title = noteTitle.value.text,
                                 content = event.content,
-                                category = "",
-                                lastModified = DateTimeUtil.now(),
+                                category = null,
                                 colorRes = noteColor.value,
                             ),
                             false
@@ -101,17 +95,13 @@ class AddEditNoteViewModel(
 
     fun deleteNoteById() {
         viewModelScope.launch {
-            currentNoteId?.let {
-                if (it.toInt() != -1) {
-                    noteDataSource.deleteNoteById(it)
-                }
-            }
+            currentNoteId?.let { noteDataSource.deleteNoteById(it) }
         }
     }
 
-    sealed class UiEvent {
-        data class ShowSnackbar(val message: String) : UiEvent()
-        data object SaveNote : UiEvent()
+    sealed interface UiEvent {
+        data class ShowSnackbar(val message: String) : UiEvent
+        data object SaveNote : UiEvent
     }
 
 }

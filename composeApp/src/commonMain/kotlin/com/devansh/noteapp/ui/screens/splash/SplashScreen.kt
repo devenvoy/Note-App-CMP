@@ -36,7 +36,7 @@ fun NavGraphBuilder.splashScreen(navController: NavHostController) {
 @Composable
 fun SplashScreen(navToHome: UnitCBF, navToAuth: UnitCBF) {
 
-    val viewModel = koinViewModel<SplashScreenModel>()
+    val viewModel = koinViewModel<SplashScreenViewModel>()
     val uiState by viewModel.uiState.collectAsState()
 
     LaunchedEffect(Unit) {

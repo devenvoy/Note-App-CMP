@@ -1,7 +1,6 @@
 package com.devansh.noteapp.ui.screens.home.notes
 
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -22,7 +21,7 @@ import com.devansh.noteapp.domain.model.Note
 @Composable
 fun NoteScreenContent(
     state: NoteListState,
-    onNavigateToAddEditNote: (Long) -> Unit,
+    onNavigateToAddEditNote: (String?) -> Unit,
     isGridLayout: Boolean,
     onLongPress: (Note) -> Unit
 ) {
@@ -39,12 +38,9 @@ fun NoteScreenContent(
                         .padding(8.dp)
                         .fillMaxWidth()
                         .combinedClickable(
-                            onClick = {
-                                onNavigateToAddEditNote(note.id ?: -1)
-                            },
-                            onLongClick = {
-                                onLongPress(note)
-                            })
+                            onClick = { onNavigateToAddEditNote(note.id) },
+                            onLongClick = { onLongPress(note) }
+                        )
                 )
                 Spacer(modifier = Modifier.height(16.dp))
             }

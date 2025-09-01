@@ -75,9 +75,7 @@ fun NavGraphBuilder.addNoteScreen(navHostController: NavHostController) {
     composable<NavRoute.AddNote> {
         val noteId = it.toRoute<NavRoute.AddNote>().noteId
         val viewModel = koinViewModel<AddEditNoteViewModel>()
-        LaunchedEffect(Unit) {
-            viewModel.initState(noteId = -1)
-        }
+        LaunchedEffect(Unit) { viewModel.initState(noteId = noteId) }
         AddEditScreenContent(
             viewModel = viewModel,
             onNavigateUp = { navHostController.navigateUp() }
@@ -91,7 +89,7 @@ fun NavGraphBuilder.addNoteScreen(navHostController: NavHostController) {
 fun AddEditScreenContent(
     viewModel: AddEditNoteViewModel, onNavigateUp: () -> Unit
 ) {
-    val titleState = viewModel.noteTitle.value
+    val titleState by viewModel.noteTitle
     val selectedBgColor by viewModel.noteColor.collectAsState()
     val noteBgAnimation = remember { Animatable(Color(selectedBgColor)) }
     val richTextState = rememberRichTextState()

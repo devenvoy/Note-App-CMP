@@ -60,8 +60,6 @@ import com.devansh.noteapp.di.platform_di.clipEntryOf
 import com.devansh.noteapp.di.platform_di.isDesktop
 import com.devansh.noteapp.di.platform_di.shareText
 import com.devansh.noteapp.domain.model.Note
-import com.devansh.noteapp.domain.repo.AppCacheSetting
-import com.devansh.noteapp.domain.utils.LongCBF
 import com.devansh.noteapp.domain.utils.UnitCBF
 import com.devansh.noteapp.navigation.NavRoute
 import com.devansh.noteapp.ui.components.ExpandableSearchView
@@ -82,13 +80,11 @@ import note_app_cmp.composeapp.generated.resources.ic_menu_delete
 import note_app_cmp.composeapp.generated.resources.ic_menu_edit
 import note_app_cmp.composeapp.generated.resources.ic_menu_share
 import org.jetbrains.compose.resources.painterResource
-import org.koin.compose.koinInject
 import org.koin.compose.viewmodel.koinViewModel
 
 fun NavGraphBuilder.homeScreen(mainNavController: NavHostController) {
     composable<NavRoute.HomeScreen> {
-        val homeScreenModel = koinViewModel<HomeScreenModel>()
-        val pref = koinInject<AppCacheSetting>()
+        val homeScreenModel = koinViewModel<HomeScreenViewModel>()
         HomeScreenContent(
             homeScreenModel = homeScreenModel,
             onNavigateToAddEditNote = { mainNavController.navigate(NavRoute.AddNote()) },
@@ -100,18 +96,20 @@ fun NavGraphBuilder.homeScreen(mainNavController: NavHostController) {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreenContent(
-    homeScreenModel: HomeScreenModel,
-    onNavigateToAddEditNote: LongCBF,
+    homeScreenModel: HomeScreenViewModel,
+    onNavigateToAddEditNote: (String?) -> Unit,
     goToSettings: UnitCBF,
 ) {
-    val scope = rememberCoroutineScope()
-    val noteState by homeScreenModel.noteState.collectAsState()
-    val state = rememberPullToRefreshState()
     val clipboard = LocalClipboard.current
+    val scope = rememberCoroutineScope()
+    val toasterState = rememberToasterState()
+    val state = rememberPullToRefreshState()
     val sheetState = rememberModalBottomSheetState()
+
+    val noteState by homeScreenModel.noteState.collectAsState()
+
     var selectedNote by remember { mutableStateOf<Note?>(null) }
     var isBottomSheetVisible by remember { mutableStateOf(false) }
-    val toasterState = rememberToasterState()
 
     Scaffold(
         topBar = {
@@ -120,12 +118,8 @@ fun HomeScreenContent(
                 expandedInitially = noteState.isSearchActive,
                 onExpandedChanged = { b -> homeScreenModel.onToggleSearch() },
                 searchDisplay = noteState.searchText,
-                onSearchDisplayChanged = {
-                    homeScreenModel.onSearchTextChange(it)
-                },
-                onSearch = {
-                    homeScreenModel.onSearchTextChange("")
-                },
+                onSearchDisplayChanged = homeScreenModel::onSearchTextChange,
+                onSearch = { homeScreenModel.onSearchTextChange("") },
             ) {
                 TopAppBar(
                     colors = TopAppBarDefaults.topAppBarColors(
@@ -133,11 +127,9 @@ fun HomeScreenContent(
                     titleContentColor = MaterialTheme.colorScheme.onSurface,
                     actionIconContentColor = MaterialTheme.colorScheme.primary,
                 ), title = {
-                        Text(text = "Notes", fontSize = 16.ssp)
+                    Text(text = "Notes", fontSize = 16.ssp)
                 }, actions = {
-                    IconButton(onClick = {
-                        homeScreenModel.onToggleSearch()
-                    }) {
+                    IconButton(onClick = homeScreenModel::onToggleSearch) {
                         Icon(
                             imageVector = Icons.Filled.Search, contentDescription = "search"
                         )
@@ -155,7 +147,7 @@ fun HomeScreenContent(
         floatingActionButton = {
             FloatingActionButton(
                 modifier = Modifier.imePadding(),
-                onClick = { onNavigateToAddEditNote(-1) }
+                onClick = { onNavigateToAddEditNote(null) }
             ) {
                 Icon(
                     modifier = Modifier.size(24.dp),
@@ -183,7 +175,7 @@ fun HomeScreenContent(
             ) {
                 NoteMenuBottomSheet(
                     onEditClick = {
-                        onNavigateToAddEditNote(selectedNote?.id ?: -1)
+                        onNavigateToAddEditNote(selectedNote?.id)
                         dismissSheet()
                     },
                     onShareClick = {
@@ -207,7 +199,7 @@ fun HomeScreenContent(
                         }
 
                         toasterState.show(
-                            "Copied to clipboard",
+                            message = "Copied to clipboard",
                             duration = ToasterDefaults.DurationShort,
                             type = ToastType.Info
                         )
@@ -257,10 +249,10 @@ fun HomeScreenContent(
 
 @Composable
 fun NoteMenuBottomSheet(
-    onEditClick: () -> Unit,
-    onCopyClick: () -> Unit,
-    onShareClick: () -> Unit,
-    onDeleteClick: () -> Unit,
+    onEditClick: UnitCBF,
+    onCopyClick: UnitCBF,
+    onShareClick: UnitCBF,
+    onDeleteClick: UnitCBF,
     showEditOption: Boolean
 ) {
     Column(

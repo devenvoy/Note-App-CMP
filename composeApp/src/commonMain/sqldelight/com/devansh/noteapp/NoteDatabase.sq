@@ -1,47 +1,38 @@
 CREATE TABLE IF NOT EXISTS noteEntity(
-    id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    id TEXT PRIMARY KEY,
+    ownerId TEXT,
     title TEXT NOT NULL,
     content TEXT NOT NULL,
-    category TEXT,
-    colorres INTEGER NOT NULL,
-    last_modified INTEGER NOT NULL,
+    colorRes INTEGER NOT NULL,
+    categoryId TEXT,
+    categoryName TEXT NOT NULL,
     isSynced INTEGER NOT NULL DEFAULT 0
 );
 
 getAllNotes:
-SELECT *
-FROM noteEntity;
+SELECT * FROM noteEntity;
 
 getAllUnsyncedNotes:
-SELECT *
-FROM noteEntity
+SELECT * FROM noteEntity
 WHERE isSynced = 0;
 
 getAllSyncedNotes:
-SELECT *
-FROM noteEntity
+SELECT * FROM noteEntity
 WHERE isSynced = 1;
 
 getNoteById:
-SELECT *
-FROM noteEntity
+SELECT * FROM noteEntity
 WHERE id = ?;
 
 insertNote:
-INSERT OR REPLACE
-INTO noteEntity (
-    id, title, content,category, colorres, last_modified, isSynced
-) VALUES (?,?,?,?,?,?,?);
+INSERT OR REPLACE INTO noteEntity (id,ownerId,title,content,colorRes,categoryId,categoryName,isSynced)
+VALUES (?, ?, ?, ?, ?, ?, ?, ?);
 
-
-markNoteAsSync:
-UPDATE noteEntity
-SET isSynced = 1
-WHERE id = ?;
+markNoteAsSynced:
+UPDATE noteEntity SET isSynced = 1 WHERE id = ?;
 
 deleteNoteById:
-DELETE FROM noteEntity
-WHERE id = ?;
+DELETE FROM noteEntity WHERE id = ?;
 
 emptyNoteTable:
 DELETE FROM noteEntity;

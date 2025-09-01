@@ -6,22 +6,18 @@ import com.devansh.noteapp.ui.theme.LightGreenHex
 import com.devansh.noteapp.ui.theme.RedOrangeHex
 import com.devansh.noteapp.ui.theme.RedPinkHex
 import com.devansh.noteapp.ui.theme.VioletHex
-import kotlin.time.Instant
-import kotlinx.datetime.LocalDateTime
-import kotlinx.datetime.TimeZone
-import kotlinx.datetime.toLocalDateTime
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
-import kotlin.time.ExperimentalTime
 
 @Serializable
 data class Note(
-    @SerialName("id") val id: Long?,
+    @SerialName("id") val id: String?,
+    @SerialName("ownerId") val ownerId: String? = null,
     @SerialName("title") val title: String,
     @SerialName("content") val content: String,
-    @SerialName("colorRes") val colorRes: Long,
-    @SerialName("category") val category: String?,
-    @SerialName("modifiedAt") val lastModified: LocalDateTime,
+    @SerialName("color") val colorRes: Long,
+    @SerialName("categoryId") val category: String? = null,
+    @SerialName("categoryName") val categoryName: String = "Uncategorized"
 ) {
     companion object {
         val colors = listOf(
@@ -35,15 +31,12 @@ data class Note(
         fun generateRandomColor() = colors.random()
     }
 }
-
-
-@OptIn(ExperimentalTime::class)
 fun NoteEntity.toNote() = Note(
     id = id,
     title = title,
     content = content,
-    colorRes = colorres,
-    category = category,
-    lastModified = Instant.fromEpochMilliseconds(last_modified)
-        .toLocalDateTime(TimeZone.currentSystemDefault())
+    colorRes = colorRes,
+    ownerId = ownerId,
+    category = categoryId,
+    categoryName = categoryName,
 )

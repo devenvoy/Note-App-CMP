@@ -10,7 +10,7 @@ import kotlinx.coroutines.launch
 import com.devansh.noteapp.domain.utils.Result
 import kotlinx.coroutines.flow.update
 
-class SplashScreenModel(
+class SplashScreenViewModel(
     private val pref: AppCacheSetting,
     private val authService: AuthService
 ) : ViewModel() {

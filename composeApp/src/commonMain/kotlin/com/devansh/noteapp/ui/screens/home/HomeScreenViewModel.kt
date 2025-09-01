@@ -4,13 +4,13 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import co.touchlab.kermit.Logger
-import com.devansh.noteapp.domain.utils.onFailure
-import com.devansh.noteapp.domain.utils.onSuccess
 import com.devansh.noteapp.domain.model.Note
 import com.devansh.noteapp.domain.repo.AppCacheSetting
 import com.devansh.noteapp.domain.repo.NoteDataSource
-import com.devansh.noteapp.domain.repo.NoteRemoteDao
+import com.devansh.noteapp.domain.repo.NoteRemoteService
 import com.devansh.noteapp.domain.repo.SearchNotes
+import com.devansh.noteapp.domain.utils.onFailure
+import com.devansh.noteapp.domain.utils.onSuccess
 import com.devansh.noteapp.ui.screens.home.notes.NoteListState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -19,10 +19,10 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-class HomeScreenModel(
+class HomeScreenViewModel(
     private val pref: AppCacheSetting,
     private val noteDataSource: NoteDataSource,
-    private val noteRemoteDao: NoteRemoteDao
+    private val noteRemoteService: NoteRemoteService
 ) : ViewModel() {
 
     // use case
@@ -71,10 +71,10 @@ class HomeScreenModel(
         }
     }
 
-    fun deleteNoteById(id: Long) {
+    fun deleteNoteById(id: String) {
         viewModelScope.launch {
             noteDataSource.deleteNoteById(id)
-            noteRemoteDao.deleteNote(id, pref.accessToken.toString())
+            noteRemoteService.deleteNote(id, pref.accessToken.toString())
         }
     }
 
@@ -82,7 +82,7 @@ class HomeScreenModel(
         viewModelScope.launch {
             try {
                 isRefreshing.value = true
-                val result = noteRemoteDao.getNotes(pref.accessToken.toString())
+                val result = noteRemoteService.getNotes(pref.accessToken.toString())
 
                 result.onSuccess { response ->
                     if (response.status) {
