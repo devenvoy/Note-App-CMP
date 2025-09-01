@@ -4,7 +4,11 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.devansh.noteapp.domain.model.Note
+import com.devansh.noteapp.domain.repo.AppCacheSetting
 import com.devansh.noteapp.domain.repo.NoteDataSource
+import com.devansh.noteapp.domain.repo.NoteRemoteService
+import com.devansh.noteapp.domain.utils.onFailure
+import com.devansh.noteapp.domain.utils.onSuccess
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
@@ -12,7 +16,9 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
 class AddEditNoteViewModel(
-    private val noteDataSource: NoteDataSource
+    private val pref: AppCacheSetting,
+    private val noteDataSource: NoteDataSource,
+    private val noteRemoteService: NoteRemoteService
 ) : ViewModel() {
 
     val noteTitle = mutableStateOf(NoteTextFieldState(hint = "Enter title"))
@@ -71,16 +77,16 @@ class AddEditNoteViewModel(
             is AddEditNoteEvent.SaveNote -> {
                 viewModelScope.launch {
                     try {
-                        noteDataSource.insertNote(
-                            Note(
-                                id = currentNoteId,
-                                title = noteTitle.value.text,
-                                content = event.content,
-                                category = null,
-                                colorRes = noteColor.value,
-                            ),
-                            false
+                        val note = Note(
+                            id = currentNoteId,
+                            title = noteTitle.value.text,
+                            content = event.content,
+                            category = null,
+                            colorRes = noteColor.value,
                         )
+                        noteRemoteService.upsert(note, pref.accessToken.toString())
+                            .onSuccess { noteDataSource.insertNote(it, true) }
+                            .onFailure { noteDataSource.insertNote(note, false) }
                         _eventFlow.emit(UiEvent.SaveNote)
                     } catch (e: Exception) {
                         _eventFlow.emit(

@@ -1,8 +1,6 @@
 package com.devansh.noteapp.data.remote
 
 import com.devansh.noteapp.domain.entity.ServerError
-import com.devansh.noteapp.domain.entity.ServerResponse
-import com.devansh.noteapp.domain.model.GetNotesResponse
 import com.devansh.noteapp.domain.model.Note
 import com.devansh.noteapp.domain.repo.NoteRemoteService
 import com.devansh.noteapp.domain.utils.BaseGateway
@@ -27,8 +25,8 @@ class NoteRemoteServiceImpl(
     override suspend fun upsert(
         notes: Note,
         accessToken: String
-    ): Result<ServerResponse<Note>, ServerError> {
-        return tryToExecute<ServerResponse<Note>> {
+    ): Result<Note, ServerError> {
+        return tryToExecute<Note> {
             post(BuildConfig.BASE_URL + "/notes") {
                 contentType(ContentType.Application.Json)
                 header(HttpHeaders.Authorization, "Bearer $accessToken")
@@ -37,8 +35,8 @@ class NoteRemoteServiceImpl(
         }
     }
 
-    override suspend fun getNotes(accessToken: String): Result<ServerResponse<GetNotesResponse>, ServerError> {
-        return tryToExecute<ServerResponse<GetNotesResponse>> {
+    override suspend fun getNotes(accessToken: String): Result<List<Note>, ServerError> {
+        return tryToExecute<List<Note>> {
             get(BuildConfig.BASE_URL + "/notes") {
                 header(HttpHeaders.Authorization, "Bearer $accessToken")
             }

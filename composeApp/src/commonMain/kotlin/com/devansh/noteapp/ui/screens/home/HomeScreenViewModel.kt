@@ -49,14 +49,8 @@ class HomeScreenViewModel(
 
     init {
         getAllNotes()
-        loadNotes()
-    }
-
-    private fun loadNotes() {
         viewModelScope.launch {
-            noteDataSource.getAllNotes().collect { newList ->
-                _notes.update { newList }
-            }
+            noteDataSource.getAllNotes().collect { newList -> _notes.update { newList } }
         }
     }
 
@@ -85,14 +79,7 @@ class HomeScreenViewModel(
                 val result = noteRemoteService.getNotes(pref.accessToken.toString())
 
                 result.onSuccess { response ->
-                    if (response.status) {
-                        response.value?.notes?.forEach { note ->
-                            noteDataSource.insertNote(note, true)
-                        }
-                    } else {
-                        Logger.e("SyncError", null) { "${response.detail}" }
-                        Logger.e("SyncError", null) { "Failed to sync data" }
-                    }
+                    response.forEach { note -> noteDataSource.insertNote(note, true) }
                 }.onFailure {
                     Logger.e("SyncError", null) { "Failed to sync data" }
                 }

@@ -11,7 +11,12 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
 import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
 import androidx.compose.foundation.lazy.staggeredgrid.items
+import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.devansh.noteapp.domain.model.Note
@@ -25,10 +30,28 @@ fun NoteScreenContent(
     isGridLayout: Boolean,
     onLongPress: (Note) -> Unit
 ) {
+
+    val window = currentWindowAdaptiveInfo()
+    val width = window.windowSizeClass.windowWidthSizeClass
+
+    var gridCells by rememberSaveable(width, isGridLayout) {
+        val isDesktop = window.windowSizeClass.isWidthAtLeastBreakpoint(1440)
+        val isTablet = window.windowSizeClass.isWidthAtLeastBreakpoint(720)
+
+        mutableStateOf(
+            if (isGridLayout) {
+                when {
+                    isDesktop -> 4
+                    isTablet -> 3
+                    else -> 2
+                }
+            } else 1
+        )
+    }
+
     Column(modifier = Modifier.fillMaxSize()) {
-        Spacer(modifier = Modifier.height(16.dp))
         LazyVerticalStaggeredGrid(
-            columns = StaggeredGridCells.Fixed(if (isGridLayout) 2 else 1),
+            columns = StaggeredGridCells.Fixed(gridCells),
             modifier = Modifier.fillMaxSize()
         ) {
             items(state.notes) { note ->
@@ -36,7 +59,11 @@ fun NoteScreenContent(
                     note = note,
                     modifier = Modifier
                         .padding(8.dp)
-                        .fillMaxWidth()
+                        .then(
+                            if (isGridLayout)
+                                Modifier
+                            else Modifier.fillMaxWidth()
+                        )
                         .combinedClickable(
                             onClick = { onNavigateToAddEditNote(note.id) },
                             onLongClick = { onLongPress(note) }

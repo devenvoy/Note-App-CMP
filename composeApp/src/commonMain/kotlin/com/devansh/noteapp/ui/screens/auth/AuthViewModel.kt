@@ -43,26 +43,20 @@ class AuthViewModel(
         PasswordRule.containsUppercase()
     )
 
-    fun onEmailChange(email: String) {
-        _email.update { email }
-    }
 
-    fun onPasswordChange(password: String) {
-        _password.update { password }
-    }
-
-    fun onConfirmPasswordChanged(password: String) {
-        _confirmPassword.update { password }
-    }
+    fun onEmailChange(email: String) = _email.update { email }
+    fun onPasswordChange(password: String) = _password.update { password }
+    fun onConfirmPasswordChanged(password: String) = _confirmPassword.update { password }
 
     fun login() {
         _authState.update { UiState.Loading }
         viewModelScope.launch {
-            if (!validateLoginInputs()) return@launch
+            if (!validateInputs(false)) return@launch
             val result = authService.login(_email.value, _password.value)
             result.onSuccess { res ->
                 pref.accessToken = res.accessToken
                 pref.refreshToken = res.refreshToken
+                pref.setUserEmail(_email.value)
                 _authState.update { UiState.Success("Logged in successfully") }
             }.onFailure { e ->
                 _authState.update { UiState.Error(e.detail) }
@@ -73,13 +67,14 @@ class AuthViewModel(
     fun register() {
         _authState.update { UiState.Loading }
         viewModelScope.launch {
-            if (!validateRegisterInputs()) return@launch
+            if (!validateInputs(true)) return@launch
             val result = authService.register(_email.value, _password.value)
             result.onSuccess { response ->
                 val loginResult = authService.login(_email.value, _password.value)
                 loginResult.onSuccess { res ->
                     pref.accessToken = res.accessToken
                     pref.refreshToken = res.refreshToken
+                    pref.setUserEmail(_email.value)
                     _authState.update { UiState.Success("Registered and Logged in successfully") }
                 }.onFailure { e ->
                     _authState.update { UiState.Error(e.detail) }
@@ -90,73 +85,30 @@ class AuthViewModel(
         }
     }
 
-    private fun isValidEmail(email: String): Boolean {
-        val emailRegex = "^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$"
-        return email.matches(Regex(emailRegex))
-    }
 
-    private fun validateLoginInputs(): Boolean {
+    private fun validateInputs(requireConfirm: Boolean): Boolean {
+        if (_email.value.isBlank()) return error("Email cannot be empty")
+        if (!isValidEmail(_email.value)) return error("Invalid email format")
+
         val passwordResult = passwordRules.map {
             PasswordRuleResult(it.description, it.predicate(_password.value))
         }
-
-        return when {
-            _email.value.isBlank() -> {
-                _authState.update { UiState.Error("Email cannot be empty") }
-                false
-            }
-
-            !isValidEmail(_email.value) -> {
-                _authState.update { UiState.Error("Invalid email format") }
-                false
-            }
-
-            passwordResult.any { !it.isFulfilled } -> {
-                _authState.update {
-                    UiState.Error(
-                        passwordResult.firstOrNull { !it.isFulfilled }?.description
-                            ?: "Invalid Password"
-                    )
-                }
-                false
-            }
-
-            else -> true
+        if (passwordResult.any { !it.isFulfilled }) {
+            return error(passwordResult.first { !it.isFulfilled }.description)
         }
+
+        if (requireConfirm && _password.value != _confirmPassword.value) {
+            return error("Confirm password and password do not match")
+        }
+
+        return true
     }
 
-    private fun validateRegisterInputs(): Boolean {
-        val passwordResult = passwordRules.map {
-            PasswordRuleResult(it.description, it.predicate(_password.value))
-        }
-
-        return when {
-            _email.value.isBlank() -> {
-                _authState.update { UiState.Error("Email cannot be empty") }
-                false
-            }
-
-            !isValidEmail(_email.value) -> {
-                _authState.update { UiState.Error("Invalid email format") }
-                false
-            }
-
-            passwordResult.any { !it.isFulfilled } -> {
-                _authState.update {
-                    UiState.Error(
-                        passwordResult.firstOrNull { !it.isFulfilled }?.description
-                            ?: "Invalid Password"
-                    )
-                }
-                false
-            }
-
-            _password.value != _confirmPassword.value -> {
-                _authState.update { UiState.Error("Confirm password and password do not match") }
-                false
-            }
-
-            else -> true
-        }
+    private fun error(msg: String): Boolean {
+        _authState.update { UiState.Error(msg) }
+        return false
     }
+
+    private fun isValidEmail(email: String): Boolean =
+        email.matches(Regex("^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$"))
 }

@@ -1,20 +1,24 @@
 package com.devansh.noteapp.di.platform_di
 
+import app.cash.sqldelight.async.coroutines.synchronous
+import app.cash.sqldelight.db.SqlDriver
+import app.cash.sqldelight.driver.native.NativeSqliteDriver
 import com.devansh.noteapp.NoteDatabase
-import com.devansh.noteapp.data.local.DatabaseDriverFactory
 import org.koin.core.module.Module
 import org.koin.dsl.module
-import platform.UIKit.*
-import platform.Foundation.*
+import platform.UIKit.UIActivityViewController
+import platform.UIKit.UIApplication
+import platform.UIKit.UIViewController
 
 actual fun platformModule(): Module = module {
-    single { NoteDatabase(DatabaseDriverFactory().createDriver()) }
+    single<SqlDriver> {
+        NativeSqliteDriver(NoteDatabase.Schema.synchronous(), "note_db.db")
+    }
 }
 
 actual fun shareText(text: String, mimeType: String) {
     val activityController = UIActivityViewController(activityItems = listOf(text), applicationActivities = null)
-
-    val controller = getCurrentViewController() // Implement a function to get top UIViewController
+    val controller = getCurrentViewController()
     controller?.presentViewController(activityController, animated = true, completion = null)
 }
 
@@ -26,5 +30,3 @@ fun getCurrentViewController(): UIViewController? {
     }
     return topController
 }
-
-actual fun isDesktop(): Boolean = false

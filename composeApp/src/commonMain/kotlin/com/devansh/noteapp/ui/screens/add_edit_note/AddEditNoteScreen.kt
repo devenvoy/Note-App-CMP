@@ -127,12 +127,12 @@ fun AddEditScreenContent(
         topBar = {
             TopAppBar(
                 colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = noteBgAnimation.value.copy(alpha = .4f)
+                    containerColor = noteBgAnimation.value.copy(
+                        .4f
+                    )
                 ),
                 actions = {
-                    IconButton(onClick = {
-                        isBottomSheetVisible = true
-                    }) {
+                    IconButton(onClick = { isBottomSheetVisible = true }) {
                         Icon(
                             modifier = Modifier.size(14.dp),
                             imageVector = Icons.AutoMirrored.Filled.More,
@@ -157,9 +157,7 @@ fun AddEditScreenContent(
                 modifier = Modifier.imePadding(),
                 onClick = {
                     viewModel.onEvent(
-                        AddEditNoteEvent.SaveNote(
-                            richTextState.toHtml()
-                        )
+                        AddEditNoteEvent.SaveNote(richTextState.toHtml())
                     )
                 }
             ) {

@@ -1,16 +1,20 @@
 package com.devansh.noteapp.di.platform_di
 
 import android.content.Intent
-import androidx.core.content.ContextCompat.startActivity
+import app.cash.sqldelight.async.coroutines.synchronous
+import app.cash.sqldelight.db.SqlDriver
+import app.cash.sqldelight.driver.android.AndroidSqliteDriver
 import com.devansh.noteapp.MainActivity
 import com.devansh.noteapp.NoteApp
 import com.devansh.noteapp.NoteDatabase
-import com.devansh.noteapp.data.local.DatabaseDriverFactory
 import org.koin.core.module.Module
 import org.koin.dsl.module
 
 actual fun platformModule(): Module = module {
-    single { NoteDatabase(DatabaseDriverFactory(NoteApp.AppContext).createDriver()) }
+    single<SqlDriver> {
+        val context = NoteApp.AppContext
+        AndroidSqliteDriver(NoteDatabase.Schema.synchronous(), context, "app.db")
+    }
 }
 
 actual fun shareText(text: String, mimeType: String) {
@@ -21,6 +25,3 @@ actual fun shareText(text: String, mimeType: String) {
     }
     MainActivity.context.startActivity(Intent.createChooser(intent, "Share via"))
 }
-
-
-actual fun isDesktop(): Boolean = false

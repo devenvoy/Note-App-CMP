@@ -57,7 +57,6 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import com.devansh.noteapp.di.platform_di.clipEntryOf
-import com.devansh.noteapp.di.platform_di.isDesktop
 import com.devansh.noteapp.di.platform_di.shareText
 import com.devansh.noteapp.domain.model.Note
 import com.devansh.noteapp.domain.utils.UnitCBF
@@ -87,7 +86,7 @@ fun NavGraphBuilder.homeScreen(mainNavController: NavHostController) {
         val homeScreenModel = koinViewModel<HomeScreenViewModel>()
         HomeScreenContent(
             homeScreenModel = homeScreenModel,
-            onNavigateToAddEditNote = { mainNavController.navigate(NavRoute.AddNote()) },
+            onNavigateToAddEditNote = { mainNavController.navigate(NavRoute.AddNote(it)) },
             goToSettings = { mainNavController.navigate(NavRoute.Setting) },
         )
     }
@@ -166,9 +165,7 @@ fun HomeScreenContent(
             }
 
             ModalBottomSheet(
-                onDismissRequest = {
-                    dismissSheet()
-                },
+                onDismissRequest = { dismissSheet() },
                 sheetState = sheetState,
                 tonalElevation = 0.dp,
                 dragHandle = null
@@ -338,35 +335,32 @@ fun NoteMenuBottomSheet(
                 }
             }
 
-            // share
-            if (isDesktop().not()) {
-                SecondaryOutlinedButton(
+            SecondaryOutlinedButton(
+                modifier = Modifier.fillMaxWidth(),
+                onClick = onShareClick,
+                contentPadding = PaddingValues(8.dp),
+                border = BorderStroke(1.dp, Color(0xffF9F8FA)),
+            ) {
+                Row(
                     modifier = Modifier.fillMaxWidth(),
-                    onClick = onShareClick,
-                    contentPadding = PaddingValues(8.dp),
-                    border = BorderStroke(1.dp, Color(0xffF9F8FA)),
+                    verticalAlignment = Alignment.CenterVertically,
                 ) {
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        verticalAlignment = Alignment.CenterVertically,
-                    ) {
 
-                        Image(
-                            modifier = Modifier.size(32.dp),
-                            painter = painterResource(Res.drawable.ic_menu_share),
-                            contentDescription = "edit"
-                        )
+                    Image(
+                        modifier = Modifier.size(32.dp),
+                        painter = painterResource(Res.drawable.ic_menu_share),
+                        contentDescription = "edit"
+                    )
 
-                        Text(
-                            modifier = Modifier.padding(horizontal = 16.dp),
-                            text = "Share",
-                            style = TextStyle(
-                                fontSize = 16.sp,
-                                fontWeight = W500,
-                                color = Color.Black
-                            )
+                    Text(
+                        modifier = Modifier.padding(horizontal = 16.dp),
+                        text = "Share",
+                        style = TextStyle(
+                            fontSize = 16.sp,
+                            fontWeight = W500,
+                            color = Color.Black
                         )
-                    }
+                    )
                 }
             }
 

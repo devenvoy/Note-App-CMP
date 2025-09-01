@@ -24,7 +24,7 @@ val screenModelsModule = module {
     viewModel { SplashScreenViewModel(get(),get()) }
     viewModel { AuthViewModel(get(),get()) }
     viewModel { HomeScreenViewModel(get(),get(),get()) }
-    viewModel { AddEditNoteViewModel(get()) }
+    viewModel { AddEditNoteViewModel(get(), get(), get()) }
     viewModel { SettingViewModel(get(), get()) }
 }
 
