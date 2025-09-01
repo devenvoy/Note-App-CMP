@@ -7,6 +7,8 @@ import com.devansh.noteapp.domain.repo.AuthService
 import com.devansh.noteapp.domain.utils.onFailure
 import com.devansh.noteapp.domain.utils.onSuccess
 import com.devansh.noteapp.ui.components.UiState
+import io.github.jan.supabase.compose.auth.ui.password.PasswordRule
+import io.github.jan.supabase.compose.auth.ui.password.PasswordRuleResult
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
@@ -33,6 +35,14 @@ class AuthViewModel(
     private val _authState = MutableStateFlow<AuthScreenState>(UiState.Idle)
     val authState = _authState.asStateFlow()
 
+    val passwordRules = listOf(
+        PasswordRule.minLength(8),
+        PasswordRule.containsSpecialCharacter(),
+        PasswordRule.containsDigit(),
+        PasswordRule.containsLowercase(),
+        PasswordRule.containsUppercase()
+    )
+
     fun onEmailChange(email: String) {
         _email.update { email }
     }
@@ -52,6 +62,7 @@ class AuthViewModel(
             val result = authService.login(_email.value, _password.value)
             result.onSuccess { res ->
                 pref.accessToken = res.accessToken
+                pref.refreshToken = res.refreshToken
                 _authState.update { UiState.Success("Logged in successfully") }
             }.onFailure { e ->
                 _authState.update { UiState.Error(e.detail) }
@@ -63,10 +74,16 @@ class AuthViewModel(
         _authState.update { UiState.Loading }
         viewModelScope.launch {
             if (!validateRegisterInputs()) return@launch
-            val result = authService.login(_email.value, _password.value)
+            val result = authService.register(_email.value, _password.value)
             result.onSuccess { response ->
-                pref.accessToken = response.accessToken
-                _authState.update { UiState.Success("Account created successfully") }
+                val loginResult = authService.login(_email.value, _password.value)
+                loginResult.onSuccess { res ->
+                    pref.accessToken = res.accessToken
+                    pref.refreshToken = res.refreshToken
+                    _authState.update { UiState.Success("Registered and Logged in successfully") }
+                }.onFailure { e ->
+                    _authState.update { UiState.Error(e.detail) }
+                }
             }.onFailure { e ->
                 _authState.update { UiState.Error(e.detail) }
             }
@@ -79,6 +96,10 @@ class AuthViewModel(
     }
 
     private fun validateLoginInputs(): Boolean {
+        val passwordResult = passwordRules.map {
+            PasswordRuleResult(it.description, it.predicate(_password.value))
+        }
+
         return when {
             _email.value.isBlank() -> {
                 _authState.update { UiState.Error("Email cannot be empty") }
@@ -90,8 +111,13 @@ class AuthViewModel(
                 false
             }
 
-            _password.value.isBlank() -> {
-                _authState.update { UiState.Error("Password cannot be empty") }
+            passwordResult.any { !it.isFulfilled } -> {
+                _authState.update {
+                    UiState.Error(
+                        passwordResult.firstOrNull { !it.isFulfilled }?.description
+                            ?: "Invalid Password"
+                    )
+                }
                 false
             }
 
@@ -100,6 +126,10 @@ class AuthViewModel(
     }
 
     private fun validateRegisterInputs(): Boolean {
+        val passwordResult = passwordRules.map {
+            PasswordRuleResult(it.description, it.predicate(_password.value))
+        }
+
         return when {
             _email.value.isBlank() -> {
                 _authState.update { UiState.Error("Email cannot be empty") }
@@ -111,13 +141,18 @@ class AuthViewModel(
                 false
             }
 
-            _password.value.isBlank() -> {
-                _authState.update { UiState.Error("Password cannot be empty") }
+            passwordResult.any { !it.isFulfilled } -> {
+                _authState.update {
+                    UiState.Error(
+                        passwordResult.firstOrNull { !it.isFulfilled }?.description
+                            ?: "Invalid Password"
+                    )
+                }
                 false
             }
 
             _password.value != _confirmPassword.value -> {
-                _authState.update { UiState.Error("Passwords do not match") }
+                _authState.update { UiState.Error("Confirm password and password do not match") }
                 false
             }
 

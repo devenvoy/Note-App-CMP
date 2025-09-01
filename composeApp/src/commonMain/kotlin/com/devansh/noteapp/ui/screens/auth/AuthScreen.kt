@@ -64,14 +64,17 @@ import org.koin.compose.viewmodel.koinViewModel
 
 fun NavGraphBuilder.authScreen(navHostController: NavHostController) {
     composable<NavRoute.Auth> {
-        AuthScreenContent {}
+        AuthScreenContent {
+            navHostController.navigate(NavRoute.HomeScreen)
+        }
     }
 }
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun AuthScreenContent(
-    authViewModel: AuthViewModel = koinViewModel<AuthViewModel>(), onSuccess: () -> Unit
+    authViewModel: AuthViewModel = koinViewModel<AuthViewModel>(),
+    onSuccess: () -> Unit
 ) {
     val scope = rememberCoroutineScope()
     var selectedTabIndex by rememberSaveable { mutableStateOf(0) }
@@ -230,7 +233,7 @@ fun LoginScreenContent(viewModel: AuthViewModel, isLogin: Boolean) {
             value = email,
             shape = MaterialTheme.shapes.medium,
             onValueChange = viewModel::onEmailChange,
-            placeholder = { Text("Enter email") },
+            placeholder = { Text("abc@gmail.com") },
             label = { Text("Email") },
         )
 
@@ -239,7 +242,7 @@ fun LoginScreenContent(viewModel: AuthViewModel, isLogin: Boolean) {
             value = password,
             shape = MaterialTheme.shapes.medium,
             onValueChange = viewModel::onPasswordChange,
-            placeholder = { Text("Password") },
+            placeholder = { Text("Stasp78JK") },
             label = { Text("Password") },
         )
 
@@ -249,7 +252,7 @@ fun LoginScreenContent(viewModel: AuthViewModel, isLogin: Boolean) {
                 value = confirmPwd,
                 shape = MaterialTheme.shapes.medium,
                 onValueChange = viewModel::onConfirmPasswordChanged,
-                placeholder = { Text("confirm Password") },
+                placeholder = { Text("Stasp78JK") },
                 label = { Text("Confirm Password") },
             )
         }
@@ -258,9 +261,9 @@ fun LoginScreenContent(viewModel: AuthViewModel, isLogin: Boolean) {
             modifier = Modifier.widthIn(max = 300.dp, min = Dp.Infinity).padding(top = 20.dp),
             onClick = {
                 if (isLogin) {
-                    viewModel.register()
-                } else {
                     viewModel.login()
+                } else {
+                    viewModel.register()
                 }
             },
         ) {

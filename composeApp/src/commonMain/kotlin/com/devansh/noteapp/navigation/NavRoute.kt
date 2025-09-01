@@ -21,7 +21,7 @@ sealed interface NavRoute {
     data object NoteDetail : NavRoute
 
     @Serializable
-    data object AddNote : NavRoute
+    data class AddNote(val noteId: String? = null) : NavRoute
 
     @Serializable
     data object EditNote : NavRoute

@@ -13,6 +13,7 @@ import com.devansh.noteapp.domain.repo.NoteRemoteDao
 import com.devansh.noteapp.ui.screens.add_edit_note.AddEditNoteViewModel
 import com.devansh.noteapp.ui.screens.auth.AuthViewModel
 import com.devansh.noteapp.ui.screens.home.HomeScreenModel
+import com.devansh.noteapp.ui.screens.setting.SettingViewModel
 import com.devansh.noteapp.ui.screens.splash.SplashScreenModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
@@ -24,6 +25,7 @@ val screenModelsModule = module {
     viewModel { AuthViewModel(get(),get()) }
     viewModel { HomeScreenModel(get(),get(),get()) }
     viewModel { AddEditNoteViewModel(get()) }
+    viewModel { SettingViewModel(get(), get()) }
 }
 
 val repositoryModule = module {

@@ -46,11 +46,17 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalClipboardManager
+import androidx.compose.ui.platform.LocalClipboard
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
+import androidx.navigation.NavGraphBuilder
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.composable
+import androidx.navigation.toRoute
+import com.devansh.noteapp.di.platform_di.clipEntryOf
 import com.devansh.noteapp.domain.model.Note
+import com.devansh.noteapp.navigation.NavRoute
 import com.devansh.noteapp.ui.components.HintUI
 import com.devansh.noteapp.ui.screens.home.NoteMenuBottomSheet
 import com.dokar.sonner.ToastType
@@ -64,13 +70,19 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import org.koin.compose.viewmodel.koinViewModel
 
-@Composable
-fun AddEditNoteScreen(noteId: Long) {
-    val viewModel = koinViewModel<AddEditNoteViewModel>()
-    LaunchedEffect(Unit) {
-        viewModel.initState(noteId = noteId)
+
+fun NavGraphBuilder.addNoteScreen(navHostController: NavHostController) {
+    composable<NavRoute.AddNote> {
+        val noteId = it.toRoute<NavRoute.AddNote>().noteId
+        val viewModel = koinViewModel<AddEditNoteViewModel>()
+        LaunchedEffect(Unit) {
+            viewModel.initState(noteId = -1)
+        }
+        AddEditScreenContent(
+            viewModel = viewModel,
+            onNavigateUp = { navHostController.navigateUp() }
+        )
     }
-    AddEditScreenContent(viewModel = viewModel, onNavigateUp = { /*navigator.pop()*/ })
 }
 
 
@@ -87,7 +99,7 @@ fun AddEditScreenContent(
     val toasterState = rememberToasterState()
     val sheetState = rememberModalBottomSheetState()
     var isBottomSheetVisible by remember { mutableStateOf(false) }
-    val clipboardManager = LocalClipboardManager.current
+    val clipboardManager = LocalClipboard.current
 
     val scope = rememberCoroutineScope()
 
@@ -198,9 +210,11 @@ fun AddEditScreenContent(
                         onNavigateUp()
                     },
                     onCopyClick = {
-                        clipboardManager.setText(
-                            AnnotatedString("$titleState \n\n ${richTextState.toText()}")
-                        )
+                        scope.launch {
+                            clipboardManager.setClipEntry(
+                                clipEntryOf(AnnotatedString("$titleState \n\n ${richTextState.toText()}").toString())
+                            )
+                        }
                         toasterState.show(
                             "Copied to clipboard",
                             duration = ToasterDefaults.DurationShort,

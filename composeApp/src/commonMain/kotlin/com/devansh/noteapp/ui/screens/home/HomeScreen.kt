@@ -91,7 +91,7 @@ fun NavGraphBuilder.homeScreen(mainNavController: NavHostController) {
         val pref = koinInject<AppCacheSetting>()
         HomeScreenContent(
             homeScreenModel = homeScreenModel,
-            onNavigateToAddEditNote = { mainNavController.navigate(NavRoute.AddNote) },
+            onNavigateToAddEditNote = { mainNavController.navigate(NavRoute.AddNote()) },
             goToSettings = { mainNavController.navigate(NavRoute.Setting) },
         )
     }

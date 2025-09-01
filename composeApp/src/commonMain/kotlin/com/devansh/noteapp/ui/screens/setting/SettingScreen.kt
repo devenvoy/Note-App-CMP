@@ -20,33 +20,37 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.text.font.FontWeight.Companion.W500
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavGraphBuilder
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.composable
 import com.alorma.compose.settings.ui.SettingsGroup
 import com.alorma.compose.settings.ui.SettingsSwitch
+import com.devansh.noteapp.navigation.NavRoute
 import com.devansh.noteapp.ui.components.PrimaryButton
 import com.devansh.noteapp.ui.screens.core.ListType
 import network.chaintech.sdpcomposemultiplatform.ssp
 import org.koin.compose.viewmodel.koinViewModel
 
-@Composable
-fun SettingScreen() {
-    val viewModel = koinViewModel<SettingViewModel>()
-    val scope = rememberCoroutineScope()
-
-    SettingScreenContent(
-        viewModel = viewModel,
-        navigateBack = {},//            navigator.pop()        }
-        logOut = {
-            viewModel.logOut()
-            //            navigator.replace(AuthScreen())
-        }
-    )
+fun NavGraphBuilder.settingsScreen(navHostController: NavHostController) {
+    composable<NavRoute.Setting> {
+        val viewModel = koinViewModel<SettingViewModel>()
+        SettingScreenContent(
+            viewModel = viewModel,
+            navigateBack = { navHostController.navigateUp() },
+            logOut = {
+                viewModel.logOut()
+                navHostController.navigate(NavRoute.Auth) {
+                    popUpTo(NavRoute.HomeScreen) { inclusive = true }
+                }
+            }
+        )
+    }
 }
 
 
@@ -87,12 +91,12 @@ fun SettingScreenContent(
                         contentDescription = "back"
                     )
                 },
-                colors = TopAppBarDefaults.largeTopAppBarColors(
+                colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = MaterialTheme.colorScheme.surface,
                     scrolledContainerColor = MaterialTheme.colorScheme.surface,
+                    navigationIconContentColor = MaterialTheme.colorScheme.primary,
                     titleContentColor = MaterialTheme.colorScheme.onSurface,
-                    actionIconContentColor = MaterialTheme.colorScheme.primary,
-                    navigationIconContentColor = MaterialTheme.colorScheme.primary
+                    actionIconContentColor = MaterialTheme.colorScheme.primary
                 ),
             )
         }
