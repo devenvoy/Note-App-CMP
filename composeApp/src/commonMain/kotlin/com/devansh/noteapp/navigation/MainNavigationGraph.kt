@@ -18,7 +18,7 @@ fun MainNavigationGraph(
 
     NavHost(
         navController = mainNavController,
-        startDestination = NavRoute.HomeScreen
+        startDestination = NavRoute.SplashScreen
     ) {
         splashScreen(mainNavController)
 

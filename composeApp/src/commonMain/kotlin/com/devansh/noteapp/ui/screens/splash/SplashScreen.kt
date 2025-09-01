@@ -26,8 +26,16 @@ import org.koin.compose.viewmodel.koinViewModel
 fun NavGraphBuilder.splashScreen(navController: NavHostController) {
     composable<NavRoute.SplashScreen> {
         SplashScreen(
-            navToHome = { navController.navigate(NavRoute.HomeScreen) },
-            navToAuth = { navController.navigate(NavRoute.Auth) }
+            navToHome = {
+                navController.navigate(NavRoute.HomeScreen) {
+                    popUpTo(NavRoute.SplashScreen) { inclusive = true }
+                }
+            },
+            navToAuth = {
+                navController.navigate(NavRoute.Auth) {
+                    popUpTo(NavRoute.SplashScreen) { inclusive = true }
+                }
+            }
         )
     }
 }

@@ -19,8 +19,12 @@ import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.widthIn
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.BottomSheetDefaults
 import androidx.compose.material3.ContainedLoadingIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -29,6 +33,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SecondaryTabRow
 import androidx.compose.material3.Tab
 import androidx.compose.material3.Text
+import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -46,12 +51,20 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
+import com.devansh.noteapp.core.util.DeviceConfiguration.Companion.fromWindowSizeClass
+import com.devansh.noteapp.core.util.DeviceConfiguration.DESKTOP
+import com.devansh.noteapp.core.util.DeviceConfiguration.MOBILE_LANDSCAPE
+import com.devansh.noteapp.core.util.DeviceConfiguration.MOBILE_PORTRAIT
+import com.devansh.noteapp.core.util.DeviceConfiguration.TABLET_LANDSCAPE
+import com.devansh.noteapp.core.util.DeviceConfiguration.TABLET_PORTRAIT
 import com.devansh.noteapp.navigation.NavRoute
 import com.devansh.noteapp.ui.components.PrimaryButton
 import com.devansh.noteapp.ui.components.UiStateHandler
@@ -103,7 +116,7 @@ fun AuthScreenContent(
     }
 
     Box(
-        modifier = Modifier.imePadding().fillMaxSize()
+        modifier = Modifier.fillMaxSize()
             .background(MaterialTheme.colorScheme.background), contentAlignment = Alignment.Center
     ) {
 
@@ -157,14 +170,39 @@ fun AuthScreenContent(
             }
         }
 
+        val windowInfo = currentWindowAdaptiveInfo()
+        val deviceConfiguration = fromWindowSizeClass(windowInfo.windowSizeClass)
+
+        val bottomModifier = when (deviceConfiguration) {
+            MOBILE_PORTRAIT,
+            TABLET_PORTRAIT,
+            DESKTOP -> Modifier.align(Alignment.BottomCenter)
+
+            MOBILE_LANDSCAPE,
+            TABLET_LANDSCAPE -> Modifier.align(Alignment.BottomEnd)
+                .statusBarsPadding()
+                .padding(end = 20.dp)
+        }
+
+        val contentModifier = when (deviceConfiguration) {
+            MOBILE_LANDSCAPE, TABLET_LANDSCAPE -> Modifier
+                .widthIn(max = 500.dp)
+                .heightIn(min = 200.dp, max = 300.dp)
+                .verticalScroll(rememberScrollState())
+
+            else -> Modifier
+                .widthIn(max = 500.dp)
+                .heightIn(min = 600.dp, max = 800.dp)
+                .imePadding()
+        }
+
         AnimatedVisibility(
-            modifier = Modifier.align(Alignment.BottomCenter),
+            modifier = bottomModifier,
             visible = showContent,
             enter = slideInVertically { it } + fadeIn()
         ) {
             Column(
-                modifier = Modifier.widthIn(max = 500.dp).heightIn(min = 600.dp, max = 800.dp)
-                    .padding(top = 10.dp)
+                modifier = contentModifier
                     .clip(RoundedCornerShape(topStart = 25.dp, topEnd = 25.dp))
                     .background(MaterialTheme.colorScheme.background),
                 horizontalAlignment = Alignment.CenterHorizontally
@@ -205,7 +243,7 @@ fun AuthTabs(
             Tab(
                 selected = selectedTabIndex == index,
                 onClick = { onClick(index) },
-                modifier = Modifier.padding(12.dp)
+                modifier = Modifier.padding(8.dp)
             ) {
                 Text(text = tab)
             }
@@ -224,7 +262,7 @@ fun LoginScreenContent(viewModel: AuthViewModel, isLogin: Boolean) {
     val inputModifier = Modifier.fillMaxWidth(.9f)
 
     Column(
-        modifier = Modifier.padding(top = 20.dp).padding(8.dp).fillMaxWidth(),
+        modifier = Modifier.padding(top = 20.dp).fillMaxWidth(),
         verticalArrangement = Arrangement.spacedBy(8.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -232,6 +270,11 @@ fun LoginScreenContent(viewModel: AuthViewModel, isLogin: Boolean) {
             modifier = inputModifier,
             value = email,
             shape = MaterialTheme.shapes.medium,
+            keyboardOptions = KeyboardOptions(
+                keyboardType = KeyboardType.Email,
+                autoCorrectEnabled = true,
+                imeAction = ImeAction.Next
+            ),
             onValueChange = viewModel::onEmailChange,
             placeholder = { Text("abc@gmail.com") },
             label = { Text("Email") },
@@ -241,6 +284,11 @@ fun LoginScreenContent(viewModel: AuthViewModel, isLogin: Boolean) {
             modifier = inputModifier,
             value = password,
             shape = MaterialTheme.shapes.medium,
+            keyboardOptions = KeyboardOptions(
+                keyboardType = KeyboardType.Password,
+                autoCorrectEnabled = false,
+                imeAction = if (isLogin) ImeAction.Done else ImeAction.Next
+            ),
             onValueChange = viewModel::onPasswordChange,
             placeholder = { Text("Stasp78JK") },
             label = { Text("Password") },
@@ -251,6 +299,11 @@ fun LoginScreenContent(viewModel: AuthViewModel, isLogin: Boolean) {
                 modifier = inputModifier,
                 value = confirmPwd,
                 shape = MaterialTheme.shapes.medium,
+                keyboardOptions = KeyboardOptions(
+                    keyboardType = KeyboardType.Password,
+                    autoCorrectEnabled = false,
+                    imeAction = ImeAction.Done
+                ),
                 onValueChange = viewModel::onConfirmPasswordChanged,
                 placeholder = { Text("Stasp78JK") },
                 label = { Text("Confirm Password") },
@@ -258,7 +311,7 @@ fun LoginScreenContent(viewModel: AuthViewModel, isLogin: Boolean) {
         }
 
         PrimaryButton(
-            modifier = Modifier.widthIn(max = 300.dp, min = Dp.Infinity).padding(top = 20.dp),
+            modifier = Modifier.widthIn(max = 300.dp, min = Dp.Infinity).padding(vertical = 20.dp),
             onClick = {
                 if (isLogin) {
                     viewModel.login()
