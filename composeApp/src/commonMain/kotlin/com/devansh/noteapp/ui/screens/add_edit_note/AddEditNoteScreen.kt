@@ -19,8 +19,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowLeft
-import androidx.compose.material.icons.automirrored.filled.More
+import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.Save
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
@@ -57,6 +56,7 @@ import androidx.navigation.toRoute
 import com.devansh.noteapp.di.platform_di.clipEntryOf
 import com.devansh.noteapp.domain.model.Note
 import com.devansh.noteapp.navigation.NavRoute
+import com.devansh.noteapp.ui.components.BackButton
 import com.devansh.noteapp.ui.components.HintUI
 import com.devansh.noteapp.ui.screens.home.NoteMenuBottomSheet
 import com.dokar.sonner.ToastType
@@ -134,21 +134,12 @@ fun AddEditScreenContent(
                 actions = {
                     IconButton(onClick = { isBottomSheetVisible = true }) {
                         Icon(
-                            modifier = Modifier.size(14.dp),
-                            imageVector = Icons.AutoMirrored.Filled.More,
+                            imageVector = Icons.Default.MoreVert,
                             contentDescription = null,
                         )
                     }
                 },
-                navigationIcon = {
-                    IconButton(onClick = { onNavigateUp() }) {
-                        Icon(
-                            modifier = Modifier.size(16.dp),
-                            imageVector = Icons.AutoMirrored.Filled.ArrowLeft,
-                            contentDescription = null,
-                        )
-                    }
-                },
+                navigationIcon = { BackButton { onNavigateUp() } },
                 title = {}
             )
         },
@@ -185,9 +176,7 @@ fun AddEditScreenContent(
             }
 
             ModalBottomSheet(
-                onDismissRequest = {
-                    dismissSheet()
-                },
+                onDismissRequest = { dismissSheet() },
                 sheetState = sheetState,
                 tonalElevation = 0.dp,
                 dragHandle = null

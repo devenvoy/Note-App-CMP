@@ -5,10 +5,10 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -17,11 +17,11 @@ import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material3.BottomSheetDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.HorizontalDivider
@@ -45,7 +45,6 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalClipboard
 import androidx.compose.ui.text.AnnotatedString
@@ -78,6 +77,7 @@ import note_app_cmp.composeapp.generated.resources.ic_menu_copy
 import note_app_cmp.composeapp.generated.resources.ic_menu_delete
 import note_app_cmp.composeapp.generated.resources.ic_menu_edit
 import note_app_cmp.composeapp.generated.resources.ic_menu_share
+import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.painterResource
 import org.koin.compose.viewmodel.koinViewModel
 
@@ -122,23 +122,17 @@ fun HomeScreenContent(
             ) {
                 TopAppBar(
                     colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.surface,
-                    titleContentColor = MaterialTheme.colorScheme.onSurface,
-                    actionIconContentColor = MaterialTheme.colorScheme.primary,
-                ), title = {
-                    Text(text = "Notes", fontSize = 16.ssp)
-                }, actions = {
+                        containerColor = MaterialTheme.colorScheme.surface,
+                        titleContentColor = MaterialTheme.colorScheme.onSurface,
+                        actionIconContentColor = MaterialTheme.colorScheme.primary
+                    ),
+                    title = { Text(text = "Notes", fontSize = 16.ssp) },
+                    actions = {
                     IconButton(onClick = homeScreenModel::onToggleSearch) {
-                        Icon(
-                            imageVector = Icons.Filled.Search, contentDescription = "search"
-                        )
+                        Icon(imageVector = Icons.Filled.Search, contentDescription = "search")
                     }
                     IconButton(onClick = goToSettings) {
-                        Icon(
-                            modifier = Modifier.size(24.dp),
-                            imageVector = Icons.Filled.Settings,
-                            contentDescription = "setting"
-                        )
+                        Icon(imageVector = Icons.Filled.Settings, contentDescription = "setting")
                     }
                 })
             }
@@ -184,7 +178,7 @@ fun HomeScreenContent(
                     onDeleteClick = {
                         homeScreenModel.deleteNoteById(selectedNote?.id!!)
                         toasterState.show(
-                            "Note deleted successfully",
+                            message = "Note deleted successfully",
                             duration = ToasterDefaults.DurationLong,
                             type = ToastType.Error
                         )
@@ -197,7 +191,6 @@ fun HomeScreenContent(
 
                         toasterState.show(
                             message = "Copied to clipboard",
-                            duration = ToasterDefaults.DurationShort,
                             type = ToastType.Info
                         )
                         dismissSheet()
@@ -244,6 +237,7 @@ fun HomeScreenContent(
 }
 
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun NoteMenuBottomSheet(
     onEditClick: UnitCBF,
@@ -255,148 +249,62 @@ fun NoteMenuBottomSheet(
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .background(Color.White)
             .navigationBarsPadding()
             .padding(16.dp)
     ) {
 
-        Box(
-            modifier = Modifier
-                .padding(bottom = 24.dp)
-                .width(50.dp)
-                .height(3.dp)
-                .clip(RoundedCornerShape(50))
-                .background(Color(0xFFBBC0C4))
-                .align(Alignment.CenterHorizontally)
-        )
+        BottomSheetDefaults.DragHandle(Modifier.width(50.dp).align(Alignment.CenterHorizontally))
 
-        Column(
-            verticalArrangement = Arrangement.spacedBy(10.dp)
-        ) {
+        Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
 
-            if (showEditOption)
-                SecondaryOutlinedButton(
-                    modifier = Modifier.fillMaxWidth(),
-                    onClick = onEditClick,
-                    contentPadding = PaddingValues(8.dp),
-                    border = BorderStroke(1.dp, Color(0xffF9F8FA)),
-                ) {
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        verticalAlignment = Alignment.CenterVertically,
-                    ) {
-
-                        Image(
-                            modifier = Modifier.size(32.dp),
-                            painter = painterResource(Res.drawable.ic_menu_edit),
-                            contentDescription = "edit"
-                        )
-
-                        Text(
-                            modifier = Modifier.padding(horizontal = 16.dp),
-                            text = "Edit",
-                            style = TextStyle(
-                                fontSize = 16.sp,
-                                fontWeight = W500,
-                                color = Color.Black
-                            )
-                        )
-                    }
-                }
+            if (showEditOption) {
+                BottomSheetOptionItem("Edit", Res.drawable.ic_menu_edit, onEditClick)
+            }
 
             // copy
-            SecondaryOutlinedButton(
-                modifier = Modifier.fillMaxWidth(),
-                onClick = onCopyClick,
-                contentPadding = PaddingValues(8.dp),
+            BottomSheetOptionItem("Copy", Res.drawable.ic_menu_copy, onCopyClick)
 
-                border = BorderStroke(1.dp, Color(0xffF9F8FA)),
-            ) {
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    verticalAlignment = Alignment.CenterVertically,
-                ) {
+            // Share
+            BottomSheetOptionItem("Share", Res.drawable.ic_menu_share, onShareClick)
 
-                    Image(
-                        modifier = Modifier.size(32.dp),
-                        painter = painterResource(Res.drawable.ic_menu_copy),
-                        contentDescription = "copy"
-                    )
-
-                    Text(
-                        modifier = Modifier.padding(horizontal = 16.dp),
-                        text = "Copy",
-                        style = TextStyle(
-                            fontSize = 16.sp,
-                            fontWeight = W500,
-                            color = Color.Black
-                        )
-                    )
-                }
-            }
-
-            SecondaryOutlinedButton(
-                modifier = Modifier.fillMaxWidth(),
-                onClick = onShareClick,
-                contentPadding = PaddingValues(8.dp),
-                border = BorderStroke(1.dp, Color(0xffF9F8FA)),
-            ) {
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    verticalAlignment = Alignment.CenterVertically,
-                ) {
-
-                    Image(
-                        modifier = Modifier.size(32.dp),
-                        painter = painterResource(Res.drawable.ic_menu_share),
-                        contentDescription = "edit"
-                    )
-
-                    Text(
-                        modifier = Modifier.padding(horizontal = 16.dp),
-                        text = "Share",
-                        style = TextStyle(
-                            fontSize = 16.sp,
-                            fontWeight = W500,
-                            color = Color.Black
-                        )
-                    )
-                }
-            }
-
-            HorizontalDivider(
-                thickness = 1.dp, color = Color(0xffF5F1F1)
-            )
+            HorizontalDivider(thickness = 2.dp)
 
             // delete
-            SecondaryOutlinedButton(
-                modifier = Modifier.fillMaxWidth(),
-                onClick = onDeleteClick,
-                contentPadding = PaddingValues(8.dp),
-                border = BorderStroke(1.dp, Color(0xffF9F8FA)),
-            ) {
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    verticalAlignment = Alignment.CenterVertically,
-                ) {
+            BottomSheetOptionItem("Delete", Res.drawable.ic_menu_delete, onDeleteClick)
 
-                    Image(
-                        modifier = Modifier.size(32.dp),
-                        painter = painterResource(Res.drawable.ic_menu_delete),
-                        contentDescription = "edit"
-                    )
+            Spacer(modifier = Modifier.height(20.dp))
+        }
+    }
+}
 
-                    Text(
-                        modifier = Modifier.padding(horizontal = 16.dp),
-                        text = "Delete",
-                        style = TextStyle(
-                            fontSize = 16.sp,
-                            fontWeight = W500,
-                            color = Color.Black
-                        )
-                    )
-                }
-            }
+@Composable
+fun BottomSheetOptionItem(
+    text: String,
+    drawableResource: DrawableResource,
+    onClick: UnitCBF
+) {
+    SecondaryOutlinedButton(
+        modifier = Modifier.fillMaxWidth(),
+        onClick = onClick,
+        contentPadding = PaddingValues(8.dp),
+        border = BorderStroke(1.dp, Color(0xffF9F8FA)),
+    ) {
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+
+            Image(
+                modifier = Modifier.size(32.dp),
+                painter = painterResource(drawableResource),
+                contentDescription = text
+            )
+
+            Text(
+                text = text,
+                modifier = Modifier.padding(horizontal = 16.dp),
+                style = TextStyle(fontSize = 16.sp, fontWeight = W500)
+            )
         }
     }
 }

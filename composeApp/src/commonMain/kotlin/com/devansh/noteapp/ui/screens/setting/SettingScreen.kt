@@ -1,17 +1,13 @@
 package com.devansh.noteapp.ui.screens.setting
 
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
 import androidx.compose.material3.LargeTopAppBar
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -20,7 +16,6 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.text.font.FontWeight.Companion.W500
@@ -32,9 +27,9 @@ import androidx.navigation.compose.composable
 import com.alorma.compose.settings.ui.SettingsGroup
 import com.alorma.compose.settings.ui.SettingsSwitch
 import com.devansh.noteapp.navigation.NavRoute
+import com.devansh.noteapp.ui.components.BackButton
 import com.devansh.noteapp.ui.components.PrimaryButton
 import com.devansh.noteapp.ui.screens.core.ListType
-import network.chaintech.sdpcomposemultiplatform.ssp
 import org.koin.compose.viewmodel.koinViewModel
 
 fun NavGraphBuilder.settingsScreen(navHostController: NavHostController) {
@@ -72,7 +67,7 @@ fun SettingScreenContent(
                     Column {
                         Text(
                             text = "Settings",
-                            fontSize = if (scrollBehavior.state.collapsedFraction >= .75) 24.sp else 36.sp
+                            style = if (scrollBehavior.state.collapsedFraction >= .75) MaterialTheme.typography.titleLarge else MaterialTheme.typography.headlineMedium
                         )
                         AnimatedVisibility(scrollBehavior.state.collapsedFraction <= .75) {
                             Text(
@@ -84,12 +79,12 @@ fun SettingScreenContent(
                         }
                     }
                 },
-                navigationIcon = {
-                    Icon(
-                        modifier = Modifier.padding(4.dp).clickable(onClick = navigateBack),
-                        imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                        contentDescription = "back"
-                    )
+                navigationIcon = { BackButton { navigateBack() } },
+                actions = {
+                    PrimaryButton(
+                        contentPadding = PaddingValues(horizontal = 30.dp),
+                        onClick = { logOut() }
+                    ) { Text("Logout") }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = MaterialTheme.colorScheme.surface,
@@ -106,18 +101,17 @@ fun SettingScreenContent(
                 .verticalScroll(rememberScrollState())
         ) {
             SettingsGroup(
-                modifier = Modifier,
                 enabled = true,
                 title = { Text(text = "Server Setting") },
                 contentPadding = PaddingValues(horizontal = 8.dp),
             ) {
                 SettingsSwitch(
                     state = viewModel.autoSyncDB.collectAsState(true).value,
-                    title = { Text(text = "Auto Sync", fontSize = 14.ssp, fontWeight = W500) },
+                    title = { Text(text = "Auto Sync", fontSize = 16.sp, fontWeight = W500) },
                     subtitle = {
                         Text(
                             "Upload any unSynced or updated notes to server automatically before app start",
-                            fontSize = 10.ssp
+                            fontSize = 12.sp
                         )
                     },
                     onCheckedChange = viewModel::updateAutoSyncDB
@@ -125,27 +119,18 @@ fun SettingScreenContent(
             }
 
             SettingsGroup(
-                modifier = Modifier,
                 enabled = true,
                 title = { Text(text = "App Setting") },
                 contentPadding = PaddingValues(horizontal = 8.dp),
             ) {
                 SettingsSwitch(
                     state = viewModel.listType.collectAsState(ListType.GRID).value == ListType.GRID,
-                    title = { Text(text = "Notes Grid", fontSize = 14.ssp, fontWeight = W500) },
-                    subtitle = { Text("show notes in grid or list", fontSize = 10.ssp) },
+                    title = { Text(text = "Notes Grid", fontSize = 16.sp, fontWeight = W500) },
+                    subtitle = { Text("show notes in grid or list", fontSize = 12.sp) },
                     onCheckedChange = {
                         viewModel.updateListType(if (it) ListType.GRID else ListType.LIST)
                     }
                 )
-            }
-
-            PrimaryButton(
-                modifier = Modifier.padding(top = 60.dp).align(Alignment.CenterHorizontally),
-                contentPadding = PaddingValues(horizontal = 30.dp),
-                onClick = { logOut() }
-            ) {
-                Text("Logout")
             }
         }
     }
