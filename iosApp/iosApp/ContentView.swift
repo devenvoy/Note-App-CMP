@@ -11,7 +11,7 @@ struct ComposeView: UIViewControllerRepresentable {
 
         let remoteConfig = RemoteConfig.remoteConfig()
         let settings = RemoteConfigSettings()
-        settings.minimumFetchInterval = 0
+        settings.minimumFetchInterval = 10000
         remoteConfig.configSettings = settings
 
          remoteConfig.fetchAndActivate { status, error in
@@ -19,7 +19,7 @@ struct ComposeView: UIViewControllerRepresentable {
                     print("Remote Config fetch failed: \(error.localizedDescription)")
                 }
 
-                let isForceUpdateEnabled = remoteConfig.configValue(forKey: "test_config").boolValue
+                let isForceUpdateEnabled = remoteConfig.configValue(forKey:"test_config").boolValue
 
                 DispatchQueue.main.async {
 

@@ -2,6 +2,7 @@ package com.devansh.noteapp
 
 import android.app.Application
 import android.content.Context
+import com.google.firebase.FirebaseApp
 
 class NoteApp : Application() {
 
@@ -12,5 +13,6 @@ class NoteApp : Application() {
     override fun onCreate() {
         super.onCreate()
         AppContext = this
+        FirebaseApp.initializeApp(this)
     }
 }

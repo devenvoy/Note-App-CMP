@@ -1,5 +1,7 @@
 package com.devansh.noteapp.di.platform_di
 
+import com.devansh.noteapp.NoteApp
+import com.google.firebase.FirebaseApp
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig
 import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings
 import kotlinx.coroutines.tasks.await
@@ -12,7 +14,7 @@ actual suspend fun getFirebaseRemoteConfigReader(): FirebaseRemoteConfigReader {
 
     firebaseRemoteConfig.setConfigSettingsAsync(
         FirebaseRemoteConfigSettings.Builder()
-            .setMinimumFetchIntervalInSeconds(0)
+            .setMinimumFetchIntervalInSeconds(10000)
             .build()
     )
 

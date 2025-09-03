@@ -10,6 +10,7 @@ plugins {
     alias(libs.plugins.sqldelight)
     alias(libs.plugins.hot.reload)
     alias(libs.plugins.buildConfig)
+    id("com.google.gms.google-services")
 
 }
 
@@ -51,7 +52,7 @@ kotlin {
             implementation(project.dependencies.platform("com.google.firebase:firebase-bom:34.2.0"))
             implementation(libs.firebase.analytics)
             implementation(libs.firebase.config)
-            implementation(libs.firebase.config.ktx)
+//            implementation(libs.firebase.config.ktx)
 
         }
 

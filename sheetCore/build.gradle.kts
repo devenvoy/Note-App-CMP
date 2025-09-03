@@ -43,17 +43,15 @@ android {
 kotlin {
     androidTarget()
     jvm()
-
-    iosX64()
-    iosArm64()
-    iosSimulatorArm64()
-
-    macosX64()
-    macosArm64()
-
-    js(IR) {
-        browser()
-        binaries.executable()
+    listOf(
+        iosX64(),
+        iosArm64(),
+        iosSimulatorArm64()
+    ).forEach { iosTarget ->
+        iosTarget.binaries.framework {
+            baseName = "SheetCore"
+            isStatic = true
+        }
     }
 
     applyDefaultHierarchyTemplate()
