@@ -24,7 +24,7 @@ plugins {
 
 android {
     namespace = "com.maxkeppeler.sheets.core"
-    compileSdk = 35
+    compileSdk = 36
 
     defaultConfig {
         minSdk = 21
@@ -61,12 +61,14 @@ kotlin {
     sourceSets {
         commonMain.dependencies {
             implementation(compose.runtime)
+            implementation(compose.material3)
             implementation(compose.foundation)
             implementation(compose.materialIconsExtended)
-            implementation(compose.material3)
             implementation(compose.components.resources)
 
             implementation(libs.kotlinx.datetime)
+            implementation(libs.material3.adaptive.navigation)
+            implementation(libs.kotlinx.serialization.json)
         }
 
         androidMain.orNull?.dependencies {

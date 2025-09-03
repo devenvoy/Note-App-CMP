@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "644798696842",
+    "project_id": "cmp-notes",
+    "storage_bucket": "cmp-notes.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:644798696842:android:c9a2a68051cf51af3d8c73",
+        "android_client_info": {
+          "package_name": "com.devansh.noteapp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBmtxtheT02mioREUb0mJHkVeHFLcrABSc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

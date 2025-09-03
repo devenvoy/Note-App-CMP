@@ -1,4 +1,3 @@
-import com.android.build.gradle.ProguardFiles.getDefaultProguardFile
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 
 plugins {
@@ -49,6 +48,9 @@ kotlin {
             implementation(libs.androidx.activity.compose)
 
             implementation("com.github.chuckerteam.chucker:library:4.2.0")
+            implementation(project.dependencies.platform("com.google.firebase:firebase-bom:34.2.0"))
+            implementation("com.google.firebase:firebase-analytics")
+            implementation("com.google.firebase:firebase-config")
         }
 
         commonMain.dependencies {
@@ -106,6 +108,9 @@ kotlin {
             implementation("io.github.jan-tennert.supabase:compose-auth:3.2.2")
             implementation("io.github.jan-tennert.supabase:compose-auth-ui:3.2.2")
 
+            implementation(projects.sheetCore)
+            implementation(projects.color)
+
         }
 
         iosMain.dependencies {
@@ -129,9 +134,9 @@ android {
     namespace = "com.devansh.noteapp"
     compileSdk = libs.versions.android.compileSdk.get().toInt()
 
-//    sourceSets["main"].manifest.srcFile("src/androidMain/AndroidManifest.xml")
-//    sourceSets["main"].res.srcDirs("src/androidMain/res")
-//    sourceSets["main"].resources.srcDirs("src/commonMain/resources")
+    sourceSets["main"].manifest.srcFile("src/androidMain/AndroidManifest.xml")
+    sourceSets["main"].res.srcDirs("src/androidMain/res")
+    sourceSets["main"].resources.srcDirs("src/commonMain/resources")
 
     defaultConfig {
         applicationId = "com.devansh.noteapp"

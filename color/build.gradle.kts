@@ -9,7 +9,7 @@ plugins {
 
 android {
     namespace = "com.maxkeppeler.sheets.color"
-    compileSdk = 35
+    compileSdk = 36
 
     defaultConfig {
         minSdk = 21
@@ -44,18 +44,16 @@ kotlin {
     applyDefaultHierarchyTemplate()
 
     sourceSets {
-        androidMain.dependencies {
-//            implementation(libs.androidx.ui.test.junit4.android)
-        }
+        androidMain.dependencies {}
+
         commonMain.dependencies {
             implementation(compose.runtime)
-            implementation(compose.foundation)
             implementation(compose.material3)
+            implementation(compose.foundation)
             implementation(compose.components.resources)
+            implementation(libs.kotlinx.serialization.json)
 
-//            implementation(libs.serialization)
-
-            api(project(":sheetCore"))
+            api(projects.sheetCore)
         }
     }
 }

@@ -2,10 +2,8 @@
 
 package com.maxkeppeker.sheets.core.icons
 
-import androidx.compose.runtime.Stable
 import androidx.compose.ui.graphics.vector.ImageVector
 import com.maxkeppeker.sheets.core.utils.JvmSerializable
-import kotlinx.serialization.Serializable
 
 sealed class LibIcons : JvmSerializable {
 

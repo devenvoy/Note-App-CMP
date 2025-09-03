@@ -8,4 +8,5 @@ plugins {
     alias(libs.plugins.kotlinMultiplatform) apply false
     alias(libs.plugins.buildConfig) apply false
     alias(libs.plugins.hot.reload) apply false
+    id("com.google.gms.google-services") version "4.4.3" apply false
 }

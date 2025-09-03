@@ -1,15 +1,13 @@
 package com.maxkeppeker.sheets.core.utils
 
-import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSizeClassApi
-import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
-import androidx.compose.material3.windowsizeclass.calculateWindowSizeClass
+import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
 import androidx.compose.runtime.Composable
+import androidx.window.core.layout.WindowWidthSizeClass
 
-@OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
 @Composable
 actual fun isLandscape(): Boolean {
-    return when (calculateWindowSizeClass().widthSizeClass) {
-        WindowWidthSizeClass.Expanded -> true
+    return when (currentWindowAdaptiveInfo().windowSizeClass.windowWidthSizeClass) {
+        WindowWidthSizeClass.EXPANDED -> true
         else -> false
     }
 }

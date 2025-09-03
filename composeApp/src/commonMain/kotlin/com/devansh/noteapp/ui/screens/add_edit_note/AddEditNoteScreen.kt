@@ -110,15 +110,13 @@ fun AddEditScreenContent(
             when (event) {
                 is AddEditNoteViewModel.UiEvent.ShowSnackbar -> {
                     toasterState.show(
-                        event.message,
+                        message = event.message,
                         duration = ToasterDefaults.DurationShort,
                         type = ToastType.Normal
                     )
                 }
 
-                is AddEditNoteViewModel.UiEvent.SaveNote -> {
-                    onNavigateUp()
-                }
+                is AddEditNoteViewModel.UiEvent.SaveNote -> onNavigateUp()
             }
         }
     }
@@ -127,9 +125,7 @@ fun AddEditScreenContent(
         topBar = {
             TopAppBar(
                 colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = noteBgAnimation.value.copy(
-                        .4f
-                    )
+                    noteBgAnimation.value.copy(.4f)
                 ),
                 actions = {
                     IconButton(onClick = { isBottomSheetVisible = true }) {
@@ -255,14 +251,14 @@ fun AddEditScreenContent(
                 }
             }
 
-           /* SlackPanel( //TODO
+            SlackPanel(
                 state = richTextState,
                 openLinkDialog = openLinkDialog,
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(top = 8.dp)
             )
-*/
+
             Spacer(Modifier.height(12.dp))
 
             HintUI(

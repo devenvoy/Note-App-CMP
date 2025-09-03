@@ -61,9 +61,7 @@ fun SlackLinkDialog(
 
             Spacer(modifier = Modifier.weight(1f))
 
-            IconButton(
-                onClick = { openLinkDialog.value = false })
-            {
+            IconButton(onClick = { openLinkDialog.value = false }) {
                 Icon(
                     imageVector = Icons.Outlined.Close,
                     contentDescription = "Close",
@@ -74,17 +72,19 @@ fun SlackLinkDialog(
 
         Spacer(modifier = Modifier.height(20.dp))
 
+        val textFieldColor = OutlinedTextFieldDefaults.colors(
+            focusedTextColor = MaterialTheme.colorScheme.onSurface,
+            unfocusedTextColor = MaterialTheme.colorScheme.onSurface,
+            focusedBorderColor = MaterialTheme.colorScheme.onSurface,
+            unfocusedBorderColor = MaterialTheme.colorScheme.onSurface
+        )
+
         OutlinedTextField(
             value = if (state.selection.collapsed) text
             else state.annotatedString.text.substring(state.selection.min, state.selection.max),
             onValueChange = { text = it },
             label = { Text(text = "Text", color = MaterialTheme.colorScheme.onSurface) },
-            colors = OutlinedTextFieldDefaults.colors(
-                focusedTextColor = MaterialTheme.colorScheme.onSurface,
-                unfocusedTextColor = MaterialTheme.colorScheme.onSurface,
-                focusedBorderColor = MaterialTheme.colorScheme.onSurface,
-                unfocusedBorderColor = MaterialTheme.colorScheme.onSurface
-            ),
+            colors = textFieldColor,
             enabled = state.selection.collapsed && !state.isLink,
             modifier = Modifier.fillMaxWidth()
         )
@@ -94,12 +94,8 @@ fun SlackLinkDialog(
         OutlinedTextField(
             value = link, onValueChange = { link = it },
             label = { Text(text = "Link", color = MaterialTheme.colorScheme.onSurface) },
-            colors = OutlinedTextFieldDefaults.colors(
-                focusedTextColor = MaterialTheme.colorScheme.onSurface,
-                unfocusedTextColor = MaterialTheme.colorScheme.onSurface,
-                focusedBorderColor = MaterialTheme.colorScheme.onSurface,
-                unfocusedBorderColor = MaterialTheme.colorScheme.onSurface
-            ), modifier = Modifier.fillMaxWidth()
+            colors = textFieldColor,
+            modifier = Modifier.fillMaxWidth()
         )
 
         Spacer(modifier = Modifier.height(20.dp))
@@ -111,16 +107,16 @@ fun SlackLinkDialog(
                 OutlinedButton(
                     onClick = {
                         state.removeLink()
-
                         openLinkDialog.value = false
                         text = ""
                         link = ""
-                    }, colors = ButtonDefaults.outlinedButtonColors(
+                    },
+                    colors = ButtonDefaults.outlinedButtonColors(
                         containerColor = Color.Transparent,
                         contentColor = MaterialTheme.colorScheme.onSurface
-                    ), border = BorderStroke(
-                        width = 1.dp, color = Color.Red
-                    ), shape = RoundedCornerShape(10.dp), modifier = Modifier
+                    ),
+                    border = BorderStroke(width = 1.dp, color = Color.Red),
+                    shape = MaterialTheme.shapes.medium
                 ) {
                     Text(text = "Remove", color = Color.Red)
                 }
@@ -133,16 +129,15 @@ fun SlackLinkDialog(
                     openLinkDialog.value = false
                     text = ""
                     link = ""
-                }, colors = ButtonDefaults.outlinedButtonColors(
+                },
+                colors = ButtonDefaults.outlinedButtonColors(
                     containerColor = Color.Transparent,
                     contentColor = MaterialTheme.colorScheme.onSurface
-                ), border = BorderStroke(
-                    width = 1.dp, color = MaterialTheme.colorScheme.onSurface
-                ), shape = RoundedCornerShape(10.dp), modifier = Modifier
+                ),
+                border = BorderStroke(width = 1.dp, color = MaterialTheme.colorScheme.onSurface),
+                shape = MaterialTheme.shapes.medium
             ) {
-                Text(
-                    text = "Cancel", color = MaterialTheme.colorScheme.onSurface
-                )
+                Text(text = "Cancel", color = MaterialTheme.colorScheme.onSurface)
             }
 
             Spacer(modifier = Modifier.width(10.dp))
@@ -166,12 +161,9 @@ fun SlackLinkDialog(
                     contentColor = MaterialTheme.colorScheme.onSurface
                 ),
                 enabled = (text.isNotEmpty() || !state.selection.collapsed) && link.isNotEmpty(),
-                shape = RoundedCornerShape(10.dp),
-                modifier = Modifier
+                shape = MaterialTheme.shapes.medium
             ) {
-                Text(
-                    text = "Save", color = MaterialTheme.colorScheme.onSurface
-                )
+                Text(text = "Save", color = MaterialTheme.colorScheme.onSurface)
             }
         }
     }
