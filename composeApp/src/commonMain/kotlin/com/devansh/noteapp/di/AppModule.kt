@@ -15,12 +15,20 @@ import com.devansh.noteapp.ui.screens.auth.AuthViewModel
 import com.devansh.noteapp.ui.screens.home.HomeScreenViewModel
 import com.devansh.noteapp.ui.screens.setting.SettingViewModel
 import com.devansh.noteapp.ui.screens.splash.SplashScreenViewModel
+import com.devansh.noteapp.ui.theme.DefaultThemeState
+import com.devansh.noteapp.ui.theme.NoteThemes
+import com.devansh.noteapp.ui.theme.ThemeConfig
+import com.devansh.noteapp.ui.theme.ThemeState
+import com.devansh.noteapp.ui.theme.ThemeStatelessViewModel
+import com.devansh.noteapp.ui.theme.ThemeViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import org.koin.core.module.dsl.viewModel
 import org.koin.dsl.module
 
 val screenModelsModule = module {
+    viewModel { ThemeStatelessViewModel(get()) }
+    viewModel { ThemeViewModel() }
     viewModel { SplashScreenViewModel(get(),get()) }
     viewModel { AuthViewModel(get(),get()) }
     viewModel { HomeScreenViewModel(get(),get(),get()) }
@@ -46,8 +54,21 @@ val dataModule = module {
     single<AppCacheSetting> { AppCacheSettingImpl() }
 }
 
+val theme = module {
+    single<ThemeState> {
+        DefaultThemeState(
+            defaultConfig = ThemeConfig(
+                defaultTheme = NoteThemes.Light,
+                lightTheme = NoteThemes.Light,
+                darkTheme = NoteThemes.Dark,
+            )
+        )
+    }
+}
+
 val appModules = listOf(
     platformModule(),
+    theme,
     dataModule,
     repositoryModule,
     screenModelsModule,

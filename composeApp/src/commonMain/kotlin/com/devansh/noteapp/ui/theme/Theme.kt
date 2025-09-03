@@ -1,22 +1,98 @@
 package com.devansh.noteapp.ui.theme
 
-import androidx.compose.animation.core.spring
-import androidx.compose.foundation.isSystemInDarkTheme
-import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
-import androidx.compose.material3.MaterialExpressiveTheme
-import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ColorScheme
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocalProvider
-import androidx.compose.ui.text.font.FontFamily
-import com.materialkolor.LocalDynamicMaterialThemeSeed
-import com.materialkolor.PaletteStyle
-import com.materialkolor.ktx.animateColorScheme
-import com.materialkolor.rememberDynamicMaterialThemeState
-import note_app_cmp.composeapp.generated.resources.Res
-import note_app_cmp.composeapp.generated.resources.geomanist_regular
-import org.jetbrains.compose.resources.Font
+import androidx.compose.runtime.Immutable
+import androidx.compose.runtime.ReadOnlyComposable
+import androidx.compose.runtime.Stable
+import androidx.compose.runtime.staticCompositionLocalOf
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
+
+internal val localTheme = staticCompositionLocalOf<Theme?> { null }
+
+@Stable
+interface Theme {
+    val id: String
+    val dark: Boolean
+    val colorScheme: ColorScheme
+}
+
+object NoteThemes{
+    val Light = DsTheme(
+        id = "light",
+        dark = false,
+        colorScheme = LightColorScheme
+    )
+
+    val Dark = DsTheme(
+        id = "dark",
+        dark = true,
+        colorScheme = DarkColorScheme
+    )
+}
+
+@Immutable
+data class DsTheme(
+    override val id: String,
+    override val dark: Boolean,
+    override val colorScheme: ColorScheme,
+) : Theme {
+
+    val error: Color = colorScheme.error
+    val surface: Color = colorScheme.surface
+    val onSurface: Color = colorScheme.onSurface
+    val surfaceVariant: Color = colorScheme.surfaceVariant
+    val surfaceContainerHigh: Color = colorScheme.surfaceContainerHigh
+    val onSurfaceVariant: Color = colorScheme.onSurfaceVariant
+
+    val background = colorScheme.background
+    val onBackground = colorScheme.onBackground
+
+    val highlightPrimary: Color = colorScheme.onSurface.copy(alpha = 0.15f)
+    val highlightSecondary: Color = colorScheme.onSurface.copy(alpha = 0.3f)
+
+    val topBlur by lazy {
+        Brush.verticalGradient(
+            listOf(
+                surface,
+                surface.copy(alpha = 0.95f),
+                surface.copy(alpha = 0.9f),
+                surface.copy(alpha = 0.85f),
+            )
+        )
+    }
+
+    val bottomBlur by lazy {
+        Brush.verticalGradient(
+            listOf(
+                surface.copy(alpha = 0.85f),
+                surface.copy(alpha = 0.9f),
+                surface.copy(alpha = 0.95f),
+                surface
+            )
+        )
+    }
+
+    val shimmerColors by lazy {
+        listOf(
+            onSurface.copy(alpha = 0.1f),
+            onSurface.copy(alpha = 0.05f),
+            onSurface.copy(alpha = 0.08f)
+        )
+    }
+
+    companion object {
+        val current: DsTheme
+            @Composable
+            @ReadOnlyComposable
+            get() = localTheme.current as? DsTheme
+                ?: error("not available outside of ThemeProvider")
+    }
+}
+
 
 private val DarkColorScheme = darkColorScheme(
     primary = DarkPrimary,
@@ -43,54 +119,3 @@ private val LightColorScheme = lightColorScheme(
     onBackground = LightOnBackground,
     onSurface = LightOnSurface,
 )
-
-
-/*@Composable
-fun NoteAppTheme(
-    darkTheme: Boolean = isSystemInDarkTheme(),
-    content: @Composable () -> Unit
-) {
-    val colorScheme = when {
-        darkTheme -> DarkColorScheme
-        else -> LightColorScheme
-    }
-
-    MaterialTheme(
-        colorScheme = colorScheme,
-        typography = Typography,
-        content = content
-    )
-}*/
-
-
-@OptIn(ExperimentalMaterial3ExpressiveApi::class)
-@Composable
-fun NoteAppTheme(
-    darkTheme: Boolean = isSystemInDarkTheme(),
-    content: @Composable () -> Unit,
-) {
-    val dynamicThemeState = rememberDynamicMaterialThemeState(
-        isDark = darkTheme,
-        style = PaletteStyle.Neutral,
-        primary = LightPrimary,
-    )
-
-    val colorScheme = dynamicThemeState.colorScheme
-    val scheme = if (!false) {
-        colorScheme
-    } else {
-            animateColorScheme(colorScheme = colorScheme, animationSpec = { spring() })
-        }
-
-    val geoManistRegular = Font(Res.font.geomanist_regular)
-    val geoManistMedium = Font(Res.font.geomanist_regular)
-    CompositionLocalProvider(LocalDynamicMaterialThemeSeed provides dynamicThemeState.seedColor) {
-        MaterialExpressiveTheme(
-            typography = MaterialTheme.typography.map(
-                FontFamily(listOf(geoManistRegular, geoManistMedium))
-            ),
-            colorScheme = scheme,
-            content = content,
-        )
-    }
-}

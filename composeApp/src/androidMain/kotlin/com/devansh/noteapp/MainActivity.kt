@@ -8,6 +8,11 @@ import androidx.activity.ComponentActivity
 import androidx.activity.SystemBarStyle
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewLightDark
+import androidx.compose.ui.tooling.preview.PreviewScreenSizes
+import com.devansh.noteapp.ui.components.EmptyScreen
 
 @SuppressLint("StaticFieldLeak")
 class MainActivity : ComponentActivity() {
@@ -28,4 +33,11 @@ class MainActivity : ComponentActivity() {
         )
         setContent { App() }
     }
+}
+
+@PreviewLightDark
+@PreviewScreenSizes
+@Preview(showBackground = true)
+@Composable
+fun emptyScreenPreview() {
 }

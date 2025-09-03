@@ -17,12 +17,12 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.shareIn
+import kotlinx.coroutines.withContext
 
 class NoteDataSourceImpl(
     private val sqlDriver: SqlDriver,
     private val dispatcher: CoroutineDispatcher = Dispatchers.IO
 ) : NoteDataSource {
-
 
     private val db = flow {
         NoteDatabase.Schema.create(sqlDriver).await()
@@ -34,9 +34,9 @@ class NoteDataSourceImpl(
         db.first().transaction { block() }
     }
 
-    override suspend fun getAllNotes(): Flow<List<Note>> {
+    override suspend fun getAllNotes(): Flow<List<Note>> = withContext(dispatcher) {
         val database = db.first()
-        return database.noteDatabaseQueries.getAllNotes()
+        database.noteDatabaseQueries.getAllNotes()
             .asFlow()
             .mapToList(dispatcher)
             .map { list ->
@@ -46,14 +46,14 @@ class NoteDataSourceImpl(
             }
     }
 
-    override suspend fun getNoteById(id: String): Note? {
+    override suspend fun getNoteById(id: String): Note? = withContext(dispatcher) {
         val database = db.first()
-        return database.noteDatabaseQueries.getNoteById(id = id)
+        database.noteDatabaseQueries.getNoteById(id = id)
             .executeAsOneOrNull()
             ?.toNote()
     }
 
-    override suspend fun insertNote(note: Note, synced: Boolean) {
+    override suspend fun insertNote(note: Note, synced: Boolean) = withContext(dispatcher) {
         val database = db.first()
         database.noteDatabaseQueries.insertNote(
             id = note.id.toString(),
@@ -65,33 +65,37 @@ class NoteDataSourceImpl(
             categoryName = note.categoryName,
             isSynced = if (synced) 1 else 0,
         )
+        Unit
     }
 
-    override suspend fun deleteNoteById(id: String) {
+    override suspend fun deleteNoteById(id: String) = withContext(dispatcher) {
         val database = db.first()
         database.noteDatabaseQueries.deleteNoteById(id = id)
+        Unit
     }
 
-    override suspend fun getUnSyncedNotes(): List<Note> {
+    override suspend fun getUnSyncedNotes(): List<Note> = withContext(dispatcher) {
         val database = db.first()
-        return database.noteDatabaseQueries.getAllUnsyncedNotes()
+        database.noteDatabaseQueries.getAllUnsyncedNotes()
             .executeAsList()
             .map { it.toNote() }
 
     }
 
-    override suspend fun getSyncedNotes(): List<Note> {
+    override suspend fun getSyncedNotes(): List<Note> = withContext(dispatcher) {
         val database = db.first()
-        return database.noteDatabaseQueries.getAllSyncedNotes()
+        database.noteDatabaseQueries.getAllSyncedNotes()
             .executeAsList()
             .map { it.toNote() }
     }
 
-    override suspend fun markNoteAsSynced(id: String) {
+    override suspend fun markNoteAsSynced(id: String) = withContext(dispatcher) {
         db.first().noteDatabaseQueries.markNoteAsSynced(id)
+        Unit
     }
 
-    override suspend fun emptyNoteTable() {
+    override suspend fun emptyNoteTable() = withContext(dispatcher) {
        db.first().noteDatabaseQueries.emptyNoteTable()
+        Unit
     }
 }

@@ -2,7 +2,6 @@ package com.devansh.noteapp.ui.screens.home.notes
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.combinedClickable
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -49,28 +48,26 @@ fun NoteScreenContent(
         )
     }
 
-    Column(modifier = Modifier.fillMaxSize()) {
-        LazyVerticalStaggeredGrid(
-            columns = StaggeredGridCells.Fixed(gridCells),
-            modifier = Modifier.fillMaxSize()
-        ) {
-            items(state.notes) { note ->
-                NoteItemUI(
-                    note = note,
-                    modifier = Modifier
-                        .padding(8.dp)
-                        .then(
-                            if (isGridLayout)
-                                Modifier
-                            else Modifier.fillMaxWidth()
-                        )
-                        .combinedClickable(
-                            onClick = { onNavigateToAddEditNote(note.id) },
-                            onLongClick = { onLongPress(note) }
-                        )
-                )
-                Spacer(modifier = Modifier.height(16.dp))
-            }
+    LazyVerticalStaggeredGrid(
+        columns = StaggeredGridCells.Fixed(gridCells),
+        modifier = Modifier.fillMaxSize()
+    ) {
+        items(state.notes) { note ->
+            NoteItemUI(
+                note = note,
+                modifier = Modifier
+                    .padding(8.dp)
+                    .then(
+                        if (isGridLayout)
+                            Modifier
+                        else Modifier.fillMaxWidth()
+                    )
+                    .combinedClickable(
+                        onClick = { onNavigateToAddEditNote(note.id) },
+                        onLongClick = { onLongPress(note) }
+                    )
+            )
+            Spacer(modifier = Modifier.height(16.dp))
         }
     }
 }
