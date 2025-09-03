@@ -49,8 +49,10 @@ kotlin {
 
             implementation("com.github.chuckerteam.chucker:library:4.2.0")
             implementation(project.dependencies.platform("com.google.firebase:firebase-bom:34.2.0"))
-            implementation("com.google.firebase:firebase-analytics")
-            implementation("com.google.firebase:firebase-config")
+            implementation(libs.firebase.analytics)
+            implementation(libs.firebase.config)
+            implementation(libs.firebase.config.ktx)
+
         }
 
         commonMain.dependencies {

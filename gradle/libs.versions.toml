@@ -57,6 +57,7 @@ compose-settings="2.13.0"
 materialKolor = "3.0.1"
 cmpImagePickNCrop = "1.1.2"
 kmpDateTimePicker = "1.1.1"
+firebaseConfigKtx = "23.0.0"
 
 [libraries]
 kotlin-test-junit = { module = "org.jetbrains.kotlin:kotlin-test-junit", version.ref = "kotlin" }
@@ -147,6 +148,9 @@ material3-adaptive-layout = { module = "org.jetbrains.compose.material3.adaptive
 material3-adaptive-navigation = { module = "org.jetbrains.compose.material3.adaptive:adaptive-navigation", version.ref = "adaptive" }
 material3-adaptive-navigation-suite = { module = "org.jetbrains.compose.material3:material3-adaptive-navigation-suite", version.ref = "material3AdaptiveNavigationSuite" }
 
+firebase-analytics = { group = "com.google.firebase", name = "firebase-analytics" }
+firebase-config = { group = "com.google.firebase", name = "firebase-config" }
+firebase-config-ktx = { group = "com.google.firebase", name = "firebase-config-ktx" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }
