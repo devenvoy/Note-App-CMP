@@ -6,7 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.devansh.noteapp.domain.model.Note
 import com.devansh.noteapp.domain.repo.AppCacheSetting
 import com.devansh.noteapp.domain.repo.NoteDataSource
-import com.devansh.noteapp.domain.repo.NoteRemoteService
+import com.devansh.noteapp.domain.repo.NoteService
 import com.devansh.noteapp.domain.utils.onFailure
 import com.devansh.noteapp.domain.utils.onSuccess
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -18,7 +18,7 @@ import kotlinx.coroutines.launch
 class AddEditNoteViewModel(
     private val pref: AppCacheSetting,
     private val noteDataSource: NoteDataSource,
-    private val noteRemoteService: NoteRemoteService
+    private val noteService: NoteService
 ) : ViewModel() {
 
     val noteTitle = mutableStateOf(NoteTextFieldState(hint = "Enter title"))
@@ -84,7 +84,7 @@ class AddEditNoteViewModel(
                             category = null,
                             colorRes = noteColor.value,
                         )
-                        noteRemoteService.upsert(note, pref.accessToken.toString())
+                        noteService.upsert(note, pref.accessToken.toString())
                             .onSuccess { noteDataSource.insertNote(it, true) }
                             .onFailure { noteDataSource.insertNote(note, false) }
                         _eventFlow.emit(UiEvent.SaveNote)

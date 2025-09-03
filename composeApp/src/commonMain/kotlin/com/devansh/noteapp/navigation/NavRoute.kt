@@ -18,13 +18,10 @@ sealed interface NavRoute {
     data object Setting : NavRoute
 
     @Serializable
-    data object NoteDetail : NavRoute
-
-    @Serializable
     data class AddNote(val noteId: String? = null) : NavRoute
 
     @Serializable
-    data object EditNote : NavRoute
+    data object Category : NavRoute
 
     @Serializable
     data object Login : NavRoute
@@ -37,9 +34,6 @@ sealed interface NavRoute {
 
     @Serializable
     data object ResetPassword : NavRoute
-
-    @Serializable
-    data object ChangePassword : NavRoute
 
     @Serializable
     data object Profile : NavRoute
@@ -58,11 +52,4 @@ sealed interface NavRoute {
 
     @Serializable
     data object Error : NavRoute
-
-    @Serializable
-    data object NotFound : NavRoute
-
-    @Serializable
-    data object ServerError : NavRoute
-
 }

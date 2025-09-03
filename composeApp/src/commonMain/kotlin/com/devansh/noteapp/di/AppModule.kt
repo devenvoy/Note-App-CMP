@@ -3,13 +3,13 @@ package com.devansh.noteapp.di
 import com.devansh.noteapp.data.local.NoteDataSourceImpl
 import com.devansh.noteapp.data.preference.AppCacheSettingImpl
 import com.devansh.noteapp.data.remote.AuthServiceImpl
-import com.devansh.noteapp.data.remote.NoteRemoteServiceImpl
+import com.devansh.noteapp.data.remote.NoteServiceImpl
 import com.devansh.noteapp.di.platform_di.getHttpClient
 import com.devansh.noteapp.di.platform_di.platformModule
 import com.devansh.noteapp.domain.repo.AppCacheSetting
 import com.devansh.noteapp.domain.repo.AuthService
 import com.devansh.noteapp.domain.repo.NoteDataSource
-import com.devansh.noteapp.domain.repo.NoteRemoteService
+import com.devansh.noteapp.domain.repo.NoteService
 import com.devansh.noteapp.ui.screens.add_edit_note.AddEditNoteViewModel
 import com.devansh.noteapp.ui.screens.auth.AuthViewModel
 import com.devansh.noteapp.ui.screens.home.HomeScreenViewModel
@@ -38,7 +38,7 @@ val screenModelsModule = module {
 
 val repositoryModule = module {
     single<NoteDataSource> { NoteDataSourceImpl(get(), get()) }
-    single<NoteRemoteService> { NoteRemoteServiceImpl(get()) }
+    single<NoteService> { NoteServiceImpl(get()) }
     single<AuthService> { AuthServiceImpl(get()) }
 }
 

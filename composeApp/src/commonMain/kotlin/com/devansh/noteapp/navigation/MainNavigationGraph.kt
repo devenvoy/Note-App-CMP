@@ -6,6 +6,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
 import com.devansh.noteapp.ui.screens.add_edit_note.addNoteScreen
 import com.devansh.noteapp.ui.screens.auth.authScreen
+import com.devansh.noteapp.ui.screens.categoryFolder.categoryScreen
 import com.devansh.noteapp.ui.screens.home.homeScreen
 import com.devansh.noteapp.ui.screens.setting.settingsScreen
 import com.devansh.noteapp.ui.screens.splash.splashScreen
@@ -29,6 +30,8 @@ fun MainNavigationGraph(
         addNoteScreen(mainNavController)
 
         settingsScreen(mainNavController)
+
+        categoryScreen(mainNavController)
 
     }
 }

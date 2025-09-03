@@ -174,7 +174,6 @@ android {
         }
     }
     compileOptions {
-//        isCoreLibraryDesugaringEnabled = true
         sourceCompatibility(libs.versions.android.jvmTarget.get())
         targetCompatibility(libs.versions.android.jvmTarget.get())
     }

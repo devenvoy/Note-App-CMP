@@ -7,7 +7,7 @@ import co.touchlab.kermit.Logger
 import com.devansh.noteapp.domain.model.Note
 import com.devansh.noteapp.domain.repo.AppCacheSetting
 import com.devansh.noteapp.domain.repo.NoteDataSource
-import com.devansh.noteapp.domain.repo.NoteRemoteService
+import com.devansh.noteapp.domain.repo.NoteService
 import com.devansh.noteapp.domain.repo.SearchNotes
 import com.devansh.noteapp.domain.utils.onFailure
 import com.devansh.noteapp.domain.utils.onSuccess
@@ -22,7 +22,7 @@ import kotlinx.coroutines.launch
 class HomeScreenViewModel(
     private val pref: AppCacheSetting,
     private val noteDataSource: NoteDataSource,
-    private val noteRemoteService: NoteRemoteService
+    private val noteService: NoteService
 ) : ViewModel() {
 
     // use case
@@ -68,7 +68,7 @@ class HomeScreenViewModel(
     fun deleteNoteById(id: String) {
         viewModelScope.launch {
             noteDataSource.deleteNoteById(id)
-            noteRemoteService.deleteNote(id, pref.accessToken.toString())
+            noteService.deleteNote(id, pref.accessToken.toString())
         }
     }
 
@@ -76,7 +76,7 @@ class HomeScreenViewModel(
         viewModelScope.launch {
             try {
                 isRefreshing.value = true
-                val result = noteRemoteService.getNotes(pref.accessToken.toString())
+                val result = noteService.getNotes(pref.accessToken.toString())
 
                 result.onSuccess { response ->
                     response.forEach { note -> noteDataSource.insertNote(note, true) }

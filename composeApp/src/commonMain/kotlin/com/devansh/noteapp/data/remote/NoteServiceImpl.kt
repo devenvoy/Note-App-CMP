@@ -2,7 +2,7 @@ package com.devansh.noteapp.data.remote
 
 import com.devansh.noteapp.domain.entity.ServerError
 import com.devansh.noteapp.domain.model.Note
-import com.devansh.noteapp.domain.repo.NoteRemoteService
+import com.devansh.noteapp.domain.repo.NoteService
 import com.devansh.noteapp.domain.utils.BaseGateway
 import com.devansh.noteapp.domain.utils.Result
 import com.jignesh.society.BuildConfig
@@ -18,9 +18,9 @@ import io.ktor.http.ContentType
 import io.ktor.http.HttpHeaders
 import io.ktor.http.contentType
 
-class NoteRemoteServiceImpl(
+class NoteServiceImpl(
     private val httpClient: HttpClient
-) : NoteRemoteService, BaseGateway(httpClient) {
+) : NoteService, BaseGateway(httpClient) {
 
     override suspend fun upsert(
         notes: Note,
