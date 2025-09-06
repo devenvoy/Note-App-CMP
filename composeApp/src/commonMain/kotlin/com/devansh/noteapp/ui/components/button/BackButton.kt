@@ -1,4 +1,4 @@
-package com.devansh.noteapp.ui.components
+package com.devansh.noteapp.ui.components.button
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBackIos

@@ -6,7 +6,7 @@ import com.devansh.noteapp.domain.repo.AppCacheSetting
 import com.devansh.noteapp.domain.repo.AuthService
 import com.devansh.noteapp.domain.utils.onFailure
 import com.devansh.noteapp.domain.utils.onSuccess
-import com.devansh.noteapp.ui.components.UiState
+import com.devansh.noteapp.ui.utils.UiState
 import io.github.jan.supabase.compose.auth.ui.password.PasswordRule
 import io.github.jan.supabase.compose.auth.ui.password.PasswordRuleResult
 import kotlinx.coroutines.flow.MutableStateFlow

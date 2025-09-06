@@ -27,8 +27,8 @@ import androidx.navigation.compose.composable
 import com.alorma.compose.settings.ui.SettingsGroup
 import com.alorma.compose.settings.ui.SettingsSwitch
 import com.devansh.noteapp.navigation.NavRoute
-import com.devansh.noteapp.ui.components.BackButton
-import com.devansh.noteapp.ui.components.PrimaryButton
+import com.devansh.noteapp.ui.components.button.BackButton
+import com.devansh.noteapp.ui.components.button.PrimaryButton
 import com.devansh.noteapp.ui.screens.core.ListType
 import org.koin.compose.viewmodel.koinViewModel
 

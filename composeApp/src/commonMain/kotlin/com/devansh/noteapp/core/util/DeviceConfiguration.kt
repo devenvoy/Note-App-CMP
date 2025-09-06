@@ -31,4 +31,7 @@ enum class DeviceConfiguration {
             }
         }
     }
+
+    fun isMobile() = this == MOBILE_PORTRAIT || this == MOBILE_LANDSCAPE
+    fun isTablet() = this == TABLET_PORTRAIT || this == TABLET_LANDSCAPE
 }

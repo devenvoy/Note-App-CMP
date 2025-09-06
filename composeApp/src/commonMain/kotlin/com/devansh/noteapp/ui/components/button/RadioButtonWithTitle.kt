@@ -1,4 +1,4 @@
-package com.devansh.noteapp.ui.components
+package com.devansh.noteapp.ui.components.button
 
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -13,7 +13,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun DefaultRadioButton(
+fun RadioButtonWithTitle(
     text: String,
     selected: Boolean,
     onSelected: () -> Unit,

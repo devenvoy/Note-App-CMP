@@ -27,7 +27,7 @@ fun NavGraphBuilder.splashScreen(navController: NavHostController) {
     composable<NavRoute.SplashScreen> {
         SplashScreen(
             navToHome = {
-                navController.navigate(NavRoute.HomeScreen) {
+                navController.navigate(NavRoute.BaseScreen) {
                     popUpTo(NavRoute.SplashScreen) { inclusive = true }
                 }
             },

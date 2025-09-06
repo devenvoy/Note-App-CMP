@@ -64,10 +64,10 @@ import com.devansh.noteapp.domain.utils.UnitCBF
 import com.devansh.noteapp.navigation.NavRoute
 import com.devansh.noteapp.ui.components.EmptyScreen
 import com.devansh.noteapp.ui.components.ExpandableSearchView
-import com.devansh.noteapp.ui.components.SecondaryOutlinedButton
+import com.devansh.noteapp.ui.components.button.SecondaryOutlinedButton
 import com.devansh.noteapp.ui.screens.core.ListType
 import com.devansh.noteapp.ui.screens.home.notes.NoteScreenContent
-import com.devansh.noteapp.ui.theme.localTheme
+import com.devansh.noteapp.ui.theme.LocalAppTheme
 import com.dokar.sonner.ToastType
 import com.dokar.sonner.Toaster
 import com.dokar.sonner.ToasterDefaults
@@ -75,16 +75,15 @@ import com.dokar.sonner.rememberToasterState
 import com.mohamedrejeb.richeditor.model.rememberRichTextState
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import network.chaintech.sdpcomposemultiplatform.ssp
 import note_app_cmp.composeapp.generated.resources.Res
 import note_app_cmp.composeapp.generated.resources.ic_menu_copy
 import note_app_cmp.composeapp.generated.resources.ic_menu_delete
 import note_app_cmp.composeapp.generated.resources.ic_menu_edit
 import note_app_cmp.composeapp.generated.resources.ic_menu_share
+import note_app_cmp.composeapp.generated.resources.no_conversation
+import note_app_cmp.composeapp.generated.resources.no_conversation_light
 import note_app_cmp.composeapp.generated.resources.no_results
 import note_app_cmp.composeapp.generated.resources.no_results_light
-import note_app_cmp.composeapp.generated.resources.no_task
-import note_app_cmp.composeapp.generated.resources.no_task_light
 import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.painterResource
 import org.koin.compose.viewmodel.koinViewModel
@@ -107,7 +106,7 @@ fun HomeScreenContent(
     onNavigateToAddEditNote: (String?) -> Unit,
     goToSettings: UnitCBF,
 ) {
-    val theme = localTheme.current!!
+    val theme = LocalAppTheme.current
     val clipboard = LocalClipboard.current
 
     val scope = rememberCoroutineScope()
@@ -159,7 +158,12 @@ fun HomeScreenContent(
                         containerColor = MaterialTheme.colorScheme.surface,
                         actionIconContentColor = MaterialTheme.colorScheme.primary
                     ),
-                    title = { Text(text = "Notes", fontSize = 16.ssp) },
+                    title = {
+                        Text(
+                            text = "Notes",
+                            style = MaterialTheme.typography.headlineSmall
+                        )
+                    },
                     actions = {
                         IconButton(onClick = homeScreenModel::onToggleSearch) {
                             Icon(imageVector = Icons.Filled.Search, contentDescription = "search")
@@ -249,7 +253,7 @@ fun HomeScreenContent(
                 } else {
                     EmptyScreen(
                         text = "\"No Notes !!\"",
-                        image = if (theme.dark) Res.drawable.no_task else Res.drawable.no_task_light,
+                        image = if (theme.dark) Res.drawable.no_conversation else Res.drawable.no_conversation_light,
                         buttonState = Pair("Get Started") { onNavigateToAddEditNote(null) }
                     )
                 }

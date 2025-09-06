@@ -12,6 +12,8 @@ import com.devansh.noteapp.domain.repo.NoteDataSource
 import com.devansh.noteapp.domain.repo.NoteService
 import com.devansh.noteapp.ui.screens.add_edit_note.AddEditNoteViewModel
 import com.devansh.noteapp.ui.screens.auth.AuthViewModel
+import com.devansh.noteapp.ui.screens.base.BaseScreenViewModel
+import com.devansh.noteapp.ui.screens.categoryFolder.CategoryViewModel
 import com.devansh.noteapp.ui.screens.home.HomeScreenViewModel
 import com.devansh.noteapp.ui.screens.setting.SettingViewModel
 import com.devansh.noteapp.ui.screens.splash.SplashScreenViewModel
@@ -29,9 +31,11 @@ import org.koin.dsl.module
 val screenModelsModule = module {
     viewModel { ThemeStatelessViewModel(get()) }
     viewModel { ThemeViewModel() }
+    viewModel { BaseScreenViewModel() }
     viewModel { SplashScreenViewModel(get(),get()) }
     viewModel { AuthViewModel(get(),get()) }
     viewModel { HomeScreenViewModel(get(),get(),get()) }
+    viewModel { CategoryViewModel() }
     viewModel { AddEditNoteViewModel(get(), get(), get()) }
     viewModel { SettingViewModel(get(), get()) }
 }

@@ -66,7 +66,7 @@ import com.devansh.noteapp.core.util.DeviceConfiguration.MOBILE_PORTRAIT
 import com.devansh.noteapp.core.util.DeviceConfiguration.TABLET_LANDSCAPE
 import com.devansh.noteapp.core.util.DeviceConfiguration.TABLET_PORTRAIT
 import com.devansh.noteapp.navigation.NavRoute
-import com.devansh.noteapp.ui.components.PrimaryButton
+import com.devansh.noteapp.ui.components.button.PrimaryButton
 import com.devansh.noteapp.ui.components.UiStateHandler
 import io.github.jan.supabase.compose.auth.ui.annotations.AuthUiExperimental
 import io.github.jan.supabase.compose.auth.ui.email.OutlinedEmailField
@@ -78,14 +78,14 @@ import org.koin.compose.viewmodel.koinViewModel
 fun NavGraphBuilder.authScreen(navHostController: NavHostController) {
     composable<NavRoute.Auth> {
         AuthScreenContent {
-            navHostController.navigate(NavRoute.HomeScreen)
+            navHostController.navigate(NavRoute.BaseScreen)
         }
     }
 }
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)
 @Composable
-fun AuthScreenContent(
+private fun AuthScreenContent(
     authViewModel: AuthViewModel = koinViewModel<AuthViewModel>(),
     onSuccess: () -> Unit
 ) {

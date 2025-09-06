@@ -11,7 +11,7 @@ import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 
-internal val localTheme = staticCompositionLocalOf<Theme?> { null }
+internal val LocalAppTheme = staticCompositionLocalOf<Theme> { error("No theme found") }
 
 @Stable
 interface Theme {
@@ -82,14 +82,6 @@ data class DsTheme(
             onSurface.copy(alpha = 0.05f),
             onSurface.copy(alpha = 0.08f)
         )
-    }
-
-    companion object {
-        val current: DsTheme
-            @Composable
-            @ReadOnlyComposable
-            get() = localTheme.current as? DsTheme
-                ?: error("not available outside of ThemeProvider")
     }
 }
 

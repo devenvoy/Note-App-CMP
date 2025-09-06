@@ -56,7 +56,7 @@ import androidx.navigation.toRoute
 import com.devansh.noteapp.di.platform_di.clipEntryOf
 import com.devansh.noteapp.domain.model.Note
 import com.devansh.noteapp.navigation.NavRoute
-import com.devansh.noteapp.ui.components.BackButton
+import com.devansh.noteapp.ui.components.button.BackButton
 import com.devansh.noteapp.ui.components.HintUI
 import com.devansh.noteapp.ui.screens.home.NoteMenuBottomSheet
 import com.dokar.sonner.ToastType

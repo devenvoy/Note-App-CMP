@@ -37,7 +37,7 @@ private fun ThemeSwitchHandler(
     content: @Composable () -> Unit
 ) {
     val theme = state.currentTheme ?: return
-    CompositionLocalProvider(localTheme provides theme) {
+    CompositionLocalProvider(LocalAppTheme provides theme) {
         val fontFamily = state.fontFamily
 
         MaterialExpressiveTheme(

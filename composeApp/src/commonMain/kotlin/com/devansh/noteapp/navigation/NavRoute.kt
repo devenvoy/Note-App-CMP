@@ -9,6 +9,9 @@ sealed interface NavRoute {
     data object SplashScreen : NavRoute
 
     @Serializable
+    data object BaseScreen : NavRoute
+
+    @Serializable
     data object HomeScreen
 
     @Serializable

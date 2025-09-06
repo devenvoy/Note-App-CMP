@@ -1,4 +1,4 @@
-package com.devansh.noteapp.ui.components
+package com.devansh.noteapp.ui.components.button
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.interaction.MutableInteractionSource
