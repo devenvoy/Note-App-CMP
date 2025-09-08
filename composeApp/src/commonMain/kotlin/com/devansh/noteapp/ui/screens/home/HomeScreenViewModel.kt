@@ -32,7 +32,7 @@ class HomeScreenViewModel(
     private val searchText = MutableStateFlow("")
     private val isSearchActive = MutableStateFlow(false)
 
-    val isGridLayout = pref.observableListType
+    val isGridLayout = pref.listType
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000L), false)
 
     var isRefreshing = mutableStateOf(false)

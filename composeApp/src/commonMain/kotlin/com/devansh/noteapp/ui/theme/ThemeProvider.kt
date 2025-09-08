@@ -41,7 +41,7 @@ private fun ThemeSwitchHandler(
         val fontFamily = state.fontFamily
 
         MaterialExpressiveTheme(
-            typography = MaterialTheme.typography ,
+            typography = MaterialTheme.typography.map(fontFamily) ,
             colorScheme = theme.colorScheme,
             content = content
         )

@@ -69,11 +69,9 @@ private fun BaseScreen(
     val layoutType = when (deviceConfiguration) {
         MOBILE_LANDSCAPE -> NavigationSuiteType.ShortNavigationBarMedium
         MOBILE_PORTRAIT -> NavigationSuiteType.NavigationBar
-
+        DESKTOP,
         TABLET_PORTRAIT,
         TABLET_LANDSCAPE -> if (isRailExpanded) NavigationSuiteType.WideNavigationRailExpanded else NavigationSuiteType.WideNavigationRailCollapsed
-
-        DESKTOP -> NavigationSuiteType.NavigationDrawer
     }
     val navigationSuiteScaffoldState = rememberNavigationSuiteScaffoldState()
 

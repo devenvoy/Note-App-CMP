@@ -14,8 +14,8 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.dropShadow
-import androidx.compose.ui.graphics.shadow.Shadow
+//import androidx.compose.ui.draw.dropShadow
+//import androidx.compose.ui.graphics.shadow.Shadow
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
@@ -67,14 +67,14 @@ fun EmptyScreen(
                     .padding(20.dp)
                     .widthIn(max = 200.dp, min = Dp.Infinity)
                     .height(60.dp)
-                    .dropShadow(
+                   /* .dropShadow(
                         shape = ButtonDefaults.shape,
                         shadow = Shadow(
                             radius = 15.dp,
                             spread = 8.dp,
                             color = MaterialTheme.colorScheme.primary.copy(.5f)
                         )
-                    ),
+                    )*/,
                 onClick = onClick,
                 elevation = ButtonDefaults.buttonElevation(4.dp)
             ) {

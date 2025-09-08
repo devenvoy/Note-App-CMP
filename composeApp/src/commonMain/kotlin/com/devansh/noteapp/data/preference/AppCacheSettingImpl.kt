@@ -3,16 +3,31 @@ package com.devansh.noteapp.data.preference
 import com.devansh.noteapp.domain.repo.AppCacheSetting
 import com.devansh.noteapp.domain.utils.UnitCBF
 import com.devansh.noteapp.ui.screens.core.ListType
+import com.devansh.noteapp.ui.screens.setting.AppColor
+import com.devansh.noteapp.ui.screens.setting.AppColor.Companion.toInt
+import com.devansh.noteapp.ui.screens.setting.AppTheme
+import com.devansh.noteapp.ui.screens.setting.AppTheme.Companion.toInt
+import com.devansh.noteapp.ui.screens.setting.ListNoteContentDisplayMode
+import com.devansh.noteapp.ui.screens.setting.ListNoteContentDisplayMode.Companion.toInt
+import com.devansh.noteapp.ui.screens.setting.ListNoteContentOverflowStyle
+import com.devansh.noteapp.ui.screens.setting.ListNoteContentOverflowStyle.Companion.toInt
+import com.devansh.noteapp.ui.screens.setting.ListNoteContentSize
+import com.devansh.noteapp.ui.screens.setting.ListNoteContentSize.Companion.toInt
 import com.russhwolf.settings.ExperimentalSettingsApi
 import com.russhwolf.settings.ObservableSettings
 import com.russhwolf.settings.Settings
 import com.russhwolf.settings.coroutines.getBooleanFlow
+import com.russhwolf.settings.coroutines.getFloatFlow
 import com.russhwolf.settings.coroutines.getIntFlow
+import com.russhwolf.settings.coroutines.getStringFlow
 import com.russhwolf.settings.get
 import com.russhwolf.settings.set
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.IO
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.mapLatest
+import kotlinx.coroutines.withContext
 
 @OptIn(ExperimentalSettingsApi::class)
 class AppCacheSettingImpl : AppCacheSetting {
@@ -35,31 +50,88 @@ class AppCacheSettingImpl : AppCacheSetting {
     override val isLoggedIn: Boolean
         get() = (settings[SettingStorageKeys.ACCESS_TOKEN.key] ?: "").isNotEmpty()
 
-    override var autoSyncDB: Boolean
-        get() = settings[SettingStorageKeys.AUTO_SYNC_WITH_REMOTE.key] ?: true
-        set(value) {
-            settings[SettingStorageKeys.AUTO_SYNC_WITH_REMOTE.key] = value
-        }
-
-    @OptIn(ExperimentalCoroutinesApi::class)
-    override val observableListType: Flow<ListType>
-        get() = observableSettings.getIntFlow(SettingStorageKeys.LIST_TYPE_KEY.key, 0)
-            .mapLatest { i -> ListType.entries.first { it.ordinal == i } }
-
-    override var listType: Int
-        get() = settings[SettingStorageKeys.LIST_TYPE_KEY.key, 0]
-        set(value) {
-            settings[SettingStorageKeys.LIST_TYPE_KEY.key] = value
-        }
-
-    override val userEmail: String
-        get() = settings[SettingStorageKeys.USER_EMAIL.key, ""]
-
-    override val observableAutoSyncDB: Flow<Boolean>
+    override val autoSyncDB: Flow<Boolean>
         get() = observableSettings.getBooleanFlow(
             SettingStorageKeys.AUTO_SYNC_WITH_REMOTE.key,
             true
         )
+
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    override val listType: Flow<ListType> =
+        observableSettings.getIntFlow(SettingStorageKeys.LIST_TYPE_KEY.key, 0)
+            .mapLatest { i -> ListType.entries.first { it.ordinal == i } }
+
+
+    override val userEmail: String
+        get() = settings[SettingStorageKeys.USER_EMAIL.key, ""]
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    override val theme: Flow<AppTheme> =
+        observableSettings.getIntFlow(SettingStorageKeys.THEME.key, AppTheme.UNDEFINED.toInt())
+            .mapLatest { AppTheme.fromInt(it) }
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    override val color: Flow<AppColor> =
+        observableSettings.getIntFlow(SettingStorageKeys.COLOR.key, AppColor.DYNAMIC.toInt())
+            .mapLatest { AppColor.fromInt(it) }
+
+    override val isAppInDarkMode: Flow<Boolean>
+        get() = observableSettings.getBooleanFlow(SettingStorageKeys.IS_APP_IN_DARK_MODE.key, false)
+
+    override val shouldFollowSystem: Flow<Boolean>
+        get() = observableSettings.getBooleanFlow(SettingStorageKeys.SHOULD_FOLLOW_SYSTEM.key, false)
+
+    override val isSwitchActive: Flow<Boolean>
+        get() = observableSettings.getBooleanFlow(SettingStorageKeys.IS_SWITCH_ACTIVE.key, false)
+
+    override val isListView: Flow<Boolean>
+        get() = observableSettings.getBooleanFlow(SettingStorageKeys.IS_LIST_VIEW.key, false)
+
+    override val dateFormatter: Flow<String>
+        get() = observableSettings.getStringFlow(SettingStorageKeys.DATE_FORMATTER.key, "")
+
+    override val timeFormatter: Flow<String>
+        get() = observableSettings.getStringFlow(SettingStorageKeys.TIME_FORMATTER.key, "")
+
+    override val isScreenProtected: Flow<Boolean>
+        get() = observableSettings.getBooleanFlow(SettingStorageKeys.IS_SCREEN_PROTECTED.key, false)
+
+    override val fontScale: Flow<Float>
+        get() = observableSettings.getFloatFlow(SettingStorageKeys.FONT_SCALE.key, 1f)
+
+    override val backupFrequency: Flow<Int>
+        get() = observableSettings.getIntFlow(SettingStorageKeys.BACKUP_FREQUENCY.key, 0)
+
+    override val password: Flow<String>
+        get() = observableSettings.getStringFlow(SettingStorageKeys.PASSWORD.key, "")
+
+    override val biometricAuthEnabled: Flow<Boolean>
+        get() = observableSettings.getBooleanFlow(SettingStorageKeys.BIOMETRIC_AUTH_ENABLED.key, false)
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    override val enumOverflowStyle: Flow<ListNoteContentOverflowStyle> =
+        observableSettings.getIntFlow(SettingStorageKeys.ENUM_OVERFLOW_STYLE.key, ListNoteContentOverflowStyle.ELLIPSIS.toInt())
+            .mapLatest { ListNoteContentOverflowStyle.fromInt(it) }
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    override val enumContentSize: Flow<ListNoteContentSize> =
+        observableSettings.getIntFlow(SettingStorageKeys.ENUM_CONTENT_SIZE.key, ListNoteContentSize.DEFAULT.toInt())
+            .mapLatest { ListNoteContentSize.fromInt(it) }
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    override val enumDisplayMode: Flow<ListNoteContentDisplayMode> =
+        observableSettings.getIntFlow(SettingStorageKeys.ENUM_DISPLAY_MODE.key, ListNoteContentDisplayMode.RAW.toInt())
+            .mapLatest { ListNoteContentDisplayMode.fromInt(it) }
+
+    override val isAutoSaveEnabled: Flow<Boolean>
+        get() = observableSettings.getBooleanFlow(SettingStorageKeys.IS_AUTO_SAVE_ENABLED.key, false)
+
+    override val titleAlignment: Flow<Int>
+        get() = observableSettings.getIntFlow(SettingStorageKeys.TITLE_ALIGNMENT.key, 0)
+
+    override val showLineNumbers: Flow<Boolean>
+        get() = observableSettings.getBooleanFlow(SettingStorageKeys.SHOW_LINE_NUMBERS.key, false)
 
     override fun logout(callBack: UnitCBF) {
         settings.clear()
@@ -68,5 +140,95 @@ class AppCacheSettingImpl : AppCacheSetting {
 
     override fun setUserEmail(email: String) {
         settings[SettingStorageKeys.USER_EMAIL.key] = email
+    }
+
+    // Settings State setters
+    override suspend fun setTheme(theme: AppTheme) {
+        putPreferenceValue(SettingStorageKeys.THEME.key, theme.toInt())
+    }
+
+    override suspend fun setColor(color: AppColor) {
+        putPreferenceValue(SettingStorageKeys.COLOR.key, color.toInt())
+    }
+
+    override suspend fun setIsAppInDarkMode(isDarkMode: Boolean) {
+        putPreferenceValue(SettingStorageKeys.IS_APP_IN_DARK_MODE.key, isDarkMode)
+    }
+
+    override suspend fun setShouldFollowSystem(shouldFollow: Boolean) {
+        putPreferenceValue(SettingStorageKeys.SHOULD_FOLLOW_SYSTEM.key, shouldFollow)
+    }
+
+    override suspend fun setIsSwitchActive(isActive: Boolean) {
+        putPreferenceValue(SettingStorageKeys.IS_SWITCH_ACTIVE.key, isActive)
+    }
+
+    override suspend fun setIsListView(isListView: Boolean) {
+        putPreferenceValue(SettingStorageKeys.IS_LIST_VIEW.key, isListView)
+    }
+
+    override suspend fun setDateFormatter(formatter: String) {
+        putPreferenceValue(SettingStorageKeys.DATE_FORMATTER.key, formatter)
+    }
+
+    override suspend fun setTimeFormatter(formatter: String) {
+        putPreferenceValue(SettingStorageKeys.TIME_FORMATTER.key, formatter)
+    }
+
+    override suspend fun setIsScreenProtected(isProtected: Boolean) {
+        putPreferenceValue(SettingStorageKeys.IS_SCREEN_PROTECTED.key, isProtected)
+    }
+
+    override suspend fun setFontScale(scale: Float) {
+        putPreferenceValue(SettingStorageKeys.FONT_SCALE.key, scale)
+    }
+
+    override suspend fun setBackupFrequency(frequency: Int) {
+        putPreferenceValue(SettingStorageKeys.BACKUP_FREQUENCY.key, frequency)
+    }
+
+    override suspend fun setPassword(password: String) {
+        putPreferenceValue(SettingStorageKeys.PASSWORD.key, password)
+    }
+
+    override suspend fun setBiometricAuthEnabled(enabled: Boolean) {
+        putPreferenceValue(SettingStorageKeys.BIOMETRIC_AUTH_ENABLED.key, enabled)
+    }
+
+    override suspend fun setEnumOverflowStyle(style: ListNoteContentOverflowStyle) {
+        putPreferenceValue(SettingStorageKeys.ENUM_OVERFLOW_STYLE.key, style.toInt())
+    }
+
+    override suspend fun setEnumContentSize(size: ListNoteContentSize) {
+        putPreferenceValue(SettingStorageKeys.ENUM_CONTENT_SIZE.key, size.toInt())
+    }
+
+    override suspend fun setEnumDisplayMode(mode: ListNoteContentDisplayMode) {
+        putPreferenceValue(SettingStorageKeys.ENUM_DISPLAY_MODE.key, mode.toInt())
+    }
+
+    override suspend fun setIsAutoSaveEnabled(enabled: Boolean) {
+        putPreferenceValue(SettingStorageKeys.IS_AUTO_SAVE_ENABLED.key, enabled)
+    }
+
+    override suspend fun setTitleAlignment(alignment: Int) {
+        putPreferenceValue(SettingStorageKeys.TITLE_ALIGNMENT.key, alignment)
+    }
+
+    override suspend fun setShowLineNumbers(showNumbers: Boolean) {
+        putPreferenceValue(SettingStorageKeys.SHOW_LINE_NUMBERS.key, showNumbers)
+    }
+
+    override suspend fun <T> putPreferenceValue(key: String, value: T) {
+        withContext(Dispatchers.IO) {
+            when (value) {
+                is Int -> observableSettings.putInt(key, value)
+                is Float -> observableSettings.putFloat(key, value)
+                is Boolean -> observableSettings.putBoolean(key, value)
+                is String -> observableSettings.putString(key, value)
+                is ListType -> observableSettings.putInt(key, value.ordinal)
+                else -> throw IllegalArgumentException("Unsupported value type")
+            }
+        }
     }
 }

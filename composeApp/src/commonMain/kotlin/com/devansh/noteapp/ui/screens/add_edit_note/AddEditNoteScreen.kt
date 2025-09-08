@@ -56,8 +56,8 @@ import androidx.navigation.toRoute
 import com.devansh.noteapp.di.platform_di.clipEntryOf
 import com.devansh.noteapp.domain.model.Note
 import com.devansh.noteapp.navigation.NavRoute
-import com.devansh.noteapp.ui.components.button.BackButton
 import com.devansh.noteapp.ui.components.HintUI
+import com.devansh.noteapp.ui.components.button.BackButton
 import com.devansh.noteapp.ui.screens.home.NoteMenuBottomSheet
 import com.dokar.sonner.ToastType
 import com.dokar.sonner.Toaster
@@ -91,7 +91,7 @@ fun AddEditScreenContent(
 ) {
     val titleState by viewModel.noteTitle
     val selectedBgColor by viewModel.noteColor.collectAsState()
-    val noteBgAnimation = remember { Animatable(Color(selectedBgColor)) }
+    val noteBgAnimation = remember(selectedBgColor) { Animatable(Color(selectedBgColor)) }
     val richTextState = rememberRichTextState()
     val openLinkDialog = remember { mutableStateOf(false) }
     val toasterState = rememberToasterState()
