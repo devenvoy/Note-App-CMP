@@ -216,7 +216,7 @@ compose.desktop {
 
 sqldelight {
     databases {
-        create("NoteDatabase") {
+        create("NoteAppDatabase") {
             packageName = "com.devansh.noteapp"
             generateAsync.set(true)
         }

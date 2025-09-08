@@ -29,7 +29,7 @@ import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import com.devansh.noteapp.domain.entity.CategoryEntity
+import com.devansh.noteapp.domain.model.Category
 import note_app_cmp.composeapp.generated.resources.Res
 import note_app_cmp.composeapp.generated.resources.all_notes
 import note_app_cmp.composeapp.generated.resources.cancel
@@ -41,7 +41,7 @@ import org.jetbrains.compose.resources.stringResource
 fun FolderListDialog(
     hint: String = "",
     oFolderId: Long?,
-    categories: List<CategoryEntity>,
+    categories: List<Category>,
     onDismissRequest: () -> Unit,
     onSelect: (Long?) -> Unit
 ) {

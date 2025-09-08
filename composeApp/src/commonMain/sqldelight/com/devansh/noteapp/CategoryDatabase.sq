@@ -1,0 +1,47 @@
+CREATE TABLE IF NOT EXISTS categoryEntity(
+    categoryId TEXT PRIMARY KEY,
+    categoryName TEXT NOT NULL,
+    colorRes INTEGER,
+    isSynced INTEGER NOT NULL DEFAULT 0
+);
+
+getAllCategories:
+SELECT * FROM categoryEntity;
+
+getAllCategoriesWithNotesCount:
+SELECT
+    c.categoryId,
+    c.categoryName,
+    c.colorRes,
+    c.isSynced,
+    COUNT(n.id) AS notesCount
+FROM categoryEntity AS c
+LEFT JOIN noteEntity AS n
+    ON c.categoryId = n.categoryId
+GROUP BY c.categoryId, c.categoryName, c.colorRes, c.isSynced;
+
+
+getAllUnsyncedCategories:
+SELECT * FROM categoryEntity
+WHERE isSynced = 0;
+
+getAllSyncedCategories:
+SELECT * FROM categoryEntity
+WHERE isSynced = 1;
+
+getCategoryById:
+SELECT * FROM categoryEntity
+WHERE categoryId = ?;
+
+insertCategory:
+INSERT OR REPLACE INTO categoryEntity(categoryId,categoryName,colorRes,isSynced)
+VALUES (?, ?, ?, ?);
+
+markCatgoryAsSynced:
+UPDATE categoryEntity SET isSynced = 1 WHERE categoryId = ?;
+
+deleteCategotyById:
+DELETE FROM categoryEntity WHERE categoryId = ?;
+
+emptyCategoryTable:
+DELETE FROM categoryEntity;

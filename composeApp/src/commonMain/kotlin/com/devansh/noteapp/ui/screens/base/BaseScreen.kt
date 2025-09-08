@@ -39,6 +39,7 @@ import com.devansh.noteapp.navigation.NavRoute
 import com.devansh.noteapp.ui.screens.categoryFolder.categoryScreen
 import com.devansh.noteapp.ui.screens.home.homeScreen
 import com.devansh.noteapp.ui.theme.LocalAppTheme
+import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 
 
@@ -91,7 +92,7 @@ private fun BaseScreen(
                 },
                 label = {
                     Text(
-                        text = navItem.title,
+                        text = stringResource(navItem.title).replaceFirstChar { it.uppercase() },
                         textAlign = TextAlign.Center,
                         color = if (isSelected) theme.colorScheme.primary else theme.colorScheme.onSurface
                     )
@@ -99,7 +100,7 @@ private fun BaseScreen(
                 icon = {
                     Icon(
                         imageVector = if (isSelected) navItem.selectedIcon else navItem.defaultIcon,
-                        contentDescription = navItem.title,
+                        contentDescription = stringResource(navItem.title),
                         tint = if (isSelected) theme.colorScheme.primary else theme.colorScheme.onSurfaceVariant
                     )
                 },

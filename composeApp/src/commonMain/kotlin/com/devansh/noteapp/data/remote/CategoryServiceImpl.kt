@@ -1,7 +1,7 @@
 package com.devansh.noteapp.data.remote
 
 import com.devansh.noteapp.domain.entity.ServerError
-import com.devansh.noteapp.domain.model.CategoryResponse
+import com.devansh.noteapp.domain.model.Category
 import com.devansh.noteapp.domain.repo.CategoryService
 import com.devansh.noteapp.domain.utils.BaseGateway
 import com.devansh.noteapp.domain.utils.Result
@@ -23,8 +23,8 @@ class CategoryServiceImpl(httpClient: HttpClient) : CategoryService, BaseGateway
 
     private val categoryApi = BuildConfig.BASE_URL + "/categories"
 
-    override suspend fun getCategories(accessToken: String): Result<List<CategoryResponse>, ServerError> {
-        return tryToExecute<List<CategoryResponse>> {
+    override suspend fun getCategories(accessToken: String): Result<List<Category>, ServerError> {
+        return tryToExecute<List<Category>> {
             get(categoryApi) {
                 contentType(ContentType.Application.Json)
                 header(HttpHeaders.Authorization, "Bearer $accessToken")
@@ -35,12 +35,12 @@ class CategoryServiceImpl(httpClient: HttpClient) : CategoryService, BaseGateway
     override suspend fun createCategory(
         name: String,
         accessToken: String
-    ): Result<CategoryResponse, ServerError> {
-        return tryToExecute<CategoryResponse> {
+    ): Result<Category, ServerError> {
+        return tryToExecute<Category> {
             post(categoryApi) {
                 contentType(ContentType.Application.Json)
                 header(HttpHeaders.Authorization, "Bearer $accessToken")
-                setBody("""{"name"="$name"}""")
+                setBody("""{"name":"$name"}""")
             }
         }
     }
@@ -49,12 +49,12 @@ class CategoryServiceImpl(httpClient: HttpClient) : CategoryService, BaseGateway
         id: String,
         name: String,
         accessToken: String
-    ): Result<CategoryResponse, ServerError> {
-        return tryToExecute<CategoryResponse> {
+    ): Result<Category, ServerError> {
+        return tryToExecute<Category> {
             put("$categoryApi/$id") {
                 contentType(ContentType.Application.Json)
                 header(HttpHeaders.Authorization, "Bearer $accessToken")
-                setBody("""{"name"="$name"}""")
+                setBody("""{"name":"$name"}""")
             }
         }
     }

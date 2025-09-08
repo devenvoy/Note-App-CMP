@@ -120,8 +120,10 @@
     <string name="editing_view">Editing view</string>
     <string name="reading_view">Reading view</string>
     <string name="sponsor">Sponsor developer ☕</string>
-    <string name="notes">" notes"</string>
-    <string name="note">" note"</string>
+    <string name="note">note</string>
+    <string name="notes">notes</string>
+    <string name="category">category</string>
+    <string name="categories">categories</string>
     <string name="image">Image</string>
     <string name="list">List</string>
     <string name="find">Find</string>

@@ -1,13 +1,17 @@
 package com.devansh.noteapp.di
 
+import com.devansh.noteapp.data.local.CategoryDataSourceImpl
 import com.devansh.noteapp.data.local.NoteDataSourceImpl
 import com.devansh.noteapp.data.preference.AppCacheSettingImpl
 import com.devansh.noteapp.data.remote.AuthServiceImpl
+import com.devansh.noteapp.data.remote.CategoryServiceImpl
 import com.devansh.noteapp.data.remote.NoteServiceImpl
 import com.devansh.noteapp.di.platform_di.getHttpClient
 import com.devansh.noteapp.di.platform_di.platformModule
 import com.devansh.noteapp.domain.repo.AppCacheSetting
 import com.devansh.noteapp.domain.repo.AuthService
+import com.devansh.noteapp.domain.repo.CategoryDataSource
+import com.devansh.noteapp.domain.repo.CategoryService
 import com.devansh.noteapp.domain.repo.NoteDataSource
 import com.devansh.noteapp.domain.repo.NoteService
 import com.devansh.noteapp.ui.screens.add_edit_note.AddEditNoteViewModel
@@ -35,13 +39,15 @@ val screenModelsModule = module {
     viewModel { SplashScreenViewModel(get(),get()) }
     viewModel { AuthViewModel(get(),get()) }
     viewModel { HomeScreenViewModel(get(),get(),get()) }
-    viewModel { CategoryViewModel() }
+    viewModel { CategoryViewModel(get(),get(),get()) }
     viewModel { AddEditNoteViewModel(get(), get(), get()) }
     viewModel { SettingViewModel(get(), get()) }
 }
 
 val repositoryModule = module {
     single<NoteDataSource> { NoteDataSourceImpl(get(), get()) }
+    single<CategoryDataSource> { CategoryDataSourceImpl(get(), get()) }
+    single<CategoryService> { CategoryServiceImpl(get()) }
     single<NoteService> { NoteServiceImpl(get()) }
     single<AuthService> { AuthServiceImpl(get()) }
 }

@@ -3,11 +3,15 @@ package com.devansh.noteapp.ui.utils
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Stable
 import androidx.compose.runtime.remember
-import kotlinx.serialization.Serializable
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.platform.UriHandler
-import kotlinx.datetime.*
-import kotlinx.datetime.format.*
+import kotlinx.datetime.LocalDate
+import kotlinx.datetime.LocalDateTime
+import kotlinx.datetime.LocalTime
+import kotlinx.datetime.format.DateTimeFormat
+import kotlinx.datetime.format.Padding
+import kotlinx.datetime.format.char
+import kotlinx.serialization.Serializable
 
 @Stable
 @Serializable
@@ -84,6 +88,14 @@ fun rememberCustomTabsIntent(): CustomTabsIntent {
 
 fun Int.toHexColor(): String {
     val value = 0xFFFFFF and this
+    return buildString {
+        append('#')
+        append(value.toString(16).padStart(6, '0').uppercase())
+    }
+}
+
+fun Long.toHexColor(): String {
+    val value = 0xFFFFFF and this.toInt()
     return buildString {
         append('#')
         append(value.toString(16).padStart(6, '0').uppercase())

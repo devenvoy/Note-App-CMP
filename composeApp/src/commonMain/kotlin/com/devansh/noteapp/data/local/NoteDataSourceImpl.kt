@@ -3,7 +3,7 @@ package com.devansh.noteapp.data.local
 import app.cash.sqldelight.coroutines.asFlow
 import app.cash.sqldelight.coroutines.mapToList
 import app.cash.sqldelight.db.SqlDriver
-import com.devansh.noteapp.NoteDatabase
+import com.devansh.noteapp.NoteAppDatabase
 import com.devansh.noteapp.domain.model.Note
 import com.devansh.noteapp.domain.model.toNote
 import com.devansh.noteapp.domain.repo.NoteDataSource
@@ -25,8 +25,8 @@ class NoteDataSourceImpl(
 ) : NoteDataSource {
 
     private val db = flow {
-        NoteDatabase.Schema.create(sqlDriver).await()
-        val database = NoteDatabase.invoke(sqlDriver)
+        NoteAppDatabase.Schema.create(sqlDriver).await()
+        val database = NoteAppDatabase.invoke(sqlDriver)
         emit(database)
     }.shareIn(GlobalScope, SharingStarted.Lazily, 1)
 
@@ -39,11 +39,7 @@ class NoteDataSourceImpl(
         database.noteDatabaseQueries.getAllNotes()
             .asFlow()
             .mapToList(dispatcher)
-            .map { list ->
-                list.map { entity ->
-                    entity.toNote()
-                }
-            }
+            .map { list -> list.map { entity -> entity.toNote() } }
     }
 
     override suspend fun getNoteById(id: String): Note? = withContext(dispatcher) {

@@ -16,7 +16,7 @@ data class  ServerResponse<T>(
 @Serializable
 data class  ServerError(
     @SerialName("code") val code: Int?,
-    @SerialName("data") val value: Map<String, String>? = null,
     @SerialName("message") val detail: String?,
-    @SerialName("status") val status: Boolean = false
+    @SerialName("status") val status: Boolean = false,
+    @SerialName("data") val value: Map<String, String>? = null
 ): Error

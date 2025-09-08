@@ -61,10 +61,11 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
-import com.devansh.noteapp.domain.entity.CategoryEntity
+import com.devansh.noteapp.domain.model.Category
 import com.devansh.noteapp.navigation.NavRoute
 import com.devansh.noteapp.ui.components.EmptyScreen
 import com.devansh.noteapp.ui.components.dialog.ModifyFolderDialog
@@ -88,7 +89,9 @@ import org.koin.compose.viewmodel.koinViewModel
 
 fun NavGraphBuilder.categoryScreen(mainNavController: NavHostController) {
     composable<NavRoute.Category> {
-        CategoryScreen({})
+        CategoryScreen {
+            mainNavController.navigateUp()
+        }
     }
 }
 
@@ -99,7 +102,7 @@ fun CategoryScreen(navigateUp: () -> Unit) {
     val viewModel = koinViewModel<CategoryViewModel>()
     val theme = LocalAppTheme.current
 
-    val categories: List<CategoryEntity> = viewModel.categories
+    val categories: List<Category> by viewModel.categories.collectAsStateWithLifecycle()
 
     var showAddFolderDialog by rememberSaveable { mutableStateOf(false) }
 
@@ -146,11 +149,11 @@ fun CategoryScreen(navigateUp: () -> Unit) {
         ) {
 
             items(categories, key = { it.id ?: it.name }, contentType = { "FolderItem" }) {
-                FolderItem(category = it, notesCountInFolder = 0, onModify = { folderEntity ->
-//                        sharedViewModel.onFolderEvent(FolderEvent.UpdateFolder(folderEntity))
-                }, onDelete = {
-//                        sharedViewModel.onFolderEvent(FolderEvent.DeleteFolder(it.first))
-                })
+                FolderItem(
+                    category = it,
+                    onModify = { viewModel.updateCategory(it) },
+                    onDelete = { viewModel.deleteCategory(it) }
+                )
             }
         }
 
@@ -164,18 +167,17 @@ fun CategoryScreen(navigateUp: () -> Unit) {
 
         if (showAddFolderDialog) {
             ModifyFolderDialog(
-                folder = CategoryEntity(), onDismissRequest = { showAddFolderDialog = false }) {
-//                sharedViewModel.onFolderEvent(FolderEvent.AddFolder(it))
-            }
+                folder = Category(),
+                onDismissRequest = { showAddFolderDialog = false })
+            { viewModel.addCategory(it) }
         }
     }
 }
 
 @Composable
 fun LazyGridItemScope.FolderItem(
-    category: CategoryEntity,
-    notesCountInFolder: Int,
-    onModify: (CategoryEntity) -> Unit,
+    category: Category,
+    onModify: (Category) -> Unit,
     onDelete: () -> Unit,
     colorScheme: ColorScheme = MaterialTheme.colorScheme
 ) {
@@ -229,7 +231,8 @@ fun LazyGridItemScope.FolderItem(
             val cornerRightRadius =
                 if (direction == SwipeToDismissBoxValue.EndToStart) 16.dp * (progress * 6f) else 0.dp
             Box(
-                Modifier.fillMaxSize().clip(
+                Modifier.fillMaxSize()
+                    .clip(
                     shape = RoundedCornerShape(
                         topStart = cornerLeftRadius,
                         topEnd = cornerRightRadius,
@@ -252,13 +255,12 @@ fun LazyGridItemScope.FolderItem(
                         .offset { IntOffset(x = -iconOffset.roundToPx(), y = 0) })
             }
         },
-        modifier = Modifier.padding(bottom = 16.dp).clip(CardDefaults.elevatedShape).animateItem()
-            .hoverable(interactionSource).pointerInput(Unit) {
-                detectTapGestures(
-                    onLongPress = {
-                        showContextMenu = true
-                    })
-            }) {
+        modifier = Modifier.padding(top = 12.dp)
+            .clip(CardDefaults.elevatedShape)
+            .animateItem()
+            .hoverable(interactionSource)
+            .pointerInput(Unit) { detectTapGestures(onLongPress = { showContextMenu = true }) })
+    {
         ElevatedCard {
             Row(
                 modifier = Modifier.fillMaxWidth().background(folderColor.copy(alpha = 0.1f))
@@ -277,14 +279,14 @@ fun LazyGridItemScope.FolderItem(
                             fontWeight = FontWeight.Bold, color = folderColor
                         ), maxLines = 1, overflow = TextOverflow.Ellipsis
                     )
-                    val text = "$notesCountInFolder${
+                    val notesCountInFolder = category.notesCount.toInt()
+                    val text = "$notesCountInFolder ${
                         if (notesCountInFolder == 1 || notesCountInFolder == 0) stringResource(Res.string.note)
                         else stringResource(Res.string.notes)
                     }"
                     Text(
-                        text = text, style = MaterialTheme.typography.bodyMedium.copy(
-                            color = Color.Gray
-                        )
+                        text = text,
+                        style = MaterialTheme.typography.bodyMedium.copy(color = Color.Gray)
                     )
                 }
             }

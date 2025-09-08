@@ -2,14 +2,12 @@ package com.devansh.noteapp.ui.components.dialog
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Colorize
@@ -21,13 +19,11 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
-import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -38,7 +34,7 @@ import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.unit.dp
-import com.devansh.noteapp.domain.entity.CategoryEntity
+import com.devansh.noteapp.domain.model.Category
 import note_app_cmp.composeapp.generated.resources.Res
 import note_app_cmp.composeapp.generated.resources.cancel
 import note_app_cmp.composeapp.generated.resources.modify
@@ -49,7 +45,7 @@ import org.jetbrains.compose.resources.stringResource
 @Composable
 fun ModifyFolderDialogPreview() {
     ModifyFolderDialog(
-        folder = CategoryEntity(),
+        folder = Category(),
         onDismissRequest = {},
         onModify = {}
     )
@@ -58,27 +54,27 @@ fun ModifyFolderDialogPreview() {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ModifyFolderDialog(
-    folder: CategoryEntity,
+    folder: Category,
     onDismissRequest: () -> Unit,
-    onModify: (CategoryEntity) -> Unit
+    onModify: (Category) -> Unit
 ) {
 
     var text by remember { mutableStateOf(folder.name) }
     var color by remember { mutableStateOf(folder.color) }
     val custom =
-        color != null && !CategoryEntity.folderColors.contains(Color(color!!))
+        color != null && !Category.folderColors.contains(Color(color!!))
     val initValue =
         if (folder.color == null) 0
-        else if (custom) CategoryEntity.folderColors.size + 1
-        else CategoryEntity.folderColors.indexOf(Color(folder.color)) + 1
+        else if (custom) Category.folderColors.size + 1
+        else Category.folderColors.indexOf(Color(folder.color)) + 1
     var selectedIndex by remember { mutableIntStateOf(initValue) }
 
     var showDialog by remember {
         mutableStateOf(false)
     }
-    val scope = rememberCoroutineScope()
-    val bottomSheetState =
-        rememberModalBottomSheetState(skipPartiallyExpanded = true)
+//    val scope = rememberCoroutineScope()
+//    val bottomSheetState =
+//        rememberModalBottomSheetState(skipPartiallyExpanded = true)
 
     AlertDialog(
         title = {
@@ -93,6 +89,7 @@ fun ModifyFolderDialog(
                     singleLine = true,
                     placeholder = { Text(text = stringResource(Res.string.name)) },
                 )
+                /*
                 LazyRow(
                     modifier = Modifier.padding(top = 16.dp),
                     horizontalArrangement = Arrangement.spacedBy(8.dp)
@@ -126,6 +123,7 @@ fun ModifyFolderDialog(
                         }
                     }
                 }
+                */
             }
         },
         onDismissRequest = onDismissRequest,
@@ -137,12 +135,12 @@ fun ModifyFolderDialog(
 
                     color = when (selectedIndex) {
                         0 -> null
-                        CategoryEntity.folderColors.size + 1 -> color
-                        else -> CategoryEntity.folderColors[selectedIndex - 1].toArgb()
-                    }
+                        Category.folderColors.size + 1 -> color
+                        else -> Category.folderColors[selectedIndex - 1].toArgb()
+                    } as Long?
 
                     onModify(
-                        CategoryEntity(
+                        Category(
                             id = folder.id,
                             name = text,
                             color = color
