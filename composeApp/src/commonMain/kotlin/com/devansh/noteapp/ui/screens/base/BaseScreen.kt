@@ -1,12 +1,21 @@
 package com.devansh.noteapp.ui.screens.base
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.IntrinsicSize
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.MenuOpen
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
 import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteItem
@@ -20,7 +29,10 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.staticCompositionLocalOf
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.dp
 import androidx.navigation.NavDestination.Companion.hasRoute
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraphBuilder
@@ -121,19 +133,53 @@ private fun BaseScreen(
                         startDestination = NavRoute.HomeScreen
                     ) {
                         homeScreen(mainNavController)
-                        categoryScreen(mainNavController)
+                        categoryScreen(mainNavController){
+                            bottomNavController.navigateUp()
+                        }
                     }
                 }
             },
             primaryActionContent = {
-                if (!deviceConfiguration.isMobile()) {
-                    IconButton(onClick = { isRailExpanded = !isRailExpanded }) {
-                        androidx.compose.material3.Icon(
-                            imageVector = if (isRailExpanded) Icons.AutoMirrored.Filled.MenuOpen else Icons.Default.Menu,
-                            contentDescription = "menu"
-                        )
+                Column(
+                    modifier = Modifier.padding(horizontal = 8.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.spacedBy(10.dp)
+                ) {
+                    ExtendedFloatingActionButton(
+                        onClick = { mainNavController.navigate(NavRoute.AddNote(null)) },
+                        containerColor = MaterialTheme.colorScheme.primary,
+                        contentColor = MaterialTheme.colorScheme.onPrimary,
+                        content = {
+                            Icon(
+                                modifier = Modifier.size(24.dp),
+                                imageVector = Icons.Default.Add,
+                                contentDescription = "Add Note"
+                            )
+                            AnimatedVisibility(deviceConfiguration.isMobile() || isRailExpanded) {
+                                Text(text = "Add Note")
+                            }
+                        }
+                    )
+                    if (!deviceConfiguration.isMobile()) {
+                        Box(
+                            modifier = Modifier.width(IntrinsicSize.Min),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            IconButton(
+                                onClick = { isRailExpanded = !isRailExpanded }) {
+                                Icon(
+                                    imageVector = if (isRailExpanded) Icons.AutoMirrored.Filled.MenuOpen else Icons.Default.Menu,
+                                    contentDescription = "menu"
+                                )
+                            }
+                        }
                     }
                 }
+            },
+            primaryActionContentHorizontalAlignment = if (!deviceConfiguration.isMobile()) {
+                Alignment.CenterHorizontally
+            } else {
+                Alignment.End
             },
             navigationItems = navigationSuiteItems
         )

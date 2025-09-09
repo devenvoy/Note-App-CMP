@@ -33,10 +33,14 @@ import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
+import androidx.compose.material3.FilledIconButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.IconButtonShapes
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.ShapeDefaults
 import androidx.compose.material3.SwipeToDismissBox
 import androidx.compose.material3.SwipeToDismissBoxValue
 import androidx.compose.material3.Text
@@ -66,6 +70,7 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import com.devansh.noteapp.domain.model.Category
+import com.devansh.noteapp.domain.utils.UnitCBF
 import com.devansh.noteapp.navigation.NavRoute
 import com.devansh.noteapp.ui.components.EmptyScreen
 import com.devansh.noteapp.ui.components.dialog.ModifyFolderDialog
@@ -87,15 +92,13 @@ import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 
 
-fun NavGraphBuilder.categoryScreen(mainNavController: NavHostController) {
+fun NavGraphBuilder.categoryScreen(mainNavController: NavHostController, navigateToHome: UnitCBF) {
     composable<NavRoute.Category> {
-        CategoryScreen {
-            mainNavController.navigateUp()
-        }
+        CategoryScreen(navigateToHome)
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun CategoryScreen(navigateUp: () -> Unit) {
 
@@ -128,7 +131,13 @@ fun CategoryScreen(navigateUp: () -> Unit) {
                     }
                 },
                 actions = {
-                    IconButton(onClick = { showAddFolderDialog = true }) {
+                    FilledIconButton(
+                        onClick = { showAddFolderDialog = true },
+                        shapes = IconButtonShapes(
+                            shape = ShapeDefaults.ExtraLarge,
+                            pressedShape = ShapeDefaults.Small,
+                        )
+                    ) {
                         Icon(
                             imageVector = Icons.Outlined.CreateNewFolder,
                             contentDescription = "Create New Folder"

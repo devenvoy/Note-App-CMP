@@ -142,6 +142,8 @@ fun AddEditScreenContent(
         floatingActionButton = {
             FloatingActionButton(
                 modifier = Modifier.imePadding(),
+                containerColor = MaterialTheme.colorScheme.primary,
+                contentColor = MaterialTheme.colorScheme.onPrimary,
                 onClick = {
                     viewModel.onEvent(
                         AddEditNoteEvent.SaveNote(richTextState.toHtml())
@@ -213,10 +215,9 @@ fun AddEditScreenContent(
                 .padding(padding)
                 .fillMaxSize()
                 .background(noteBgAnimation.value.copy(alpha = .4f))
-                .padding(vertical = 12.dp, horizontal = 8.dp)
         ) {
             Row(
-                modifier = Modifier.fillMaxWidth().padding(4.dp),
+                modifier = Modifier.padding(4.dp).fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 Note.colors.forEach { colorInt ->
@@ -264,12 +265,8 @@ fun AddEditScreenContent(
             HintUI(
                 text = titleState.text,
                 hint = titleState.hint,
-                onValueChange = {
-                    viewModel.onEvent(AddEditNoteEvent.EnteredTitle(it))
-                },
-                onFocusChange = {
-                    viewModel.onEvent(AddEditNoteEvent.ChangeTitleFocus(it))
-                },
+                onValueChange = { viewModel.onEvent(AddEditNoteEvent.EnteredTitle(it)) },
+                onFocusChange = { viewModel.onEvent(AddEditNoteEvent.ChangeTitleFocus(it)) },
                 isHintVisible = titleState.isHintVisible,
                 singleLine = true,
                 textStyle = MaterialTheme.typography.titleLarge
@@ -279,9 +276,8 @@ fun AddEditScreenContent(
 
             RichTextEditor(
                 state = richTextState,
-                placeholder = {
-                    Text(text = "Note #write-note-content-here")
-                },
+                placeholder = { Text(text = "#write note content here") },
+                textStyle = MaterialTheme.typography.bodyLarge,
                 colors = RichTextEditorDefaults.richTextEditorColors(
                     textColor = MaterialTheme.colorScheme.onSurface,
                     containerColor = Color.Transparent,
@@ -292,17 +288,14 @@ fun AddEditScreenContent(
                 modifier = Modifier.fillMaxWidth()
             )
 
-            if (openLinkDialog.value)
-                Dialog(
-                    onDismissRequest = {
-                        openLinkDialog.value = false
-                    }
-                ) {
+            if (openLinkDialog.value) {
+                Dialog(onDismissRequest = { openLinkDialog.value = false }) {
                     SlackLinkDialog(
                         state = richTextState,
                         openLinkDialog = openLinkDialog
                     )
                 }
+            }
         }
     }
 }

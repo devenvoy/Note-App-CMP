@@ -12,19 +12,17 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.BottomSheetDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
-import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -52,6 +50,7 @@ import androidx.compose.ui.platform.LocalClipboard
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight.Companion.W500
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavGraphBuilder
@@ -138,15 +137,13 @@ fun HomeScreenContent(
     }
 
     Scaffold(
-        modifier =
-            Modifier.pullToRefresh(
-                state = state,
-                isRefreshing = isRefreshing,
-                onRefresh = onRefresh,
-            ),
-        topBar = {
+        modifier = Modifier.pullToRefresh(
+            state = state,
+            isRefreshing = isRefreshing,
+            onRefresh = onRefresh,
+        ), topBar = {
             ExpandableSearchView(
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier.widthIn(max = 600.dp, min = Dp.Infinity),
                 expandedInitially = noteState.isSearchActive,
                 onExpandedChanged = { b -> homeScreenModel.onToggleSearch() },
                 searchDisplay = noteState.searchText,
@@ -155,41 +152,22 @@ fun HomeScreenContent(
             ) {
                 TopAppBar(
                     colors = TopAppBarDefaults.topAppBarColors(
-                        containerColor = MaterialTheme.colorScheme.surface,
-                        actionIconContentColor = MaterialTheme.colorScheme.primary
-                    ),
-                    title = {
-                        Text(
-                            text = "Notes",
-                            style = MaterialTheme.typography.headlineSmall
-                        )
-                    },
-                    actions = {
-                        IconButton(onClick = homeScreenModel::onToggleSearch) {
-                            Icon(imageVector = Icons.Filled.Search, contentDescription = "search")
-                        }
-                        IconButton(onClick = goToSettings) {
-                            Icon(
-                                imageVector = Icons.Filled.Settings,
-                                contentDescription = "setting"
-                            )
-                        }
-                    }
-                )
-            }
-        },
-        floatingActionButton = {
-            if (noteState.notes.isNotEmpty()) {
-                FloatingActionButton(
-                    modifier = Modifier.imePadding(),
-                    onClick = { onNavigateToAddEditNote(null) }
-                ) {
-                    Icon(
-                        modifier = Modifier.size(24.dp),
-                        imageVector = Icons.Default.Add,
-                        contentDescription = "Save Note"
+                    containerColor = MaterialTheme.colorScheme.surface,
+                    actionIconContentColor = MaterialTheme.colorScheme.primary
+                ), title = {
+                    Text(
+                        text = "Notes", style = MaterialTheme.typography.headlineSmall
                     )
-                }
+                }, actions = {
+                    IconButton(onClick = homeScreenModel::onToggleSearch) {
+                        Icon(imageVector = Icons.Filled.Search, contentDescription = "search")
+                    }
+                    IconButton(onClick = goToSettings) {
+                        Icon(
+                            imageVector = Icons.Filled.Settings, contentDescription = "setting"
+                        )
+                    }
+                })
             }
         }) {
 
@@ -209,36 +187,31 @@ fun HomeScreenContent(
             ) {
                 NoteMenuBottomSheet(
                     onEditClick = {
-                        onNavigateToAddEditNote(selectedNote?.id)
-                        dismissSheet()
-                    },
-                    onShareClick = {
-                        shareText(
-                            text = "${selectedNote?.title} \n\n ${richContent.toText()}",
-                            mimeType = "plain/text"
-                        )
-                    },
-                    onDeleteClick = {
-                        homeScreenModel.deleteNoteById(selectedNote?.id!!)
-                        toasterState.show(
-                            message = "Note deleted successfully",
-                            duration = ToasterDefaults.DurationLong,
-                            type = ToastType.Error
-                        )
-                        dismissSheet()
-                    },
-                    onCopyClick = {
-                        scope.launch {
-                            clipboard.setClipEntry(clipEntryOf(AnnotatedString("${selectedNote?.title} \n\n ${richContent.toText()}").text))
-                        }
+                    onNavigateToAddEditNote(selectedNote?.id)
+                    dismissSheet()
+                }, onShareClick = {
+                    shareText(
+                        text = "${selectedNote?.title} \n\n ${richContent.toText()}",
+                        mimeType = "plain/text"
+                    )
+                }, onDeleteClick = {
+                    homeScreenModel.deleteNoteById(selectedNote?.id!!)
+                    toasterState.show(
+                        message = "Note deleted successfully",
+                        duration = ToasterDefaults.DurationLong,
+                        type = ToastType.Error
+                    )
+                    dismissSheet()
+                }, onCopyClick = {
+                    scope.launch {
+                        clipboard.setClipEntry(clipEntryOf(AnnotatedString("${selectedNote?.title} \n\n ${richContent.toText()}").text))
+                    }
 
-                        toasterState.show(
-                            message = "Copied to clipboard",
-                            type = ToastType.Info
-                        )
-                        dismissSheet()
-                    },
-                    showEditOption = true
+                    toasterState.show(
+                        message = "Copied to clipboard", type = ToastType.Info
+                    )
+                    dismissSheet()
+                }, showEditOption = true
                 )
             }
         }
@@ -254,7 +227,7 @@ fun HomeScreenContent(
                     EmptyScreen(
                         text = "\"No Notes !!\"",
                         image = if (theme.dark) Res.drawable.no_conversation else Res.drawable.no_conversation_light,
-                        buttonState = Pair("Get Started") { onNavigateToAddEditNote(null) }
+//                        buttonState = Pair("Get Started") { onNavigateToAddEditNote(null) }
                     )
                 }
             } else {
@@ -306,10 +279,7 @@ fun NoteMenuBottomSheet(
     showEditOption: Boolean
 ) {
     Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .navigationBarsPadding()
-            .padding(16.dp)
+        modifier = Modifier.fillMaxWidth().navigationBarsPadding().padding(16.dp)
     ) {
 
         BottomSheetDefaults.DragHandle(Modifier.width(50.dp).align(Alignment.CenterHorizontally))
@@ -338,9 +308,7 @@ fun NoteMenuBottomSheet(
 
 @Composable
 fun BottomSheetOptionItem(
-    text: String,
-    drawableResource: DrawableResource,
-    onClick: UnitCBF
+    text: String, drawableResource: DrawableResource, onClick: UnitCBF
 ) {
     SecondaryOutlinedButton(
         modifier = Modifier.fillMaxWidth(),

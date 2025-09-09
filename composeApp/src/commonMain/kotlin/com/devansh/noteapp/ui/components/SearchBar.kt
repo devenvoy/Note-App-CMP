@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
@@ -26,6 +27,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
@@ -34,7 +36,6 @@ import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
-import com.devansh.noteapp.ui.components.button.BackButton
 
 @Composable
 fun ExpandableSearchView(
@@ -81,7 +82,7 @@ fun ExpandedSearchView(
         mutableStateOf(TextFieldValue(searchDisplay, TextRange(searchDisplay.length)))
     }
 
-    Column(modifier = modifier.statusBarsPadding().fillMaxWidth()) {
+    Column(modifier = Modifier.statusBarsPadding().fillMaxWidth()) {
         OutlinedTextField(
             colors = OutlinedTextFieldDefaults.colors(focusedBorderColor = Color.Transparent),
             value = textFieldValue,
@@ -90,8 +91,15 @@ fun ExpandedSearchView(
                 onSearchDisplayChanged(it.text)
             },
             leadingIcon = {
-                BackButton {
-                    onExpandedChanged(false)
+                TooltipBox(
+                    positionProvider =
+                        TooltipDefaults.rememberTooltipPositionProvider(),
+                    tooltip = { PlainTooltip { Text(text = "close") } },
+                    state = rememberTooltipState(),
+                ) {
+                    IconButton(onClick = { onExpandedChanged(false) }) {
+                        Icon(imageVector = Icons.Filled.Close, contentDescription = "close")
+                    }
                 }
             },
             trailingIcon = {
@@ -110,7 +118,8 @@ fun ExpandedSearchView(
                     }
                 }
             },
-            modifier = Modifier.fillMaxWidth().focusRequester(textFieldFocusRequester),
+            modifier = modifier.align(Alignment.CenterHorizontally)
+                .focusRequester(textFieldFocusRequester),
             placeholder = { Text(text = "Search notes") },
             keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
             keyboardActions = KeyboardActions(onSearch = { onSearch() })
