@@ -14,10 +14,30 @@ data class Category(
     val name: String = "",
     val color: Long? = null,
     val isSynced: Boolean = false,
-    val notesCount: Long = 0
 ) {
+    var notesCount: Long = 0
+        private set
+    var createdAt: String? = null
+        private set
+    var updatedAt: String? = null
+        private set
+
     companion object Companion {
         val folderColors = listOf(Red, Yellow, Green, Cyan, Blue)
+    }
+
+    constructor(
+        id: String,
+        name: String,
+        color: Long?,
+        isSynced: Boolean,
+        notesCount: Long = 0,
+        createdAt: String? = null,
+        updatedAt: String? = null
+    ) : this(id, name, color, isSynced) {
+        this.notesCount = notesCount
+        this.createdAt = createdAt
+        this.updatedAt = updatedAt
     }
 }
 

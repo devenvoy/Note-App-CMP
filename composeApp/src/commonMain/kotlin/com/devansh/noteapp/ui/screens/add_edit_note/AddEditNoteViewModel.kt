@@ -14,6 +14,8 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import kotlin.time.Clock
+import kotlin.time.ExperimentalTime
 
 class AddEditNoteViewModel(
     private val pref: AppCacheSetting,
@@ -50,6 +52,7 @@ class AddEditNoteViewModel(
         }
     }
 
+    @OptIn(ExperimentalTime::class)
     fun onEvent(event: AddEditNoteEvent) {
         when (event) {
             is AddEditNoteEvent.EnteredTitle -> {
@@ -66,9 +69,7 @@ class AddEditNoteViewModel(
                 noteContent.value = event.newContent
             }
 
-            is AddEditNoteEvent.ChangeContentFocus -> {
-
-            }
+            is AddEditNoteEvent.ChangeContentFocus -> {}
 
             is AddEditNoteEvent.ChangeColor -> {
                 _noteColor.value = event.color
@@ -83,9 +84,15 @@ class AddEditNoteViewModel(
                             content = event.content,
                             category = null,
                             colorRes = noteColor.value,
+                            createdAt = Clock.System.now().toString(),
                         )
                         noteService.upsert(note, pref.accessToken.toString())
-                            .onSuccess { noteDataSource.insertNote(it, true) }
+                            .onSuccess {
+                                noteDataSource.insertNote(
+                                    it.copy(createdAt = note.createdAt),
+                                    true
+                                )
+                            }
                             .onFailure { noteDataSource.insertNote(note, false) }
                         _eventFlow.emit(UiEvent.SaveNote)
                     } catch (e: Exception) {

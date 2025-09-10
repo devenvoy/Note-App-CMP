@@ -12,12 +12,12 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class Note(
     @SerialName("id") val id: String?,
-    @SerialName("ownerId") val ownerId: String? = null,
     @SerialName("title") val title: String,
     @SerialName("content") val content: String,
     @SerialName("color") val colorRes: Long,
     @SerialName("categoryId") val category: String? = null,
-    @SerialName("categoryName") val categoryName: String = "Uncategorized"
+    @SerialName("createdAt") val createdAt: String? = null,
+    @SerialName("updatedAt") val updatedAt: String? = null
 ) {
     companion object {
         val colors = listOf(
@@ -36,7 +36,7 @@ fun NoteEntity.toNote() = Note(
     title = title,
     content = content,
     colorRes = colorRes,
-    ownerId = ownerId,
     category = categoryId,
-    categoryName = categoryName,
+    createdAt = createdAt,
+    updatedAt = updatedAt
 )

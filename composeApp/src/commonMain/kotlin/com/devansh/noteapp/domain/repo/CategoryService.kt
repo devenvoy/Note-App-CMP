@@ -6,7 +6,7 @@ import com.devansh.noteapp.domain.utils.Result
 
 interface CategoryService {
     suspend fun getCategories(accessToken: String): Result<List<Category>, ServerError>
-    suspend fun createCategory(name: String, accessToken: String): Result<Category, ServerError>
-    suspend fun updateCategory(id: String, name: String, accessToken: String): Result<Category, ServerError>
+    suspend fun createCategory(category: Category, accessToken: String): Result<Category, ServerError>
+    suspend fun updateCategory(category: Category, accessToken: String): Result<Category, ServerError>
     suspend fun deleteCategory(id: String, accessToken: String)
 }

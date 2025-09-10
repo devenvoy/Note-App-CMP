@@ -102,8 +102,8 @@ fun NavGraphBuilder.categoryScreen(mainNavController: NavHostController, navigat
 @Composable
 fun CategoryScreen(navigateUp: () -> Unit) {
 
-    val viewModel = koinViewModel<CategoryViewModel>()
     val theme = LocalAppTheme.current
+    val viewModel = koinViewModel<CategoryViewModel>()
 
     val categories: List<Category> by viewModel.categories.collectAsStateWithLifecycle()
 
@@ -176,7 +176,7 @@ fun CategoryScreen(navigateUp: () -> Unit) {
 
         if (showAddFolderDialog) {
             ModifyFolderDialog(
-                folder = Category(),
+                category = Category(),
                 onDismissRequest = { showAddFolderDialog = false })
             { viewModel.addCategory(it) }
         }
@@ -328,7 +328,7 @@ fun LazyGridItemScope.FolderItem(
 
     if (showModifyDialog) {
         ModifyFolderDialog(
-            folder = category, onDismissRequest = { showModifyDialog = false }) {
+            category = category, onDismissRequest = { showModifyDialog = false }) {
             onModify(it)
         }
     }

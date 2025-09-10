@@ -2,12 +2,14 @@ package com.devansh.noteapp.ui.components.dialog
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Colorize
@@ -19,11 +21,13 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -35,6 +39,14 @@ import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.unit.dp
 import com.devansh.noteapp.domain.model.Category
+import com.devansh.noteapp.ui.screens.core.textColors
+import com.maxkeppeker.sheets.core.models.base.rememberUseCaseState
+import com.maxkeppeler.sheets.color.ColorDialog
+import com.maxkeppeler.sheets.color.models.ColorConfig
+import com.maxkeppeler.sheets.color.models.ColorSelection
+import com.maxkeppeler.sheets.color.models.ColorSelectionMode
+import com.maxkeppeler.sheets.color.models.MultipleColors
+import com.maxkeppeler.sheets.color.models.SingleColor
 import note_app_cmp.composeapp.generated.resources.Res
 import note_app_cmp.composeapp.generated.resources.cancel
 import note_app_cmp.composeapp.generated.resources.modify
@@ -45,7 +57,7 @@ import org.jetbrains.compose.resources.stringResource
 @Composable
 fun ModifyFolderDialogPreview() {
     ModifyFolderDialog(
-        folder = Category(),
+        category = Category(),
         onDismissRequest = {},
         onModify = {}
     )
@@ -54,27 +66,24 @@ fun ModifyFolderDialogPreview() {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ModifyFolderDialog(
-    folder: Category,
+    category: Category,
     onDismissRequest: () -> Unit,
     onModify: (Category) -> Unit
 ) {
 
-    var text by remember { mutableStateOf(folder.name) }
-    var color by remember { mutableStateOf(folder.color) }
+    var text by remember { mutableStateOf(category.name) }
+    var color by remember { mutableStateOf(category.color) }
     val custom =
         color != null && !Category.folderColors.contains(Color(color!!))
     val initValue =
-        if (folder.color == null) 0
+        if (category.color == null) 0
         else if (custom) Category.folderColors.size + 1
-        else Category.folderColors.indexOf(Color(folder.color)) + 1
+        else Category.folderColors.indexOf(Color(category.color)) + 1
     var selectedIndex by remember { mutableIntStateOf(initValue) }
 
     var showDialog by remember {
         mutableStateOf(false)
     }
-//    val scope = rememberCoroutineScope()
-//    val bottomSheetState =
-//        rememberModalBottomSheetState(skipPartiallyExpanded = true)
 
     AlertDialog(
         title = {
@@ -89,33 +98,30 @@ fun ModifyFolderDialog(
                     singleLine = true,
                     placeholder = { Text(text = stringResource(Res.string.name)) },
                 )
-                /*
                 LazyRow(
                     modifier = Modifier.padding(top = 16.dp),
                     horizontalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
 
-                    items(CategoryEntity.folderColors.size + 2) {
+                    items(Category.folderColors.size + 2) {
                         when (it) {
                             0 -> {
-                                ColoredCircle2(selected = 0 == selectedIndex) {
-                                    selectedIndex = 0
-                                }
+                                ColoredCircle2(selected = 0 == selectedIndex) { selectedIndex = 0 }
                             }
 
-                            CategoryEntity.folderColors.size + 1 -> {
+                            Category.folderColors.size + 1 -> {
                                 ColoredCircle3(
                                     background = if (custom) Color(color!!) else Color.Black,
-                                    selected = CategoryEntity.folderColors.size + 1 == selectedIndex
+                                    selected = Category.folderColors.size + 1 == selectedIndex
                                 ) {
-                                    selectedIndex = CategoryEntity.folderColors.size + 1
+                                    selectedIndex = Category.folderColors.size + 1
                                     showDialog = true
                                 }
                             }
 
                             else -> {
                                 ColoredCircle(
-                                    color = CategoryEntity.folderColors[it - 1],
+                                    color = Category.folderColors[it - 1],
                                     selected = it == selectedIndex,
                                     onClick = { selectedIndex = it }
                                 )
@@ -123,7 +129,6 @@ fun ModifyFolderDialog(
                         }
                     }
                 }
-                */
             }
         },
         onDismissRequest = onDismissRequest,
@@ -136,12 +141,12 @@ fun ModifyFolderDialog(
                     color = when (selectedIndex) {
                         0 -> null
                         Category.folderColors.size + 1 -> color
-                        else -> Category.folderColors[selectedIndex - 1].toArgb()
-                    } as Long?
+                        else -> Category.folderColors[selectedIndex - 1].toArgb().toLong()
+                    }
 
                     onModify(
                         Category(
-                            id = folder.id,
+                            id = category.id,
                             name = text,
                             color = color
                         )
@@ -161,18 +166,22 @@ fun ModifyFolderDialog(
     )
 
     if (showDialog) {
-/*        ColorPickerDialog(
-            initialColor = if (custom) Color(color!!) else Color.White,
-            sheetState = bottomSheetState,
-            onDismissRequest = { showDialog = false }
-        ) {
-            color = it
-            scope.launch { bottomSheetState.hide() }.invokeOnCompletion {
-                if (!bottomSheetState.isVisible) {
-                    showDialog = false
-                }
-            }
-        }*/
+
+        val colorState = rememberUseCaseState()
+
+        val templateColors = MultipleColors.ColorsInt(*textColors.map { it.toArgb() }.toIntArray())
+
+        ColorDialog(
+            state = colorState,
+            selection = ColorSelection(
+                selectedColor = SingleColor(if (custom) Color(color!!).toArgb() else Color.White.toArgb()),
+                onSelectColor = { color = it.toLong() },
+            ),
+            config = ColorConfig(
+                displayMode = ColorSelectionMode.TEMPLATE,
+                templateColors = templateColors,
+            )
+        )
     }
 }
 

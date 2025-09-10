@@ -1,12 +1,15 @@
 CREATE TABLE IF NOT EXISTS noteEntity(
     id TEXT PRIMARY KEY,
-    ownerId TEXT,
     title TEXT NOT NULL,
     content TEXT NOT NULL,
     colorRes INTEGER NOT NULL,
     categoryId TEXT,
-    categoryName TEXT NOT NULL,
-    isSynced INTEGER NOT NULL DEFAULT 0
+    isSynced INTEGER NOT NULL DEFAULT 0,
+    createdAt TEXT,
+    updatedAt TEXT,
+    FOREIGN KEY (categoryId) REFERENCES categoryEntity(categoryId)
+        ON DELETE CASCADE
+        ON UPDATE CASCADE
 );
 
 getAllNotes:
@@ -25,7 +28,7 @@ SELECT * FROM noteEntity
 WHERE id = ?;
 
 insertNote:
-INSERT OR REPLACE INTO noteEntity (id,ownerId,title,content,colorRes,categoryId,categoryName,isSynced)
+INSERT OR REPLACE INTO noteEntity (id,title,content,colorRes,categoryId,isSynced,createdAt,updatedAt)
 VALUES (?, ?, ?, ?, ?, ?, ?, ?);
 
 markNoteAsSynced:

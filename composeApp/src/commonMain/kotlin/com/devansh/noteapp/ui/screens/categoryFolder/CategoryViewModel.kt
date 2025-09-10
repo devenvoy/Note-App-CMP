@@ -38,7 +38,7 @@ class CategoryViewModel(
     fun addCategory(category: Category) {
         viewModelScope.launch {
             try {
-                categoryService.createCategory(category.name, pref.accessToken.toString())
+                categoryService.createCategory(category, pref.accessToken.toString())
                     .onSuccess { categoryDataSource.insertCategory(it, true) }
                     .onFailure { categoryDataSource.insertCategory(category, false) }
             } catch (e: Exception) {
@@ -50,11 +50,7 @@ class CategoryViewModel(
     fun updateCategory(category: Category) {
         viewModelScope.launch {
             try {
-                categoryService.updateCategory(
-                    category.id,
-                    category.name,
-                    pref.accessToken.toString()
-                )
+                categoryService.updateCategory(category, pref.accessToken.toString())
                     .onSuccess { categoryDataSource.insertCategory(it, true) }
                     .onFailure { categoryDataSource.insertCategory(category, false) }
             } catch (e: Exception) {

@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
@@ -205,9 +206,9 @@ fun SettingScreenContent(
                             ),
                             onClick = {
                                 hapticFeedback.performHapticFeedback(HapticFeedbackType.SegmentTick)
-                                viewModel.updateTitleAlignment(index)
+                                viewModel.updateTheme(option)
                             },
-                            selected = settingState.titleAlignment == index
+                            selected = settingState.theme == option
                         ) {
                             Row(
                                 horizontalArrangement = Arrangement.Center,
@@ -228,41 +229,9 @@ fun SettingScreenContent(
                         }
                     }
                 }
+            }
 
-                SettingsSectionDivider()
-
-                SettingsSwitch(
-                    modifier = Modifier.clip(firstIndexShape),
-                    state = settingState.shouldFollowSystem,
-                    title = {
-                        Text(
-                            text = "Follow System Theme",
-                            fontSize = 16.sp,
-                            fontWeight = W500
-                        )
-                    },
-                    subtitle = {
-                        Text(
-                            "Automatically switch theme based on system settings",
-                            fontSize = 12.sp
-                        )
-                    },
-                    onCheckedChange = viewModel::updateShouldFollowSystem
-                )
-
-                SettingsSectionDivider()
-
-                SettingsSwitch(
-                    modifier = Modifier.clip(lastIndexShape),
-                    state = settingState.isAppInDarkMode,
-                    title = { Text(text = "Dark Mode", fontSize = 16.sp, fontWeight = W500) },
-                    subtitle = { Text("Override system theme with dark mode", fontSize = 12.sp) },
-                    onCheckedChange = viewModel::updateDarkMode,
-                    enabled = !settingState.shouldFollowSystem
-                )
-        }
-
-        // Display Settings
+            // Display Settings
             SettingsGroup(
                 enabled = true,
                 title = { Text(text = "Display Settings") },
@@ -290,9 +259,7 @@ fun SettingScreenContent(
 
                 SettingsSectionDivider()
 
-                // Content Display Mode
-
-                SettingTitle(text = "Display Mode")
+                SettingTitle(text = "Default Display Mode")
 
                 SettingSegmentedButtons(
                     modifier = Modifier.clip(firstIndexShape),
@@ -305,7 +272,7 @@ fun SettingScreenContent(
                 SettingsSectionDivider()
 
                 SettingTitle(text = "Content Size")
-                // Content Size
+
                 SettingSegmentedButtons(
                     modifier = Modifier.clip(middleIndexShape),
                     currentValue = settingState.enumContentSize,
@@ -327,244 +294,244 @@ fun SettingScreenContent(
                 )
             }
 
-        // Editor Settings
-        SettingsGroup(
-            enabled = true,
-            title = { Text(text = "Editor Settings") },
-            contentPadding = PaddingValues(horizontal = 8.dp),
-        ) {
-
-            // Font Scale Slider
-            FontScaleSliderSetting(
-                modifier = Modifier.clip(middleIndexShape),
-                currentScale = settingState.fontScale,
-                onScaleChanged = viewModel::updateFontScale
-            )
-
-            SettingsSectionDivider()
-
-            SettingsSwitch(
-                modifier = Modifier.clip(firstIndexShape),
-                state = settingState.isAutoSaveEnabled,
-                title = { Text(text = "Auto Save", fontSize = 16.sp, fontWeight = W500) },
-                subtitle = {
-                    Text(
-                        "Automatically save changes while typing",
-                        fontSize = 12.sp
-                    )
-                },
-                onCheckedChange = viewModel::updateAutoSave
-            )
-
-            SettingsSectionDivider()
-
-            SettingsSwitch(
-                modifier = Modifier.clip(lastIndexShape),
-                state = settingState.showLineNumbers,
-                title = {
-                    Text(
-                        text = "Show Line Numbers",
-                        fontSize = 16.sp,
-                        fontWeight = W500
-                    )
-                },
-                subtitle = { Text("Display line numbers in editor", fontSize = 12.sp) },
-                onCheckedChange = viewModel::updateShowLineNumbers
-            )
-
-            SettingsSectionDivider()
-
-            // Title Alignment
-            SettingTitle("Title Alignment")
-
-            val alignOptions = listOf(
-                stringResource(Res.string.left),
-                stringResource(Res.string.center),
-                stringResource(Res.string.right)
-            )
-            val alignIcons = remember {
-                listOf(
-                    Icons.AutoMirrored.Outlined.FormatAlignLeft,
-                    Icons.Outlined.FormatAlignCenter,
-                    Icons.AutoMirrored.Outlined.FormatAlignRight
-                )
-            }
-
-            SingleChoiceSegmentedButtonRow(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 8.dp)
+            SettingsGroup(
+                enabled = true,
+                title = { Text(text = "Editor Settings") },
+                contentPadding = PaddingValues(horizontal = 8.dp),
             ) {
-                alignOptions.forEachIndexed { index, option ->
-                    SegmentedButton(
-                        shape = SegmentedButtonDefaults.itemShape(
-                            index = index,
-                            count = alignOptions.size
-                        ),
-                        onClick = {
-                            hapticFeedback.performHapticFeedback(HapticFeedbackType.SegmentTick)
-                            viewModel.updateTitleAlignment(index)
-                        },
-                        selected = settingState.titleAlignment == index
-                    ) {
-                        Row(
-                            horizontalArrangement = Arrangement.Center,
-                            verticalAlignment = Alignment.CenterVertically
+
+                FontScaleSliderSetting(
+                    modifier = Modifier.clip(middleIndexShape),
+                    currentScale = settingState.fontScale,
+                    onScaleChanged = viewModel::updateFontScale
+                )
+
+                SettingsSectionDivider()
+
+                SettingsSwitch(
+                    modifier = Modifier.clip(firstIndexShape),
+                    state = settingState.isAutoSaveEnabled,
+                    title = { Text(text = "Auto Save", fontSize = 16.sp, fontWeight = W500) },
+                    subtitle = {
+                        Text(
+                            "Automatically save changes while typing",
+                            fontSize = 12.sp
+                        )
+                    },
+                    onCheckedChange = viewModel::updateAutoSave
+                )
+
+                SettingsSectionDivider()
+
+                SettingsSwitch(
+                    modifier = Modifier.clip(lastIndexShape),
+                    state = settingState.showLineNumbers,
+                    title = {
+                        Text(
+                            text = "Show Line Numbers",
+                            fontSize = 16.sp,
+                            fontWeight = W500
+                        )
+                    },
+                    subtitle = { Text("Display line numbers in editor", fontSize = 12.sp) },
+                    onCheckedChange = viewModel::updateShowLineNumbers
+                )
+
+                SettingsSectionDivider()
+
+                // Title Alignment
+                SettingTitle("Title Alignment")
+
+                val alignOptions = listOf(
+                    stringResource(Res.string.left),
+                    stringResource(Res.string.center),
+                    stringResource(Res.string.right)
+                )
+                val alignIcons = remember {
+                    listOf(
+                        Icons.AutoMirrored.Outlined.FormatAlignLeft,
+                        Icons.Outlined.FormatAlignCenter,
+                        Icons.AutoMirrored.Outlined.FormatAlignRight
+                    )
+                }
+
+                SingleChoiceSegmentedButtonRow(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 8.dp)
+                ) {
+                    alignOptions.forEachIndexed { index, option ->
+                        SegmentedButton(
+                            shape = SegmentedButtonDefaults.itemShape(
+                                index = index,
+                                count = alignOptions.size
+                            ),
+                            onClick = {
+                                hapticFeedback.performHapticFeedback(HapticFeedbackType.SegmentTick)
+                                viewModel.updateTitleAlignment(index)
+                            },
+                            selected = settingState.titleAlignment == index
                         ) {
-                            Icon(
-                                imageVector = alignIcons[index],
-                                contentDescription = null
-                            )
-                            Spacer(modifier = Modifier.width(8.dp))
-                            Text(option, maxLines = 1, modifier = Modifier.basicMarquee())
+                            Row(
+                                horizontalArrangement = Arrangement.Center,
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Icon(
+                                    imageVector = alignIcons[index],
+                                    contentDescription = null
+                                )
+                                Spacer(modifier = Modifier.width(8.dp))
+                                Text(option, maxLines = 1, modifier = Modifier.basicMarquee())
+                            }
                         }
                     }
                 }
             }
-        }
 
-        // Format Settings
-        SettingsGroup(
-            enabled = true,
-            title = { Text(text = "Format Settings") },
-            contentPadding = PaddingValues(horizontal = 8.dp),
-        ) {
-            SettingsMenuLink(
-                modifier = Modifier.clip(firstIndexShape),
-                title = { Text(text = "Date Format", fontSize = 16.sp, fontWeight = W500) },
-                subtitle = {
-                    Text(
-                        settingState.dateFormatter.ifEmpty { "Default" },
-                        fontSize = 12.sp
-                    )
-                },
-                onClick = { showDateFormatDialog = true }
-            )
+            // Format Settings
+            SettingsGroup(
+                enabled = true,
+                title = { Text(text = "Format Settings") },
+                contentPadding = PaddingValues(horizontal = 8.dp),
+            ) {
+                SettingsMenuLink(
+                    modifier = Modifier.clip(firstIndexShape),
+                    title = { Text(text = "Date Format", fontSize = 16.sp, fontWeight = W500) },
+                    subtitle = {
+                        Text(
+                            settingState.dateFormatter.ifEmpty { "Default" },
+                            fontSize = 12.sp
+                        )
+                    },
+                    onClick = { showDateFormatDialog = true }
+                )
 
-            SettingsSectionDivider()
+                SettingsSectionDivider()
 
-            SettingsMenuLink(
-                modifier = Modifier.clip(lastIndexShape),
-                title = { Text(text = "Time Format", fontSize = 16.sp, fontWeight = W500) },
-                subtitle = {
-                    Text(
-                        settingState.timeFormatter.ifEmpty { "Default" },
-                        fontSize = 12.sp
-                    )
-                },
-                onClick = { showTimeFormatDialog = true }
-            )
-        }
+                SettingsMenuLink(
+                    modifier = Modifier.clip(lastIndexShape),
+                    title = { Text(text = "Time Format", fontSize = 16.sp, fontWeight = W500) },
+                    subtitle = {
+                        Text(
+                            settingState.timeFormatter.ifEmpty { "Default" },
+                            fontSize = 12.sp
+                        )
+                    },
+                    onClick = { showTimeFormatDialog = true }
+                )
+            }
 
-        // Security Settings
-        SettingsGroup(
-            enabled = true,
-            title = { Text(text = "Security Settings") },
-            contentPadding = PaddingValues(horizontal = 8.dp),
-        ) {
-            SettingsSwitch(
-                modifier = Modifier.clip(firstIndexShape),
-                state = settingState.isScreenProtected,
-                title = {
-                    Text(
-                        text = "Screen Protection",
-                        fontSize = 16.sp,
-                        fontWeight = W500
-                    )
-                },
-                subtitle = {
-                    Text(
-                        "Prevent screenshots and screen recording",
-                        fontSize = 12.sp
-                    )
-                },
-                onCheckedChange = viewModel::updateScreenProtection
-            )
+            // Security Settings
+            SettingsGroup(
+                enabled = true,
+                title = { Text(text = "Security Settings") },
+                contentPadding = PaddingValues(horizontal = 8.dp),
+            ) {
+                SettingsSwitch(
+                    modifier = Modifier.clip(firstIndexShape),
+                    state = settingState.isScreenProtected,
+                    title = {
+                        Text(
+                            text = "Screen Protection",
+                            fontSize = 16.sp,
+                            fontWeight = W500
+                        )
+                    },
+                    subtitle = {
+                        Text(
+                            "Prevent screenshots and screen recording",
+                            fontSize = 12.sp
+                        )
+                    },
+                    onCheckedChange = viewModel::updateScreenProtection
+                )
 
-            SettingsSectionDivider()
+                SettingsSectionDivider()
 
-            SettingsSwitch(
-                modifier = Modifier.clip(middleIndexShape),
-                state = settingState.biometricAuthEnabled,
-                title = {
-                    Text(
-                        text = "Biometric Authentication",
-                        fontSize = 16.sp,
-                        fontWeight = W500
-                    )
-                },
-                subtitle = { Text("Use fingerprint or face unlock", fontSize = 12.sp) },
-                onCheckedChange = viewModel::updateBiometricAuth
-            )
+                SettingsSwitch(
+                    modifier = Modifier.clip(middleIndexShape),
+                    state = settingState.biometricAuthEnabled,
+                    title = {
+                        Text(
+                            text = "Biometric Authentication",
+                            fontSize = 16.sp,
+                            fontWeight = W500
+                        )
+                    },
+                    subtitle = { Text("Use fingerprint or face unlock", fontSize = 12.sp) },
+                    onCheckedChange = viewModel::updateBiometricAuth
+                )
 
-            SettingsSectionDivider()
+                SettingsSectionDivider()
 
-            SettingsMenuLink(
-                modifier = Modifier.clip(lastIndexShape),
-                title = { Text(text = "Password", fontSize = 16.sp, fontWeight = W500) },
-                subtitle = {
-                    Text(
-                        if (settingState.password.isNotEmpty()) "Password set" else "No password",
-                        fontSize = 12.sp
-                    )
-                },
-                onClick = { showPasswordDialog = true }
-            )
-        }
+                SettingsMenuLink(
+                    modifier = Modifier.clip(lastIndexShape),
+                    title = { Text(text = "Password", fontSize = 16.sp, fontWeight = W500) },
+                    subtitle = {
+                        Text(
+                            if (settingState.password.isNotEmpty()) "Password set" else "No password",
+                            fontSize = 12.sp
+                        )
+                    },
+                    onClick = { showPasswordDialog = true }
+                )
+            }
 
-        // Backup Settings
-        SettingsGroup(
-            enabled = true,
-            title = { Text(text = "Backup Settings") },
-            contentPadding = PaddingValues(horizontal = 8.dp),
-        ) {
-            // Backup Frequency
-            BackupFrequencyDropdownSetting(
-                modifier = Modifier.clip(singleItemIndex),
-                currentFrequency = settingState.backupFrequency,
-                onFrequencySelected = viewModel::updateBackupFrequency
-            )
+            // Backup Settings
+            SettingsGroup(
+                enabled = true,
+                title = { Text(text = "Backup Settings") },
+                contentPadding = PaddingValues(horizontal = 8.dp),
+            ) {
+                // Backup Frequency
+                BackupFrequencyDropdownSetting(
+                    modifier = Modifier.clip(singleItemIndex),
+                    currentFrequency = settingState.backupFrequency,
+                    onFrequencySelected = viewModel::updateBackupFrequency
+                )
+            }
+
+            Spacer(modifier = Modifier.height(60.dp))
         }
     }
-}
 
 // Dialogs
-if (showPasswordDialog) {
-    PasswordDialog(
-        currentPassword = settingState.password,
-        onPasswordSet = { password ->
-            viewModel.updatePassword(password)
-            showPasswordDialog = false
-        },
-        onDismiss = { showPasswordDialog = false }
-    )
-}
+    if (showPasswordDialog) {
+        PasswordDialog(
+            currentPassword = settingState.password,
+            onPasswordSet = { password ->
+                viewModel.updatePassword(password)
+                showPasswordDialog = false
+            },
+            onDismiss = { showPasswordDialog = false }
+        )
+    }
 
-if (showDateFormatDialog) {
-    FormatDialog(
-        title = "Date Format",
-        currentFormat = settingState.dateFormatter,
-        suggestions = listOf("dd/MM/yyyy", "MM/dd/yyyy", "yyyy-MM-dd", "dd MMM yyyy"),
-        onFormatSet = { format ->
-            viewModel.updateDateFormatter(format)
-            showDateFormatDialog = false
-        },
-        onDismiss = { showDateFormatDialog = false }
-    )
-}
+    if (showDateFormatDialog) {
+        FormatDialog(
+            title = "Date Format",
+            currentFormat = settingState.dateFormatter,
+            suggestions = listOf("dd/MM/yyyy", "MM/dd/yyyy", "yyyy-MM-dd", "dd MMM yyyy"),
+            onFormatSet = { format ->
+                viewModel.updateDateFormatter(format)
+                showDateFormatDialog = false
+            },
+            onDismiss = { showDateFormatDialog = false }
+        )
+    }
 
-if (showTimeFormatDialog) {
-    FormatDialog(
-        title = "Time Format",
-        currentFormat = settingState.timeFormatter,
-        suggestions = listOf("HH:mm", "hh:mm a", "HH:mm:ss", "hh:mm:ss a"),
-        onFormatSet = { format ->
-            viewModel.updateTimeFormatter(format)
-            showTimeFormatDialog = false
-        },
-        onDismiss = { showTimeFormatDialog = false }
-    )
-}
+    if (showTimeFormatDialog) {
+        FormatDialog(
+            title = "Time Format",
+            currentFormat = settingState.timeFormatter,
+            suggestions = listOf("HH:mm", "hh:mm a", "HH:mm:ss", "hh:mm:ss a"),
+            onFormatSet = { format ->
+                viewModel.updateTimeFormatter(format)
+                showTimeFormatDialog = false
+            },
+            onDismiss = { showTimeFormatDialog = false }
+        )
+    }
 }
 
 @Composable

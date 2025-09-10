@@ -2,6 +2,8 @@ CREATE TABLE IF NOT EXISTS categoryEntity(
     categoryId TEXT PRIMARY KEY,
     categoryName TEXT NOT NULL,
     colorRes INTEGER,
+    createdAt TEXT,
+    updatedAt TEXT,
     isSynced INTEGER NOT NULL DEFAULT 0
 );
 
@@ -14,6 +16,8 @@ SELECT
     c.categoryName,
     c.colorRes,
     c.isSynced,
+    c.createdAt,
+    c.updatedAt,
     COUNT(n.id) AS notesCount
 FROM categoryEntity AS c
 LEFT JOIN noteEntity AS n
@@ -34,8 +38,8 @@ SELECT * FROM categoryEntity
 WHERE categoryId = ?;
 
 insertCategory:
-INSERT OR REPLACE INTO categoryEntity(categoryId,categoryName,colorRes,isSynced)
-VALUES (?, ?, ?, ?);
+INSERT OR REPLACE INTO categoryEntity(categoryId,categoryName,colorRes,isSynced,createdAt,updatedAt)
+VALUES (?, ?, ?, ?,?,?);
 
 markCatgoryAsSynced:
 UPDATE categoryEntity SET isSynced = 1 WHERE categoryId = ?;

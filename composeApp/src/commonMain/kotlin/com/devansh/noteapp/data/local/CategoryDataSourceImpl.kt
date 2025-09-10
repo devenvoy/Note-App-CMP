@@ -46,7 +46,7 @@ class CategoryDataSourceImpl(
                         name = entity.categoryName,
                         color = entity.colorRes,
                         isSynced = entity.isSynced == 1L,
-                        notesCount = entity.notesCount
+                        notesCount = entity.notesCount,
                     )
                 }
             }
@@ -69,6 +69,8 @@ class CategoryDataSourceImpl(
             colorRes = category.color,
             categoryName = category.name,
             isSynced = if (synced) 1 else 0,
+            createdAt = category.createdAt,
+            updatedAt = category.updatedAt
         )
         Unit
     }

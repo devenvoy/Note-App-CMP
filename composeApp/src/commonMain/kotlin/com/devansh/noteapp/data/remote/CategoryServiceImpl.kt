@@ -33,28 +33,26 @@ class CategoryServiceImpl(httpClient: HttpClient) : CategoryService, BaseGateway
     }
 
     override suspend fun createCategory(
-        name: String,
-        accessToken: String
+        category: Category, accessToken: String
     ): Result<Category, ServerError> {
         return tryToExecute<Category> {
             post(categoryApi) {
                 contentType(ContentType.Application.Json)
                 header(HttpHeaders.Authorization, "Bearer $accessToken")
-                setBody("""{"name":"$name"}""")
+                setBody(category)
             }
         }
     }
 
     override suspend fun updateCategory(
-        id: String,
-        name: String,
+        category: Category,
         accessToken: String
     ): Result<Category, ServerError> {
         return tryToExecute<Category> {
-            put("$categoryApi/$id") {
+            put("$categoryApi/${category.id}") {
                 contentType(ContentType.Application.Json)
                 header(HttpHeaders.Authorization, "Bearer $accessToken")
-                setBody("""{"name":"$name"}""")
+                setBody(category)
             }
         }
     }

@@ -55,11 +55,11 @@ class NoteDataSourceImpl(
             id = note.id.toString(),
             title = note.title,
             content = note.content,
-            ownerId = note.ownerId,
             colorRes = note.colorRes,
             categoryId = note.category,
-            categoryName = note.categoryName,
             isSynced = if (synced) 1 else 0,
+            createdAt = note.createdAt,
+            updatedAt = note.updatedAt
         )
         Unit
     }
