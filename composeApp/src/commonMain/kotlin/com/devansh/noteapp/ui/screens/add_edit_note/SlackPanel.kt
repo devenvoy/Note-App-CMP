@@ -3,11 +3,12 @@ package com.devansh.noteapp.ui.screens.add_edit_note
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
-import androidx.compose.foundation.layout.FlowRow
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.FormatAlignLeft
 import androidx.compose.material.icons.automirrored.filled.FormatAlignRight
@@ -24,13 +25,15 @@ import androidx.compose.material.icons.filled.FormatUnderlined
 import androidx.compose.material.icons.filled.Highlight
 import androidx.compose.material.icons.filled.Link
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
+import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
@@ -42,7 +45,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.window.core.layout.WindowWidthSizeClass
 import com.devansh.noteapp.ui.screens.core.textColors
 import com.devansh.noteapp.ui.theme.CrimsonRed
 import com.maxkeppeker.sheets.core.models.base.rememberUseCaseState
@@ -56,7 +58,7 @@ import com.mohamedrejeb.richeditor.model.RichTextState
 
 @OptIn(
     ExperimentalLayoutApi::class,
-    ExperimentalMaterial3Api::class
+    ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class
 )
 @Composable
 fun SlackPanel(
@@ -66,7 +68,6 @@ fun SlackPanel(
 ) {
 
     var selectedTextColor by remember { mutableStateOf(CrimsonRed.toArgb()) }
-    val windowSizeClass = currentWindowAdaptiveInfo()
 
     val colorState = rememberUseCaseState(
         onFinishedRequest = { state.toggleSpanStyle(SpanStyle(color = Color(selectedTextColor))) })
@@ -85,122 +86,163 @@ fun SlackPanel(
         )
     )
 
-    FlowRow(
-        modifier = modifier,
-        horizontalArrangement = Arrangement.spacedBy(2.dp)
+    Column(
+        modifier = Modifier.imePadding()
+            .then(modifier)
+            .background(MaterialTheme.colorScheme.background),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
+        LazyRow(
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            item {
+                SlackPanelButton(
+                    onClick = { state.toggleSpanStyle(SpanStyle(fontWeight = FontWeight.Bold)) },
+                    isSelected = state.currentSpanStyle.fontWeight == FontWeight.Bold,
+                    icon = Icons.Filled.FormatBold
+                )
+            }
 
-        SlackPanelButton(
-            onClick = { state.toggleSpanStyle(SpanStyle(fontWeight = FontWeight.Bold)) },
-            isSelected = state.currentSpanStyle.fontWeight == FontWeight.Bold,
-            icon = Icons.Filled.FormatBold
-        )
+            item {
+                SlackPanelButton(
+                    onClick = { state.toggleSpanStyle(SpanStyle(fontStyle = FontStyle.Italic)) },
+                    isSelected = state.currentSpanStyle.fontStyle == FontStyle.Italic,
+                    icon = Icons.Filled.FormatItalic
+                )
+            }
 
-        SlackPanelButton(
-            onClick = { state.toggleSpanStyle(SpanStyle(fontStyle = FontStyle.Italic)) },
-            isSelected = state.currentSpanStyle.fontStyle == FontStyle.Italic,
-            icon = Icons.Filled.FormatItalic
-        )
+            item {
+                SlackPanelButton(
+                    onClick = { state.toggleSpanStyle(SpanStyle(textDecoration = TextDecoration.Underline)) },
+                    isSelected = state.currentSpanStyle.textDecoration?.contains(TextDecoration.Underline) == true,
+                    icon = Icons.Filled.FormatUnderlined
+                )
+            }
 
-        SlackPanelButton(
-            onClick = { state.toggleSpanStyle(SpanStyle(textDecoration = TextDecoration.Underline)) },
-            isSelected = state.currentSpanStyle.textDecoration?.contains(TextDecoration.Underline) == true,
-            icon = Icons.Filled.FormatUnderlined
-        )
+            item {
+                SlackPanelButton(
+                    onClick = { state.toggleSpanStyle(SpanStyle(textDecoration = TextDecoration.LineThrough)) },
+                    isSelected = state.currentSpanStyle.textDecoration?.contains(TextDecoration.LineThrough) == true,
+                    icon = Icons.Filled.FormatStrikethrough
+                )
+            }
 
-        SlackPanelButton(
-            onClick = { state.toggleSpanStyle(SpanStyle(textDecoration = TextDecoration.LineThrough)) },
-            isSelected = state.currentSpanStyle.textDecoration?.contains(TextDecoration.LineThrough) == true,
-            icon = Icons.Filled.FormatStrikethrough
-        )
+            item {
+                Box(
+                    Modifier.height(28.dp).width(2.dp)
+                        .background(MaterialTheme.colorScheme.onBackground)
+                )
+            }
 
-        Box(
-            Modifier.height(24.dp).width(1.dp).background(Color(0xFF393B3D))
-        )
+            item {
+                SlackPanelButton(
+                    onClick = { openLinkDialog.value = true },
+                    isSelected = state.isLink,
+                    icon = Icons.Filled.Link
+                )
+            }
 
-        SlackPanelButton(
-            onClick = { openLinkDialog.value = true },
-            isSelected = state.isLink,
-            icon = Icons.Filled.Link
-        )
+            item {
+                SlackPanelButton(
+                    onClick = { state.toggleCodeSpan() },
+                    isSelected = state.isCodeSpan,
+                    icon = Icons.Filled.Code,
+                )
+            }
 
-        SlackPanelButton(
-            onClick = { state.toggleCodeSpan() },
-            isSelected = state.isCodeSpan,
-            icon = Icons.Filled.Code,
-        )
+            item {
+                Box(
+                    Modifier.height(28.dp).width(2.dp)
+                        .background(MaterialTheme.colorScheme.onBackground)
+                )
+            }
 
-        Box(
-            Modifier.height(24.dp).width(1.dp).background(Color(0xFF393B3D))
-        )
+            item {
+                SlackPanelButton(
+                    onClick = { state.toggleSpanStyle(SpanStyle(fontSize = 28.sp)) },
+                    isSelected = state.currentSpanStyle.fontSize == 28.sp,
+                    icon = Icons.Filled.FormatSize
+                )
+            }
 
-        SlackPanelButton(
-            onClick = { state.toggleSpanStyle(SpanStyle(fontSize = 28.sp)) },
-            isSelected = state.currentSpanStyle.fontSize == 28.sp,
-            icon = Icons.Filled.FormatSize
-        )
+            item {
+                SlackPanelButton(
+                    onClick = {
+                        if (state.currentSpanStyle.color != Color(selectedTextColor)) {
+                            colorState.show()
+                        } else {
+                            state.toggleSpanStyle(
+                                SpanStyle(color = Color(selectedTextColor))
+                            )
+                        }
+                    },
+                    isSelected = state.currentSpanStyle.color == Color(selectedTextColor),
+                    icon = Icons.Filled.Circle,
+                    tint = Color(selectedTextColor)
+                )
+            }
 
-        SlackPanelButton(
-            onClick = {
-                if (state.currentSpanStyle.color != Color(selectedTextColor)) {
-                    colorState.show()
-                } else {
-                    state.toggleSpanStyle(
-                        SpanStyle(color = Color(selectedTextColor))
-                    )
-                }
-            },
-            isSelected = state.currentSpanStyle.color == Color(selectedTextColor),
-            icon = Icons.Filled.Circle,
-            tint = Color(selectedTextColor)
-        )
-
-        SlackPanelButton(
-            onClick = { state.toggleSpanStyle(SpanStyle(background = Color.Yellow)) },
-            isSelected = state.currentSpanStyle.background == Color.Yellow,
-            icon = Icons.Filled.Highlight,
-            tint = Color.Yellow
-        )
+            item {
+                SlackPanelButton(
+                    onClick = { state.toggleSpanStyle(SpanStyle(background = Color.Yellow)) },
+                    isSelected = state.currentSpanStyle.background == Color.Yellow,
+                    icon = Icons.Filled.Highlight,
+                    tint = Color.Yellow
+                )
+            }
 
 
-        when (windowSizeClass.windowSizeClass.windowWidthSizeClass) {
-            WindowWidthSizeClass.COMPACT -> Box(modifier = Modifier.fillMaxWidth())
-            else -> Box(
-                Modifier.height(24.dp).width(1.dp).background(Color(0xFF393B3D))
-            )
+            item {
+                Box(
+                    Modifier.height(28.dp).width(2.dp)
+                        .background(MaterialTheme.colorScheme.onBackground)
+                )
+            }
+
+            item {
+                SlackPanelButton(
+                    onClick = { state.addParagraphStyle(ParagraphStyle(textAlign = TextAlign.Left)) },
+                    isSelected = state.currentParagraphStyle.textAlign == TextAlign.Left,
+                    icon = Icons.AutoMirrored.Filled.FormatAlignLeft
+                )
+            }
+
+            item {
+                SlackPanelButton(
+                    onClick = { state.addParagraphStyle(ParagraphStyle(textAlign = TextAlign.Center)) },
+                    isSelected = state.currentParagraphStyle.textAlign == TextAlign.Center,
+                    icon = Icons.Filled.AlignHorizontalCenter
+                )
+            }
+
+            item {
+                SlackPanelButton(
+                    onClick = { state.addParagraphStyle(ParagraphStyle(textAlign = TextAlign.Right)) },
+                    isSelected = state.currentParagraphStyle.textAlign == TextAlign.Right,
+                    icon = Icons.AutoMirrored.Filled.FormatAlignRight
+                )
+            }
+
+            item {
+                Modifier.height(28.dp).width(2.dp)
+                    .background(MaterialTheme.colorScheme.onBackground)
+            }
+
+            item {
+                SlackPanelButton(
+                    onClick = { state.toggleUnorderedList() },
+                    isSelected = state.isUnorderedList,
+                    icon = Icons.AutoMirrored.Filled.FormatListBulleted
+                )
+            }
+            item {
+                SlackPanelButton(
+                    onClick = { state.toggleOrderedList() },
+                    isSelected = state.isOrderedList,
+                    icon = Icons.Filled.FormatListNumbered,
+                )
+            }
         }
-
-        SlackPanelButton(
-            onClick = { state.addParagraphStyle(ParagraphStyle(textAlign = TextAlign.Left)) },
-            isSelected = state.currentParagraphStyle.textAlign == TextAlign.Left,
-            icon = Icons.AutoMirrored.Filled.FormatAlignLeft
-        )
-
-        SlackPanelButton(
-            onClick = { state.addParagraphStyle(ParagraphStyle(textAlign = TextAlign.Center)) },
-            isSelected = state.currentParagraphStyle.textAlign == TextAlign.Center,
-            icon = Icons.Filled.AlignHorizontalCenter
-        )
-
-        SlackPanelButton(
-            onClick = { state.addParagraphStyle(ParagraphStyle(textAlign = TextAlign.Right)) },
-            isSelected = state.currentParagraphStyle.textAlign == TextAlign.Right,
-            icon = Icons.AutoMirrored.Filled.FormatAlignRight
-        )
-
-        Box(Modifier.height(24.dp).width(1.dp).background(Color(0xFF393B3D)))
-
-
-        SlackPanelButton(
-            onClick = { state.toggleUnorderedList() },
-            isSelected = state.isUnorderedList,
-            icon = Icons.AutoMirrored.Filled.FormatListBulleted
-        )
-
-        SlackPanelButton(
-            onClick = { state.toggleOrderedList() },
-            isSelected = state.isOrderedList,
-            icon = Icons.Filled.FormatListNumbered,
-        )
     }
 }

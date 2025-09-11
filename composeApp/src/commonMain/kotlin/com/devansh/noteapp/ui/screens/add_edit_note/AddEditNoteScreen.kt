@@ -14,17 +14,18 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.Save
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
+import androidx.compose.material3.FilledTonalIconButton
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
+import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Scaffold
@@ -77,14 +78,12 @@ fun NavGraphBuilder.addNoteScreen(navHostController: NavHostController) {
         val viewModel = koinViewModel<AddEditNoteViewModel>()
         LaunchedEffect(Unit) { viewModel.initState(noteId = noteId) }
         AddEditScreenContent(
-            viewModel = viewModel,
-            onNavigateUp = { navHostController.navigateUp() }
-        )
+            viewModel = viewModel, onNavigateUp = { navHostController.navigateUp() })
     }
 }
 
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun AddEditScreenContent(
     viewModel: AddEditNoteViewModel, onNavigateUp: () -> Unit
@@ -128,7 +127,31 @@ fun AddEditScreenContent(
                     noteBgAnimation.value.copy(.4f)
                 ),
                 actions = {
-                    IconButton(onClick = { isBottomSheetVisible = true }) {
+                    FilledTonalIconButton(
+                        modifier = Modifier.size(width = 52.dp, height = 32.dp),
+                        shapes = IconButtonDefaults.shapes(),
+                        colors = IconButtonDefaults.filledIconButtonColors(
+                            containerColor = MaterialTheme.colorScheme.primary,
+                            contentColor = MaterialTheme.colorScheme.onPrimary,
+                        ), onClick = {
+                            viewModel.onEvent(
+                                AddEditNoteEvent.SaveNote(richTextState.toHtml())
+                            )
+                        }) {
+                        Icon(
+                            modifier = Modifier.padding(4.dp),
+                            imageVector = Icons.Default.Save,
+                            contentDescription = "Save Note"
+                        )
+                    }
+                    FilledTonalIconButton(
+                        modifier = Modifier.padding(4.dp).size(width = 20.dp, height = 32.dp),
+                        shapes = IconButtonDefaults.shapes(),
+                        colors = IconButtonDefaults.filledIconButtonColors(
+                            containerColor = MaterialTheme.colorScheme.tertiary,
+                            contentColor = MaterialTheme.colorScheme.onPrimary,
+                        ),
+                        onClick = { isBottomSheetVisible = true }) {
                         Icon(
                             imageVector = Icons.Default.MoreVert,
                             contentDescription = null,
@@ -136,28 +159,9 @@ fun AddEditScreenContent(
                     }
                 },
                 navigationIcon = { BackButton { onNavigateUp() } },
-                title = {}
+                title = {},
             )
-        },
-        floatingActionButton = {
-            FloatingActionButton(
-                modifier = Modifier.imePadding(),
-                containerColor = MaterialTheme.colorScheme.primary,
-                contentColor = MaterialTheme.colorScheme.onPrimary,
-                onClick = {
-                    viewModel.onEvent(
-                        AddEditNoteEvent.SaveNote(richTextState.toHtml())
-                    )
-                }
-            ) {
-                Icon(
-                    modifier = Modifier.size(28.dp),
-                    imageVector = Icons.Default.Save,
-                    contentDescription = "Save Note"
-                )
-            }
-        })
-    { padding ->
+        }) { padding ->
 
         Toaster(
             state = toasterState,
@@ -180,9 +184,7 @@ fun AddEditScreenContent(
                 dragHandle = null
             ) {
                 NoteMenuBottomSheet(
-                    onEditClick = {},
-                    onShareClick = {},
-                    onDeleteClick = {
+                    onEditClick = {}, onShareClick = {}, onDeleteClick = {
                         viewModel.deleteNoteById()
                         toasterState.show(
                             "Note deleted successfully",
@@ -191,8 +193,7 @@ fun AddEditScreenContent(
                         )
                         dismissSheet()
                         onNavigateUp()
-                    },
-                    onCopyClick = {
+                    }, onCopyClick = {
                         scope.launch {
                             clipboardManager.setClipEntry(
                                 clipEntryOf(AnnotatedString("$titleState \n\n ${richTextState.toText()}").toString())
@@ -204,16 +205,13 @@ fun AddEditScreenContent(
                             type = ToastType.Info
                         )
                         dismissSheet()
-                    },
-                    showEditOption = false
+                    }, showEditOption = false
                 )
             }
         }
 
         Column(
-            modifier = Modifier
-                .padding(padding)
-                .fillMaxSize()
+            modifier = Modifier.padding(padding).fillMaxSize()
                 .background(noteBgAnimation.value.copy(alpha = .4f))
         ) {
             Row(
@@ -224,19 +222,14 @@ fun AddEditScreenContent(
                     val color = Color(colorInt)
 
                     Box(
-                        modifier = Modifier.size(40.dp).shadow(15.dp, CircleShape)
-                            .clip(CircleShape)
-                            .background(color)
-                            .border(
-                                width = 3.dp,
-                                color = if (selectedBgColor == colorInt) {
+                        modifier = Modifier.size(40.dp).shadow(15.dp, CircleShape).clip(CircleShape)
+                            .background(color).border(
+                                width = 3.dp, color = if (selectedBgColor == colorInt) {
                                     Color.White
                                 } else {
                                     Color.Transparent  //color is deselected
-                                },
-                                shape = CircleShape
-                            )
-                            .clickable(
+                                }, shape = CircleShape
+                            ).clickable(
                                 onClick = {
                                     scope.launch {
                                         noteBgAnimation.animateTo(
@@ -246,21 +239,11 @@ fun AddEditScreenContent(
                                     }
 
                                     viewModel.onEvent(AddEditNoteEvent.ChangeColor(colorInt))
-                                }
-                            )
+                                })
                     )
                 }
             }
 
-            SlackPanel(
-                state = richTextState,
-                openLinkDialog = openLinkDialog,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = 8.dp)
-            )
-
-            Spacer(Modifier.height(12.dp))
 
             HintUI(
                 text = titleState.text,
@@ -285,16 +268,26 @@ fun AddEditScreenContent(
                     unfocusedIndicatorColor = Color.Transparent,
                     placeholderColor = Color.Gray.copy(alpha = .6f),
                 ),
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier.fillMaxWidth().weight(1f)
             )
+        }
 
-            if (openLinkDialog.value) {
-                Dialog(onDismissRequest = { openLinkDialog.value = false }) {
-                    SlackLinkDialog(
-                        state = richTextState,
-                        openLinkDialog = openLinkDialog
-                    )
-                }
+        Box(
+            modifier = Modifier.fillMaxSize(),
+            contentAlignment = Alignment.BottomCenter
+        ) {
+            SlackPanel(
+                state = richTextState,
+                openLinkDialog = openLinkDialog,
+                modifier = Modifier.fillMaxWidth().systemBarsPadding()
+            )
+        }
+
+        if (openLinkDialog.value) {
+            Dialog(onDismissRequest = { openLinkDialog.value = false }) {
+                SlackLinkDialog(
+                    state = richTextState, openLinkDialog = openLinkDialog
+                )
             }
         }
     }
