@@ -1,10 +1,6 @@
 package com.devansh.noteapp.domain.model
 
-import androidx.compose.ui.graphics.Color.Companion.Blue
-import androidx.compose.ui.graphics.Color.Companion.Cyan
-import androidx.compose.ui.graphics.Color.Companion.Green
-import androidx.compose.ui.graphics.Color.Companion.Red
-import androidx.compose.ui.graphics.Color.Companion.Yellow
+import androidx.compose.ui.graphics.Color
 import com.devansh.noteapp.CategoryEntity
 import kotlinx.serialization.Serializable
 
@@ -23,7 +19,18 @@ data class Category(
         private set
 
     companion object Companion {
-        val folderColors = listOf(Red, Yellow, Green, Cyan, Blue)
+        val folderColors = listOf(
+            Color(0xFFFF5722), // Red-Orange
+            Color(0xFF2196F3), // Blue
+            Color(0xFF4CAF50), // Green
+            Color(0xFFFF9800), // Orange
+            Color(0xFF9C27B0), // Purple
+            Color(0xFF00BCD4), // Cyan
+            Color(0xFFFFEB3B), // Yellow
+            Color(0xFFE91E63), // Pink
+            Color(0xFF795548), // Brown
+            Color(0xFF607D8B), // Blue Grey
+        )
     }
 
     constructor(

@@ -10,7 +10,7 @@ import com.devansh.noteapp.domain.repo.CategoryDataSource
 import com.devansh.noteapp.domain.repo.CategoryService
 import com.devansh.noteapp.domain.utils.onFailure
 import com.devansh.noteapp.domain.utils.onSuccess
-import com.devansh.noteapp.ui.screens.add_edit_note.AddEditNoteViewModel.UiEvent
+import com.devansh.noteapp.ui.screens.add_edit_note.UiEvent
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update

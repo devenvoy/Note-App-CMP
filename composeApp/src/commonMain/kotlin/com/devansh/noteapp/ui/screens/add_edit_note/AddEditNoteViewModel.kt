@@ -4,6 +4,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.devansh.noteapp.domain.model.Note
+import com.devansh.noteapp.domain.model.Note.Companion.emptyNote
 import com.devansh.noteapp.domain.repo.AppCacheSetting
 import com.devansh.noteapp.domain.repo.NoteDataSource
 import com.devansh.noteapp.domain.repo.NoteService
@@ -13,11 +14,13 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlin.time.Clock
 import kotlin.time.ExperimentalTime
 
 class AddEditNoteViewModel(
+    private val currentNoteId: String? = null,
     private val pref: AppCacheSetting,
     private val noteDataSource: NoteDataSource,
     private val noteService: NoteService
@@ -25,28 +28,24 @@ class AddEditNoteViewModel(
 
     val noteTitle = mutableStateOf(NoteTextFieldState(hint = "Enter title"))
 
-    val noteContent = mutableStateOf("")
-
-    private val _noteColor = MutableStateFlow(Note.generateRandomColor())
-    val noteColor = _noteColor.asStateFlow()
+    private val _currentNote = MutableStateFlow(emptyNote())
+    val currentNote = _currentNote.asStateFlow()
 
     private val _eventFlow = MutableSharedFlow<UiEvent>()
     val eventFlow = _eventFlow.asSharedFlow()
 
-    private var currentNoteId: String? = null
 
-    fun initState(noteId: String?) {
-        if (noteId != null) {
+    init {
+        if (currentNoteId != null) {
             viewModelScope.launch {
-                noteDataSource.getNoteById(noteId)?.also { note ->
-                    currentNoteId = note.id
+                noteDataSource.getNoteById(currentNoteId)?.also { note ->
 
-                    noteTitle.value =
-                        noteTitle.value.copy(text = note.title, isHintVisible = false)
+                    noteTitle.value = noteTitle.value.copy(
+                        text = note.title,
+                        isHintVisible = note.title.isBlank()
+                    )
 
-                    noteContent.value = note.content
-
-                    _noteColor.value = note.colorRes
+                    _currentNote.update { note }
                 }
             }
         }
@@ -63,28 +62,38 @@ class AddEditNoteViewModel(
                 noteTitle.value = noteTitle.value.copy(
                     isHintVisible = !event.focusState.isFocused && noteTitle.value.text.isBlank()
                 )
+                _currentNote.update { it.copy(title = noteTitle.value.text) }
             }
 
             is AddEditNoteEvent.EnteredContent -> {
-                noteContent.value = event.newContent
+                _currentNote.update { it.copy(content = event.newContent) }
             }
 
             is AddEditNoteEvent.ChangeContentFocus -> {}
 
             is AddEditNoteEvent.ChangeColor -> {
-                _noteColor.value = event.color
+                _currentNote.update { it.copy(colorRes = event.color) }
             }
 
             is AddEditNoteEvent.SaveNote -> {
                 viewModelScope.launch {
                     try {
+
+                        val currentNoteValue = _currentNote.value
+
+                        if (currentNoteValue.title.isBlank() && currentNoteValue.content.isBlank()) {
+                            _eventFlow.emit(UiEvent.ShowSnackbar("Note cannot be empty"))
+                            return@launch
+                        }
+
                         val note = Note(
                             id = currentNoteId,
-                            title = noteTitle.value.text,
-                            content = event.content,
-                            category = null,
-                            colorRes = noteColor.value,
-                            createdAt = Clock.System.now().toString(),
+                            title = currentNoteValue.title,
+                            content = currentNoteValue.content,
+                            category = currentNoteValue.category,
+                            colorRes = currentNoteValue.colorRes,
+                            createdAt = currentNoteValue.createdAt.takeIf { currentNoteId != null }
+                                ?: Clock.System.now().toString(),
                         )
                         noteService.upsert(note, pref.accessToken.toString())
                             .onSuccess {
@@ -110,10 +119,9 @@ class AddEditNoteViewModel(
             currentNoteId?.let { noteDataSource.deleteNoteById(it) }
         }
     }
+}
 
-    sealed interface UiEvent {
-        data class ShowSnackbar(val message: String) : UiEvent
-        data object SaveNote : UiEvent
-    }
-
+sealed interface UiEvent {
+    data class ShowSnackbar(val message: String) : UiEvent
+    data object SaveNote : UiEvent
 }

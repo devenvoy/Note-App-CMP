@@ -65,7 +65,7 @@ class CategoryDataSourceImpl(
     ) = withContext(dispatcher) {
         val database = db.first()
         database.categoryDatabaseQueries.insertCategory(
-            categoryId = category.id.toString(),
+            categoryId = category.id,
             colorRes = category.color,
             categoryName = category.name,
             isSynced = if (synced) 1 else 0,

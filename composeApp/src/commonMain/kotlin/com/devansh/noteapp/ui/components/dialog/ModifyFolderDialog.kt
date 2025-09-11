@@ -21,19 +21,18 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
-import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.luminance
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalHapticFeedback
@@ -54,15 +53,6 @@ import note_app_cmp.composeapp.generated.resources.name
 import note_app_cmp.composeapp.generated.resources.ok
 import org.jetbrains.compose.resources.stringResource
 
-@Composable
-fun ModifyFolderDialogPreview() {
-    ModifyFolderDialog(
-        category = Category(),
-        onDismissRequest = {},
-        onModify = {}
-    )
-}
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ModifyFolderDialog(
@@ -73,17 +63,19 @@ fun ModifyFolderDialog(
 
     var text by remember { mutableStateOf(category.name) }
     var color by remember { mutableStateOf(category.color) }
-    val custom =
-        color != null && !Category.folderColors.contains(Color(color!!))
-    val initValue =
-        if (category.color == null) 0
-        else if (custom) Category.folderColors.size + 1
-        else Category.folderColors.indexOf(Color(category.color)) + 1
-    var selectedIndex by remember { mutableIntStateOf(initValue) }
 
-    var showDialog by remember {
-        mutableStateOf(false)
+    // Check if current color is custom (not in predefined colors)
+    val isCustomColor = color != null && !Category.folderColors.contains(Color(color!!))
+
+    // Initialize selected index based on current color
+    val initValue = when {
+        category.color == null -> 0 // No color selected
+        isCustomColor -> Category.folderColors.size + 1 // Custom color
+        else -> Category.folderColors.indexOf(Color(category.color)) + 1 // Predefined color
     }
+
+    var selectedIndex by remember { mutableIntStateOf(initValue) }
+    var showColorDialog by remember { mutableStateOf(false) }
 
     AlertDialog(
         title = {
@@ -103,27 +95,44 @@ fun ModifyFolderDialog(
                     horizontalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
 
-                    items(Category.folderColors.size + 2) {
-                        when (it) {
+                    items(Category.folderColors.size + 2) { index ->
+                        when (index) {
                             0 -> {
-                                ColoredCircle2(selected = 0 == selectedIndex) { selectedIndex = 0 }
+                                // No color option
+                                ColoredCircle2(
+                                    selected = selectedIndex == 0
+                                ) {
+                                    selectedIndex = 0
+                                    color = null
+                                }
                             }
 
                             Category.folderColors.size + 1 -> {
+                                // Custom color picker option
+                                val displayColor = if (isCustomColor && selectedIndex == index) {
+                                    Color(color!!)
+                                } else {
+                                    Color.Black
+                                }
+
                                 ColoredCircle3(
-                                    background = if (custom) Color(color!!) else Color.Black,
-                                    selected = Category.folderColors.size + 1 == selectedIndex
+                                    background = displayColor,
+                                    selected = selectedIndex == index
                                 ) {
-                                    selectedIndex = Category.folderColors.size + 1
-                                    showDialog = true
+                                    selectedIndex = index
+                                    showColorDialog = true
                                 }
                             }
 
                             else -> {
+                                // Predefined colors
                                 ColoredCircle(
-                                    color = Category.folderColors[it - 1],
-                                    selected = it == selectedIndex,
-                                    onClick = { selectedIndex = it }
+                                    color = Category.folderColors[index - 1],
+                                    selected = selectedIndex == index,
+                                    onClick = {
+                                        selectedIndex = index
+                                        color = Category.folderColors[index - 1].toArgb().toLong()
+                                    }
                                 )
                             }
                         }
@@ -138,17 +147,18 @@ fun ModifyFolderDialog(
                 onClick = {
                     haptic.performHapticFeedback(HapticFeedbackType.Confirm)
 
-                    color = when (selectedIndex) {
-                        0 -> null
-                        Category.folderColors.size + 1 -> color
-                        else -> Category.folderColors[selectedIndex - 1].toArgb().toLong()
+                    // Determine final color based on selection
+                    val finalColor = when (selectedIndex) {
+                        0 -> null // No color
+                        Category.folderColors.size + 1 -> color // Custom color (already set)
+                        else -> Category.folderColors[selectedIndex - 1].toArgb().toLong() // Predefined color
                     }
 
                     onModify(
                         Category(
                             id = category.id,
-                            name = text,
-                            color = color
+                            name = text.trim(),
+                            color = finalColor
                         )
                     )
 
@@ -165,17 +175,26 @@ fun ModifyFolderDialog(
         }
     )
 
-    if (showDialog) {
-
+    if (showColorDialog) {
         val colorState = rememberUseCaseState()
-
         val templateColors = MultipleColors.ColorsInt(*textColors.map { it.toArgb() }.toIntArray())
 
         ColorDialog(
             state = colorState,
             selection = ColorSelection(
-                selectedColor = SingleColor(if (custom) Color(color!!).toArgb() else Color.White.toArgb()),
-                onSelectColor = { color = it.toLong() },
+                selectedColor = SingleColor(
+                    if (isCustomColor && selectedIndex == Category.folderColors.size + 1) {
+                        Color(color!!).toArgb()
+                    } else {
+                        Color.Red.toArgb() // Default starting color
+                    }
+                ),
+                onSelectColor = { selectedColor ->
+                    val newColorLong = selectedColor.toLong()
+                    color = newColorLong
+                    println("DEBUG: Custom color selected: $newColorLong")
+                    showColorDialog = false
+                },
             ),
             config = ColorConfig(
                 displayMode = ColorSelectionMode.TEMPLATE,
@@ -187,26 +206,27 @@ fun ModifyFolderDialog(
 
 @Composable
 fun ColoredCircle(color: Color, selected: Boolean, onClick: () -> Unit) {
-
     val background = MaterialTheme.colorScheme.onSurface
+    val selectionRing = if (selected) MaterialTheme.colorScheme.primary else Color.Transparent
 
     Box(
         modifier = Modifier
             .size(50.dp)
             .drawBehind {
-                if (selected)
+                if (selected) {
                     drawCircle(
-                        color = background
+                        color = selectionRing,
+                        radius = size.minDimension / 2f
                     )
+                }
             }
             .clip(shape = CircleShape)
             .clickable(onClick = onClick)
     ) {
-
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(4.dp)
+                .padding(if (selected) 4.dp else 2.dp)
                 .clip(shape = CircleShape)
                 .background(color = color)
         )
@@ -215,42 +235,57 @@ fun ColoredCircle(color: Color, selected: Boolean, onClick: () -> Unit) {
 
 @Composable
 fun ColoredCircle2(selected: Boolean, onClick: () -> Unit) {
-
     val background = MaterialTheme.colorScheme.onSurface
+    val selectionRing = if (selected) MaterialTheme.colorScheme.primary else Color.Transparent
 
     Box(
         modifier = Modifier
             .size(50.dp)
             .drawBehind {
-                if (selected)
+                if (selected) {
                     drawCircle(
-                        color = background
+                        color = selectionRing,
+                        radius = size.minDimension / 2f
                     )
+                }
             }
             .clip(shape = CircleShape)
+            .background(MaterialTheme.colorScheme.surfaceVariant)
             .clickable(onClick = onClick),
         contentAlignment = Alignment.Center
     ) {
-        Text(text = "A")
+        Text(
+            text = "A",
+            style = MaterialTheme.typography.bodyLarge,
+            color = MaterialTheme.colorScheme.onSurfaceVariant
+        )
     }
 }
 
 @Composable
 fun ColoredCircle3(background: Color, selected: Boolean, onClick: () -> Unit) {
+    val selectionRing = if (selected) MaterialTheme.colorScheme.primary else Color.Transparent
 
     Box(
         modifier = Modifier
             .size(50.dp)
             .drawBehind {
-                if (selected)
+                if (selected) {
                     drawCircle(
-                        color = background
+                        color = selectionRing,
+                        radius = size.minDimension / 2f
                     )
+                }
             }
             .clip(shape = CircleShape)
+            .background(background)
             .clickable(onClick = onClick),
         contentAlignment = Alignment.Center
     ) {
-        Icon(imageVector = Icons.Outlined.Colorize, contentDescription = "")
+        Icon(
+            imageVector = Icons.Outlined.Colorize,
+            contentDescription = "Custom Color",
+            tint = if (background.luminance() > 0.5f) Color.Black else Color.White
+        )
     }
 }

@@ -36,11 +36,11 @@ val screenModelsModule = module {
     viewModel { ThemeStatelessViewModel(get()) }
     viewModel { ThemeViewModel() }
     viewModel { BaseScreenViewModel() }
-    viewModel { SplashScreenViewModel(get(),get()) }
-    viewModel { AuthViewModel(get(),get()) }
-    viewModel { HomeScreenViewModel(get(),get(),get()) }
-    viewModel { CategoryViewModel(get(),get(),get()) }
-    viewModel { AddEditNoteViewModel(get(), get(), get()) }
+    viewModel { SplashScreenViewModel(get(), get()) }
+    viewModel { AuthViewModel(get(), get()) }
+    viewModel { HomeScreenViewModel(get(), get(), get()) }
+    viewModel { CategoryViewModel(get(), get(), get()) }
+    viewModel { (noteId: String?) -> AddEditNoteViewModel(noteId, get(), get(), get()) }
     viewModel { SettingViewModel(get(), get()) }
 }
 

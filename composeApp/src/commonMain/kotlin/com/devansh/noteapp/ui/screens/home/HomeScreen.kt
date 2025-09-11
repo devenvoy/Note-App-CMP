@@ -92,7 +92,7 @@ fun NavGraphBuilder.homeScreen(mainNavController: NavHostController) {
         val homeScreenModel = koinViewModel<HomeScreenViewModel>()
         HomeScreenContent(
             homeScreenModel = homeScreenModel,
-            onNavigateToAddEditNote = { mainNavController.navigate(NavRoute.AddNote(it)) },
+            onNavigateToAddEditNote = { id-> mainNavController.navigate(NavRoute.AddNote(id)) },
             goToSettings = { mainNavController.navigate(NavRoute.Setting) },
         )
     }

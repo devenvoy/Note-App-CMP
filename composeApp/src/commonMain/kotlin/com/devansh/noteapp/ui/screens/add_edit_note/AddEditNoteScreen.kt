@@ -35,7 +35,6 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -50,6 +49,7 @@ import androidx.compose.ui.platform.LocalClipboard
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
@@ -70,44 +70,57 @@ import com.mohamedrejeb.richeditor.ui.material3.RichTextEditorDefaults
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import org.koin.compose.viewmodel.koinViewModel
+import org.koin.core.parameter.parametersOf
 
 
 fun NavGraphBuilder.addNoteScreen(navHostController: NavHostController) {
     composable<NavRoute.AddNote> {
         val noteId = it.toRoute<NavRoute.AddNote>().noteId
-        val viewModel = koinViewModel<AddEditNoteViewModel>()
-        LaunchedEffect(Unit) { viewModel.initState(noteId = noteId) }
+        val viewModel = koinViewModel<AddEditNoteViewModel> { parametersOf(noteId) }
         AddEditScreenContent(
             viewModel = viewModel, onNavigateUp = { navHostController.navigateUp() })
     }
 }
-
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun AddEditScreenContent(
     viewModel: AddEditNoteViewModel, onNavigateUp: () -> Unit
 ) {
-    val titleState by viewModel.noteTitle
-    val selectedBgColor by viewModel.noteColor.collectAsState()
-    val noteBgAnimation = remember(selectedBgColor) { Animatable(Color(selectedBgColor)) }
-    val richTextState = rememberRichTextState()
-    val openLinkDialog = remember { mutableStateOf(false) }
-    val toasterState = rememberToasterState()
-    val sheetState = rememberModalBottomSheetState()
-    var isBottomSheetVisible by remember { mutableStateOf(false) }
     val clipboardManager = LocalClipboard.current
 
-    val scope = rememberCoroutineScope()
+    val titleState by viewModel.noteTitle
+    val currentNote by viewModel.currentNote.collectAsStateWithLifecycle()
+    val selectedBgColor = currentNote.colorRes
 
-    LaunchedEffect(viewModel.noteContent.value) {
-        richTextState.setHtml(viewModel.noteContent.value)
+    val scope = rememberCoroutineScope()
+    val toasterState = rememberToasterState()
+    val richTextState = rememberRichTextState()
+    val sheetState = rememberModalBottomSheetState()
+
+    val openLinkDialog = remember { mutableStateOf(false) }
+    var isBottomSheetVisible by remember { mutableStateOf(false) }
+    val noteBgAnimation = remember(selectedBgColor) { Animatable(Color(selectedBgColor)) }
+
+
+    LaunchedEffect(currentNote.content) {
+        if (richTextState.toHtml() != currentNote.content) {
+            richTextState.setHtml(currentNote.content)
+        }
     }
 
-    LaunchedEffect(key1 = true) {
+    // Sync rich text content with ViewModel whenever it changes
+    LaunchedEffect(richTextState.toHtml()) {
+        val htmlContent = richTextState.toHtml()
+        if (htmlContent != currentNote.content) {
+            viewModel.onEvent(AddEditNoteEvent.EnteredContent(htmlContent))
+        }
+    }
+
+    LaunchedEffect(Unit) {
         viewModel.eventFlow.collectLatest { event ->
             when (event) {
-                is AddEditNoteViewModel.UiEvent.ShowSnackbar -> {
+                is UiEvent.ShowSnackbar -> {
                     toasterState.show(
                         message = event.message,
                         duration = ToasterDefaults.DurationShort,
@@ -115,7 +128,7 @@ fun AddEditScreenContent(
                     )
                 }
 
-                is AddEditNoteViewModel.UiEvent.SaveNote -> onNavigateUp()
+                is UiEvent.SaveNote -> onNavigateUp()
             }
         }
     }
@@ -134,9 +147,8 @@ fun AddEditScreenContent(
                             containerColor = MaterialTheme.colorScheme.primary,
                             contentColor = MaterialTheme.colorScheme.onPrimary,
                         ), onClick = {
-                            viewModel.onEvent(
-                                AddEditNoteEvent.SaveNote(richTextState.toHtml())
-                            )
+                            viewModel.onEvent(AddEditNoteEvent.EnteredContent(richTextState.toHtml()))
+                            viewModel.onEvent(AddEditNoteEvent.SaveNote)
                         }) {
                         Icon(
                             modifier = Modifier.padding(4.dp),

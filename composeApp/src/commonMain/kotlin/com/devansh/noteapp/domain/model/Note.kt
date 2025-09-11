@@ -29,6 +29,16 @@ data class Note(
         )
 
         fun generateRandomColor() = colors.random()
+
+        fun emptyNote() = Note(
+            id = null,
+            title = "",
+            content = "",
+            colorRes = generateRandomColor(),
+            category = null,
+            createdAt = null,
+            updatedAt = null
+        )
     }
 }
 fun NoteEntity.toNote() = Note(

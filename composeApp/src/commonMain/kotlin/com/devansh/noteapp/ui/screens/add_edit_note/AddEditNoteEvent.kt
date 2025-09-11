@@ -8,5 +8,5 @@ sealed interface AddEditNoteEvent {
     data class EnteredContent(val newContent: String) : AddEditNoteEvent
     data class ChangeContentFocus(val focusState: FocusState) : AddEditNoteEvent
     data class ChangeColor(val color: Long) : AddEditNoteEvent
-    data class SaveNote(val content: String) : AddEditNoteEvent
+    data object SaveNote : AddEditNoteEvent
 }
