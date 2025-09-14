@@ -8,6 +8,7 @@ import com.devansh.noteapp.domain.model.Note
 import com.devansh.noteapp.domain.model.toNote
 import com.devansh.noteapp.domain.repo.NoteDataSource
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.IO
@@ -24,6 +25,7 @@ class NoteDataSourceImpl(
     private val dispatcher: CoroutineDispatcher = Dispatchers.IO
 ) : NoteDataSource {
 
+    @OptIn(DelicateCoroutinesApi::class)
     private val db = flow {
         NoteAppDatabase.Schema.create(sqlDriver).await()
         val database = NoteAppDatabase.invoke(sqlDriver)

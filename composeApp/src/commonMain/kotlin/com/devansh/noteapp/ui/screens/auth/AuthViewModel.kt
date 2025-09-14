@@ -23,6 +23,9 @@ class AuthViewModel(
     private val authService: AuthService
 ) : ViewModel() {
 
+    private val _authMode = MutableStateFlow(AuthMode.LOGIN)
+    val authMode = _authMode.asStateFlow()
+
     private val _email = MutableStateFlow("")
     val email = _email.asStateFlow()
 
@@ -32,8 +35,20 @@ class AuthViewModel(
     private val _confirmPassword = MutableStateFlow("")
     val confirmPassword = _confirmPassword.asStateFlow()
 
+    private val _newPassword = MutableStateFlow("")
+    val newPassword = _newPassword.asStateFlow()
+
+    private val _confirmNewPassword = MutableStateFlow("")
+    val confirmNewPassword = _confirmNewPassword.asStateFlow()
+
+    private val _resetToken = MutableStateFlow("")
+    val resetToken = _resetToken.asStateFlow()
+
     private val _authState = MutableStateFlow<AuthScreenState>(UiState.Idle)
     val authState = _authState.asStateFlow()
+
+    private val _resetEmailSent = MutableStateFlow(false)
+    val resetEmailSent = _resetEmailSent.asStateFlow()
 
     val passwordRules = listOf(
         PasswordRule.minLength(8),
@@ -43,10 +58,28 @@ class AuthViewModel(
         PasswordRule.containsUppercase()
     )
 
+    fun setAuthMode(mode: AuthMode) {
+        _authMode.update { mode }
+        clearState()
+    }
 
+    // Field updates
     fun onEmailChange(email: String) = _email.update { email }
     fun onPasswordChange(password: String) = _password.update { password }
     fun onConfirmPasswordChanged(password: String) = _confirmPassword.update { password }
+    fun onNewPasswordChange(password: String) = _newPassword.update { password }
+    fun onConfirmNewPasswordChange(password: String) = _confirmNewPassword.update { password }
+    fun onResetTokenChange(token: String) = _resetToken.update { token }
+
+    fun clearState() {
+        _email.update { "" }
+        _password.update { "" }
+        _confirmPassword.update { "" }
+        _authState.update { UiState.Idle }
+        _resetEmailSent.update { false }
+    }
+
+
 
     fun login() {
         _authState.update { UiState.Loading }
@@ -85,6 +118,73 @@ class AuthViewModel(
         }
     }
 
+    fun forgotPassword() {
+        _authState.update { UiState.Loading }
+        viewModelScope.launch {
+            if (_email.value.isBlank()) {
+                _authState.update { UiState.Error("Email cannot be empty") }
+                return@launch
+            }
+            if (!isValidEmail(_email.value)) {
+                _authState.update { UiState.Error("Invalid email format") }
+                return@launch
+            }
+
+            val result = authService.forgotPassword(_email.value)
+            result.onSuccess {
+                _resetEmailSent.update { true }
+                _authState.update { UiState.Success("Password reset email sent") }
+            }.onFailure { e ->
+                _authState.update { UiState.Error(e.detail) }
+            }
+        }
+    }
+
+    fun resetPassword() {
+        _authState.update { UiState.Loading }
+        viewModelScope.launch {
+            if (_resetToken.value.isBlank()) {
+                _authState.update { UiState.Error("Reset token cannot be empty") }
+                return@launch
+            }
+
+            if (!validateNewPassword()) return@launch
+
+            val result = authService.resetPassword(
+                token = _resetToken.value,
+                newPassword = _newPassword.value
+            )
+            result.onSuccess {
+                _authState.update { UiState.Success("Password reset successfully") }
+            }.onFailure { e ->
+                _authState.update { UiState.Error(e.detail) }
+            }
+        }
+    }
+
+    private fun validateNewPassword(): Boolean {
+        val passwordResult = passwordRules.map {
+            PasswordRuleResult(it.description, it.predicate(_newPassword.value))
+        }
+        if (passwordResult.any { !it.isFulfilled }) {
+            return error(passwordResult.first { !it.isFulfilled }.description)
+        }
+
+        if (_newPassword.value != _confirmNewPassword.value) {
+            return error("New passwords do not match")
+        }
+
+        return true
+    }
+
+    fun performAuthAction() {
+        when (_authMode.value) {
+            AuthMode.LOGIN -> login()
+            AuthMode.REGISTER -> register()
+            AuthMode.FORGOT_PASSWORD -> forgotPassword()
+            AuthMode.RESET_PASSWORD -> resetPassword()
+        }
+    }
 
     private fun validateInputs(requireConfirm: Boolean): Boolean {
         if (_email.value.isBlank()) return error("Email cannot be empty")

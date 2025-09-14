@@ -28,7 +28,7 @@ class SettingViewModel(
     val listType = pref.listType
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(3000), ListType.LIST)
 
-    val settingsStateFlow: StateFlow<SettingsState> = combine(
+    val settingsStateFlow: StateFlow<SettingsState> = combine<Comparable<*>, SettingsState>(
         pref.theme,
         pref.color,
         pref.isAppInDarkMode,

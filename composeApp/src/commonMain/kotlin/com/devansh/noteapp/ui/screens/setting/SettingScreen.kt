@@ -25,6 +25,7 @@ import androidx.compose.material.icons.outlined.FormatAlignCenter
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExposedDropdownMenuAnchorType.Companion.PrimaryNotEditable
 import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.Icon
@@ -634,7 +635,7 @@ fun ContentDisplayModeDropdownSetting(
         modifier = modifier.fillMaxWidth()
     ) {
         OutlinedTextField(
-            modifier = Modifier.menuAnchor().fillMaxWidth(),
+            modifier = Modifier.menuAnchor(PrimaryNotEditable).fillMaxWidth(),
             readOnly = true,
             value = when (currentMode) {
                 ListNoteContentDisplayMode.RAW -> "Raw Content"
@@ -685,7 +686,7 @@ fun ContentSizeDropdownSetting(
         modifier = modifier.fillMaxWidth()
     ) {
         OutlinedTextField(
-            modifier = Modifier.menuAnchor().fillMaxWidth(),
+            modifier = Modifier.menuAnchor(PrimaryNotEditable).fillMaxWidth(),
             readOnly = true,
             value = when (currentSize) {
                 ListNoteContentSize.DEFAULT -> "Default"
@@ -738,7 +739,7 @@ fun OverflowStyleDropdownSetting(
         modifier = modifier.fillMaxWidth()
     ) {
         OutlinedTextField(
-            modifier = Modifier.menuAnchor().fillMaxWidth(),
+            modifier = Modifier.menuAnchor(PrimaryNotEditable).fillMaxWidth(),
             readOnly = true,
             value = when (currentStyle) {
                 ListNoteContentOverflowStyle.ELLIPSIS -> "Ellipsis (...)"
@@ -789,7 +790,7 @@ fun TitleAlignmentDropdownSetting(
         modifier = modifier.fillMaxWidth()
     ) {
         OutlinedTextField(
-            modifier = Modifier.menuAnchor().fillMaxWidth(),
+            modifier = Modifier.menuAnchor(PrimaryNotEditable).fillMaxWidth(),
             readOnly = true,
             value = when (currentAlignment) {
                 0 -> "Left"
@@ -835,7 +836,7 @@ fun BackupFrequencyDropdownSetting(
         modifier = modifier.fillMaxWidth()
     ) {
         OutlinedTextField(
-            modifier = Modifier.menuAnchor().fillMaxWidth(),
+            modifier = Modifier.menuAnchor(PrimaryNotEditable).fillMaxWidth(),
             readOnly = true,
             value = when (currentFrequency) {
                 0 -> "Never"

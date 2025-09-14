@@ -5,9 +5,7 @@ import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInVertically
-import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -66,8 +64,8 @@ import com.devansh.noteapp.core.util.DeviceConfiguration.MOBILE_PORTRAIT
 import com.devansh.noteapp.core.util.DeviceConfiguration.TABLET_LANDSCAPE
 import com.devansh.noteapp.core.util.DeviceConfiguration.TABLET_PORTRAIT
 import com.devansh.noteapp.navigation.NavRoute
-import com.devansh.noteapp.ui.components.button.PrimaryButton
 import com.devansh.noteapp.ui.components.UiStateHandler
+import com.devansh.noteapp.ui.components.button.PrimaryButton
 import io.github.jan.supabase.compose.auth.ui.annotations.AuthUiExperimental
 import io.github.jan.supabase.compose.auth.ui.email.OutlinedEmailField
 import io.github.jan.supabase.compose.auth.ui.password.OutlinedPasswordField
@@ -75,23 +73,30 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.koin.compose.viewmodel.koinViewModel
 
-fun NavGraphBuilder.authScreen(navHostController: NavHostController) {
+fun NavGraphBuilder.loginScreen(
+    navHostController: NavHostController
+) {
     composable<NavRoute.Auth> {
-        AuthScreenContent {
-            navHostController.navigate(NavRoute.BaseScreen)
-        }
+        LoginScreenContent(
+            onSuccess = {
+                navHostController.navigate(NavRoute.BaseScreen) {
+                    popUpTo<NavRoute.Auth> { inclusive = true }
+                }
+            }
+        )
     }
 }
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)
 @Composable
-private fun AuthScreenContent(
+private fun LoginScreenContent(
     authViewModel: AuthViewModel = koinViewModel<AuthViewModel>(),
     onSuccess: () -> Unit
 ) {
+    LaunchedEffect(Unit) {
+        authViewModel.setAuthMode(AuthMode.LOGIN)
+    }
     val scope = rememberCoroutineScope()
-    var selectedTabIndex by rememberSaveable { mutableStateOf(0) }
-
     var showLoader by rememberSaveable { mutableStateOf(true) }
     var showFill by rememberSaveable { mutableStateOf(false) }
     var showContent by rememberSaveable { mutableStateOf(false) }
@@ -132,31 +137,19 @@ private fun AuthScreenContent(
             FillAnimationBox(fillProgress = fillProgress)
         }
 
-        AnimatedVisibility(
-            visible = selectedTabIndex == 0,
-            enter = fadeIn() + slideInVertically { -it },
-            exit = fadeOut() + slideOutVertically { -it },
-            modifier = Modifier.align(Alignment.TopStart).padding(top = 100.dp, start = 20.dp)
-        ) {
-            Column {
-                Text(
-                    text = "Let's Login",
-                    style = MaterialTheme.typography.headlineLarge.copy(fontSize = 42.sp),
-                    color = MaterialTheme.colorScheme.background,
-                )
-                Text(
-                    text = "And, keep safe ideas",
-                    color = MaterialTheme.colorScheme.background,
-                )
-            }
+        Column {
+            Text(
+                text = "Let's Login",
+                style = MaterialTheme.typography.headlineLarge.copy(fontSize = 42.sp),
+                color = MaterialTheme.colorScheme.background,
+            )
+            Text(
+                text = "And, keep safe ideas",
+                color = MaterialTheme.colorScheme.background,
+            )
         }
 
-        AnimatedVisibility(
-            visible = selectedTabIndex == 1,
-            enter = fadeIn() + slideInVertically { it },
-            exit = fadeOut() + slideOutVertically { it },
-            modifier = Modifier.align(Alignment.TopStart).padding(top = 100.dp, start = 20.dp)
-        ) {
+        if (false) {
             Column {
                 Text(
                     text = "Register Here",
@@ -210,15 +203,7 @@ private fun AuthScreenContent(
 
                 BottomSheetDefaults.DragHandle()
 
-                AuthTabs(
-                    selectedTabIndex = selectedTabIndex,
-                    onClick = { ix -> selectedTabIndex = ix },
-                    tabs = listOf("Login", "Register")
-                )
-
-                LoginScreenContent(
-                    viewModel = authViewModel, isLogin = selectedTabIndex == 0
-                )
+                LoginScreenContent(viewModel = authViewModel, true)
             }
         }
 

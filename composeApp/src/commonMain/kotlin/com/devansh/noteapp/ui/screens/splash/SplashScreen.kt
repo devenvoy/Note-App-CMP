@@ -32,7 +32,7 @@ fun NavGraphBuilder.splashScreen(navController: NavHostController) {
                 }
             },
             navToAuth = {
-                navController.navigate(NavRoute.Auth) {
+                navController.navigate(NavRoute.OnBoardScreen) {
                     popUpTo(NavRoute.SplashScreen) { inclusive = true }
                 }
             }

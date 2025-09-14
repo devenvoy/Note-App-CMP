@@ -4,11 +4,14 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navigation
 import com.devansh.noteapp.ui.screens.add_edit_note.addNoteScreen
-import com.devansh.noteapp.ui.screens.auth.authScreen
+import com.devansh.noteapp.ui.screens.auth.forgotPasswordScreen
+import com.devansh.noteapp.ui.screens.auth.loginScreen
+import com.devansh.noteapp.ui.screens.auth.registerScreen
+import com.devansh.noteapp.ui.screens.auth.resetPasswordScreen
 import com.devansh.noteapp.ui.screens.base.baseScreen
-import com.devansh.noteapp.ui.screens.categoryFolder.categoryScreen
-import com.devansh.noteapp.ui.screens.home.homeScreen
+import com.devansh.noteapp.ui.screens.onboard.onBoardScreen
 import com.devansh.noteapp.ui.screens.setting.settingsScreen
 import com.devansh.noteapp.ui.screens.splash.splashScreen
 
@@ -24,7 +27,14 @@ fun MainNavigationGraph(
     ) {
         splashScreen(mainNavController)
 
-        authScreen(mainNavController)
+        onBoardScreen(mainNavController)
+
+        navigation<NavRoute.Auth>(NavRoute.Login) {
+            loginScreen(mainNavController)
+            registerScreen(mainNavController)
+            forgotPasswordScreen(mainNavController)
+            resetPasswordScreen(mainNavController)
+        }
 
         baseScreen(mainNavController)
 
