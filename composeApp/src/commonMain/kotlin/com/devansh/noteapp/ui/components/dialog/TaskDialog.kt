@@ -28,6 +28,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.unit.dp
+import com.devansh.noteapp.domain.utils.UnitCBF
 import kotlinx.serialization.Serializable
 import note_app_cmp.composeapp.generated.resources.Res
 import note_app_cmp.composeapp.generated.resources.cancel
@@ -44,7 +45,7 @@ data class TaskItem(
 
 @Composable
 fun TaskDialog(
-    onDismissRequest: () -> Unit,
+    onDismissRequest: UnitCBF,
     onConfirm: (taskList: List<TaskItem>) -> Unit
 ) {
 

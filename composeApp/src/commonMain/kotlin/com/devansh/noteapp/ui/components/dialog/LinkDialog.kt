@@ -21,6 +21,7 @@ import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
+import com.devansh.noteapp.domain.utils.UnitCBF
 import com.devansh.noteapp.ui.screens.core.urlRegex
 import note_app_cmp.composeapp.generated.resources.Res
 import note_app_cmp.composeapp.generated.resources.cancel
@@ -35,7 +36,7 @@ import org.jetbrains.compose.resources.stringResource
 
 @Composable
 fun LinkDialog(
-    onDismissRequest: () -> Unit,
+    onDismissRequest: UnitCBF,
     onConfirm: (name: String, uri: String) -> Unit
 ) {
 

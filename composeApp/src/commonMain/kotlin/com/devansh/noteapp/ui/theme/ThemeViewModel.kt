@@ -4,6 +4,7 @@ import androidx.compose.runtime.snapshotFlow
 import androidx.compose.runtime.snapshots.Snapshot
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.devansh.noteapp.domain.utils.UnitCBF
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.filterNotNull
@@ -31,7 +32,7 @@ internal class ThemeViewModel : ViewModel() {
         }.collect {}
     }
 
-    fun withState(block: () -> Unit) {
+    fun withState(block: UnitCBF) {
         viewModelScope.launch(Dispatchers.Main.immediate) {
             Snapshot.withMutableSnapshot(block)
         }

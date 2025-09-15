@@ -44,7 +44,7 @@ class AuthViewModel(
     private val _resetToken = MutableStateFlow("")
     val resetToken = _resetToken.asStateFlow()
 
-    private val _authState = MutableStateFlow<AuthScreenState>(UiState.Idle)
+    private val _authState = MutableStateFlow<AuthScreenState>(UiState.Idle(""))
     val authState = _authState.asStateFlow()
 
     private val _resetEmailSent = MutableStateFlow(false)
@@ -75,7 +75,7 @@ class AuthViewModel(
         _email.update { "" }
         _password.update { "" }
         _confirmPassword.update { "" }
-        _authState.update { UiState.Idle }
+        _authState.update { UiState.Idle("") }
         _resetEmailSent.update { false }
     }
 

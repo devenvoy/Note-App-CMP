@@ -11,12 +11,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.devansh.noteapp.domain.utils.UnitCBF
 
 @Composable
 fun RadioButtonWithTitle(
     text: String,
     selected: Boolean,
-    onSelected: () -> Unit,
+    onSelected: UnitCBF,
     modifier: Modifier = Modifier
 ) {
     Row(

@@ -27,6 +27,12 @@ class SplashScreenViewModel(
         .flowOn(Dispatchers.IO)
         .stateIn(viewModelScope, SharingStarted.Eagerly, false)
 
+    val isOnBoardComplete = pref.isOnBoardComplete
+
+    init {
+        checkAuth()
+    }
+
     fun checkAuth() {
         viewModelScope.launch {
             val refreshToken = pref.refreshToken

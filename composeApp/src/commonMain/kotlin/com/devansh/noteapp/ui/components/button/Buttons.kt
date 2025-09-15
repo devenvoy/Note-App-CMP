@@ -21,11 +21,12 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.devansh.noteapp.domain.utils.UnitCBF
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun PrimaryButton(
-    onClick: () -> Unit,
+    onClick: UnitCBF,
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
     colors: ButtonColors = ButtonDefaults.buttonColors(
@@ -54,7 +55,7 @@ fun PrimaryButton(
 
 @Composable
 fun SecondaryOutlinedButton(
-    onClick: () -> Unit,
+    onClick: UnitCBF,
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
     shape: Shape = RoundedCornerShape(8.dp),

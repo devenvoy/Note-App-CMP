@@ -81,6 +81,7 @@ kotlin {
             implementation(libs.material3.adaptive.navigation.suite)
 
             implementation(libs.kotlin.logging)
+            implementation("org.jetbrains.compose.ui:ui-backhandler:1.9.0-alpha01")
 
             api(libs.koin.core)
             implementation(libs.koin.compose)

@@ -119,7 +119,7 @@ fun HomeScreenContent(
     var selectedNote by remember { mutableStateOf<Note?>(null) }
     var isBottomSheetVisible by remember { mutableStateOf(false) }
 
-    val onRefresh: () -> Unit = {
+    val onRefresh: UnitCBF = {
         isRefreshing = true
         scope.launch {
             delay(500)

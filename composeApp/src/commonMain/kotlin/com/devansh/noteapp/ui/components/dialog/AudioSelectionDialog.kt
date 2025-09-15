@@ -27,7 +27,7 @@ import com.yangdai.opennote.presentation.util.hasFileWithName
 @Composable
 fun AudioSelectionDialog(
     rootUri: Uri,
-    onDismiss: () -> Unit,
+    onDismiss: UnitCBF,
     onAudioSelected: (String) -> Unit
 ) {
     val context = LocalContext.current

@@ -9,11 +9,12 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.devansh.noteapp.domain.utils.UnitCBF
 
 @Composable
 fun TextOptionButton(
     buttonText: String,
-    onButtonClick: () -> Unit
+    onButtonClick: UnitCBF
 ) = TextButton(
     modifier = Modifier
         .fillMaxWidth()

@@ -12,17 +12,13 @@ import kotlinx.coroutines.flow.Flow
 interface AppCacheSetting {
 
     var accessToken: String?
-
     var refreshToken: String?
-
-    val autoSyncDB: Flow<Boolean>
-
     val isLoggedIn: Boolean
-    val listType: Flow<ListType>
-
     val userEmail : String
+    val isOnBoardComplete: Boolean
 
-
+    val listType: Flow<ListType>
+    val autoSyncDB: Flow<Boolean>
     val theme: Flow<AppTheme>
     val color: Flow<AppColor>
     val isAppInDarkMode: Flow<Boolean>
@@ -68,6 +64,7 @@ interface AppCacheSetting {
     suspend fun setIsAutoSaveEnabled(enabled: Boolean)
     suspend fun setTitleAlignment(alignment: Int)
     suspend fun setShowLineNumbers(showNumbers: Boolean)
+    suspend fun setOnBoardStatus(flag: Boolean)
 
     suspend fun <T> putPreferenceValue(key: String, value: T)
 }

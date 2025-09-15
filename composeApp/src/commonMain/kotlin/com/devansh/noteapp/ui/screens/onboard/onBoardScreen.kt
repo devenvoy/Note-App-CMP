@@ -39,6 +39,8 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
+import com.devansh.noteapp.domain.repo.AppCacheSetting
+import com.devansh.noteapp.domain.utils.UnitCBF
 import com.devansh.noteapp.navigation.NavRoute
 import com.devansh.noteapp.ui.components.button.BackButton
 import kotlinx.coroutines.launch
@@ -48,17 +50,13 @@ import note_app_cmp.composeapp.generated.resources.onboard2
 import note_app_cmp.composeapp.generated.resources.onboard3
 import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.painterResource
+import org.koin.compose.koinInject
 
 fun NavGraphBuilder.onBoardScreen(mainNavController: NavHostController) {
     composable<NavRoute.OnBoardScreen> {
         OnBoardScreen(
             navToLogin = {
                 mainNavController.navigate(NavRoute.Auth) {
-                    popUpTo(NavRoute.OnBoardScreen) { inclusive = true }
-                }
-            },
-            navToHome = {
-                mainNavController.navigate(NavRoute.BaseScreen) {
                     popUpTo(NavRoute.OnBoardScreen) { inclusive = true }
                 }
             }
@@ -68,10 +66,8 @@ fun NavGraphBuilder.onBoardScreen(mainNavController: NavHostController) {
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
-fun OnBoardScreen(
-    navToLogin: () -> Unit,
-    navToHome: () -> Unit
-) {
+fun OnBoardScreen(navToLogin: UnitCBF) {
+    val pref = koinInject<AppCacheSetting>()
     val pagerState = rememberPagerState(pageCount = { 3 })
     val scope = rememberCoroutineScope()
 
@@ -108,7 +104,11 @@ fun OnBoardScreen(
                             pagerState.animateScrollToPage(0)
                         }
                     },
-                    onSkip = navToLogin,
+                    onSkip = {
+                        scope.launch {
+                            pagerState.animateScrollToPage(2)
+                        }
+                    },
                     onContinue = {
                         scope.launch {
                             pagerState.animateScrollToPage(2)
@@ -126,7 +126,12 @@ fun OnBoardScreen(
                         }
                     },
                     onSkip = null,
-                    onContinue = navToHome,
+                    onContinue = {
+                        scope.launch {
+                            pref.setOnBoardStatus(flag = true)
+                            navToLogin()
+                        }
+                    },
                     header = "Create cards and easy styling",
                     subTitle = "Making your content legible has never been easier.",
                     image = Res.drawable.onboard3
@@ -150,9 +155,9 @@ fun OnBoardScreen(
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 private fun BaseOnBoardPage(
-    onBack: (() -> Unit)?,
-    onSkip: (() -> Unit)?,
-    onContinue: () -> Unit,
+    onBack: UnitCBF?,
+    onSkip: UnitCBF?,
+    onContinue: UnitCBF,
     header: String,
     subTitle: String,
     image: DrawableResource
@@ -174,7 +179,7 @@ private fun BaseOnBoardPage(
         ) {
             // Back button
             if (onBack != null) {
-                BackButton(onBack)
+                BackButton(onClick = onBack, showBackText = true)
             } else {
                 Spacer(modifier = Modifier.width(48.dp))
             }

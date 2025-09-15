@@ -56,6 +56,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.toRoute
 import com.devansh.noteapp.di.platform_di.clipEntryOf
 import com.devansh.noteapp.domain.model.Note
+import com.devansh.noteapp.domain.utils.UnitCBF
 import com.devansh.noteapp.navigation.NavRoute
 import com.devansh.noteapp.ui.components.HintUI
 import com.devansh.noteapp.ui.components.button.BackButton
@@ -85,7 +86,7 @@ fun NavGraphBuilder.addNoteScreen(navHostController: NavHostController) {
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun AddEditScreenContent(
-    viewModel: AddEditNoteViewModel, onNavigateUp: () -> Unit
+    viewModel: AddEditNoteViewModel, onNavigateUp: UnitCBF
 ) {
     val clipboardManager = LocalClipboard.current
 

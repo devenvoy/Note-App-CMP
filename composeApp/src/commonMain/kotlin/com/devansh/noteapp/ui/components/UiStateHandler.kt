@@ -14,6 +14,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.devansh.noteapp.domain.utils.UnitCBF
 import com.devansh.noteapp.ui.utils.UiState
 import com.dokar.sonner.ToastType
 import com.dokar.sonner.Toaster
@@ -26,7 +27,8 @@ import kotlin.time.ExperimentalTime
 @Composable
 fun <T> UiStateHandler(
     uiState: UiState<T>,
-    onErrorShowed: () -> Unit,
+    onError: UnitCBF,
+    onSuccess: UnitCBF,
     content: @Composable (T) -> Unit
 ) {
     val toaster = rememberToasterState()
@@ -39,7 +41,7 @@ fun <T> UiStateHandler(
                     duration = ToasterDefaults.DurationLong,
                     type = ToastType.Error
                 )
-                onErrorShowed()
+                onError()
             }
             Toaster(
                 state = toaster,
@@ -60,7 +62,7 @@ fun <T> UiStateHandler(
                         type = ToastType.Error
                     )
                 }
-                onErrorShowed()
+                onError()
             }
             Toaster(
                 state = toaster,
@@ -82,16 +84,20 @@ fun <T> UiStateHandler(
                     ContainedLoadingIndicator(
                         modifier = Modifier.padding(20.dp).size(50.dp)
                             .align(Alignment.CenterHorizontally),
-//                    indicatorColor = MaterialTheme.colorScheme.primary,
+                        indicatorColor = MaterialTheme.colorScheme.primary,
                     )
                 }
             }
         }
 
         is UiState.Success -> {
-            content(uiState.data)
+            LaunchedEffect(uiState) {
+                onSuccess()
+            }
         }
 
-        UiState.Idle -> {}
+        is UiState.Idle -> {
+            content(uiState.data)
+        }
     }
 }

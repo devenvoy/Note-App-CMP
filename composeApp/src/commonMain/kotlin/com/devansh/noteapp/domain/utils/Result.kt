@@ -42,7 +42,7 @@ inline fun <T, E: Error> Result<T, E>.onFailure(action: (E) -> Unit): Result<T, 
     }
 }
 
-inline fun <T, E : Error> Result<T, E>.onLoading(action: () -> Unit): Result<T, E> {
+inline fun <T, E : Error> Result<T, E>.onLoading(action: UnitCBF): Result<T, E> {
     return when (this) {
         is Result.Failure -> this
         is Result.Success -> this

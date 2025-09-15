@@ -20,6 +20,7 @@ import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
+import com.devansh.noteapp.domain.utils.UnitCBF
 import note_app_cmp.composeapp.generated.resources.Res
 import note_app_cmp.composeapp.generated.resources.cancel
 import note_app_cmp.composeapp.generated.resources.column
@@ -30,7 +31,7 @@ import org.jetbrains.compose.resources.stringResource
 
 @Composable
 fun TableDialog(
-    onDismissRequest: () -> Unit,
+    onDismissRequest: UnitCBF,
     onConfirm: (row: Int, column: Int) -> Unit
 ) {
 

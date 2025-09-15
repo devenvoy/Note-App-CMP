@@ -36,12 +36,13 @@ import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
+import com.devansh.noteapp.domain.utils.UnitCBF
 
 @Composable
 fun ExpandableSearchView(
     searchDisplay: String,
     onSearchDisplayChanged: (String) -> Unit,
-    onSearch: () -> Unit,
+    onSearch: UnitCBF,
     onExpandedChanged: (Boolean) -> Unit,
     modifier: Modifier = Modifier,
     expandedInitially: Boolean = false,
@@ -67,7 +68,7 @@ fun ExpandableSearchView(
 @Composable
 fun ExpandedSearchView(
     searchDisplay: String,
-    onSearch: () -> Unit,
+    onSearch: UnitCBF,
     onSearchDisplayChanged: (String) -> Unit,
     onExpandedChanged: (Boolean) -> Unit,
     modifier: Modifier = Modifier,

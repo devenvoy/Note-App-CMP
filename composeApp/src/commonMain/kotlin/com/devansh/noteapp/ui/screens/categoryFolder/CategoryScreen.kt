@@ -100,7 +100,7 @@ fun NavGraphBuilder.categoryScreen(mainNavController: NavHostController, navigat
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)
 @Composable
-fun CategoryScreen(navigateUp: () -> Unit) {
+fun CategoryScreen(navigateUp: UnitCBF) {
 
     val theme = LocalAppTheme.current
     val viewModel = koinViewModel<CategoryViewModel>()
@@ -187,7 +187,7 @@ fun CategoryScreen(navigateUp: () -> Unit) {
 fun LazyGridItemScope.FolderItem(
     category: Category,
     onModify: (Category) -> Unit,
-    onDelete: () -> Unit,
+    onDelete: UnitCBF,
     colorScheme: ColorScheme = MaterialTheme.colorScheme
 ) {
     var showModifyDialog by remember { mutableStateOf(false) }

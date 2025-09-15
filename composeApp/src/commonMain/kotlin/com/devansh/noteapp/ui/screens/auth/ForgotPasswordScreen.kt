@@ -72,7 +72,7 @@ fun ForgotPasswordScreen(
         topBar = {
             TopAppBar(
                 title = { Text("Forgot Password") },
-                navigationIcon = { BackButton(onNavBack) }
+                navigationIcon = { BackButton(onClick = onNavBack) }
             )
         }
     ) {

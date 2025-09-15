@@ -29,6 +29,7 @@ import note_app_cmp.composeapp.generated.resources.ok
 import note_app_cmp.composeapp.generated.resources.warning
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.DialogProperties
+import com.devansh.noteapp.domain.utils.UnitCBF
 import note_app_cmp.composeapp.generated.resources.progress
 import org.jetbrains.compose.resources.stringResource
 
@@ -38,7 +39,7 @@ fun ProgressDialog(
     progress: Float,
     infinite: Boolean = false,
     message: String = "",
-    onDismissRequest: () -> Unit
+    onDismissRequest: UnitCBF
 ) {
 
     if (!isLoading) return

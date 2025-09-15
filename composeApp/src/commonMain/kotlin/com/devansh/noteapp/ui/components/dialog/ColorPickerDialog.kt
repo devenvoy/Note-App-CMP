@@ -42,7 +42,7 @@ import org.jetbrains.compose.resources.stringResource
 fun ColorPickerDialog(
     initialColor: Color? = null,
     sheetState: SheetState,
-    onDismissRequest: () -> Unit,
+    onDismissRequest: UnitCBF,
     onConfirm: (Int) -> Unit
 ) {
     var color by remember {

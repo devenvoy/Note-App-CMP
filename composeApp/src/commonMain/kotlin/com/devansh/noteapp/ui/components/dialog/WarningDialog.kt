@@ -9,6 +9,7 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalHapticFeedback
+import com.devansh.noteapp.domain.utils.UnitCBF
 import note_app_cmp.composeapp.generated.resources.Res
 import note_app_cmp.composeapp.generated.resources.cancel
 import note_app_cmp.composeapp.generated.resources.ok
@@ -18,8 +19,8 @@ import org.jetbrains.compose.resources.stringResource
 @Composable
 fun WarningDialog(
     message: String,
-    onDismissRequest: () -> Unit,
-    onConfirm: () -> Unit
+    onDismissRequest: UnitCBF,
+    onConfirm: UnitCBF
 ) = AlertDialog(
     title = { Text(text = stringResource(Res.string.warning)) },
     text = { Text(text = message) },

@@ -32,6 +32,11 @@ fun NavGraphBuilder.splashScreen(navController: NavHostController) {
                 }
             },
             navToAuth = {
+                navController.navigate(NavRoute.Auth) {
+                    popUpTo(NavRoute.SplashScreen) { inclusive = true }
+                }
+            },
+            navToOnBoard = {
                 navController.navigate(NavRoute.OnBoardScreen) {
                     popUpTo(NavRoute.SplashScreen) { inclusive = true }
                 }
@@ -42,14 +47,10 @@ fun NavGraphBuilder.splashScreen(navController: NavHostController) {
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
-fun SplashScreen(navToHome: UnitCBF, navToAuth: UnitCBF) {
+fun SplashScreen(navToHome: UnitCBF, navToAuth: UnitCBF, navToOnBoard: UnitCBF) {
 
     val viewModel = koinViewModel<SplashScreenViewModel>()
     val uiState by viewModel.uiState.collectAsState()
-
-    LaunchedEffect(Unit) {
-        viewModel.checkAuth()
-    }
 
     when (uiState) {
         SplashUiState.Loading -> {
@@ -76,7 +77,7 @@ fun SplashScreen(navToHome: UnitCBF, navToAuth: UnitCBF) {
         SplashUiState.NavigateToLogin -> {
             LaunchedEffect(Unit) {
                 delay(500L)
-                navToAuth()
+                if (viewModel.isOnBoardComplete) navToAuth() else navToOnBoard()
             }
         }
     }

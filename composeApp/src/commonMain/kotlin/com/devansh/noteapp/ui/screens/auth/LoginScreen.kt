@@ -7,7 +7,7 @@ import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.slideInVertically
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Column
@@ -24,12 +24,12 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.BottomSheetDefaults
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ContainedLoadingIndicator
+import androidx.compose.material3.ElevatedButton
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.SecondaryTabRow
-import androidx.compose.material3.Tab
 import androidx.compose.material3.Text
 import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
 import androidx.compose.runtime.Composable
@@ -37,7 +37,6 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
@@ -48,6 +47,7 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
@@ -63,6 +63,7 @@ import com.devansh.noteapp.core.util.DeviceConfiguration.MOBILE_LANDSCAPE
 import com.devansh.noteapp.core.util.DeviceConfiguration.MOBILE_PORTRAIT
 import com.devansh.noteapp.core.util.DeviceConfiguration.TABLET_LANDSCAPE
 import com.devansh.noteapp.core.util.DeviceConfiguration.TABLET_PORTRAIT
+import com.devansh.noteapp.domain.utils.UnitCBF
 import com.devansh.noteapp.navigation.NavRoute
 import com.devansh.noteapp.ui.components.UiStateHandler
 import com.devansh.noteapp.ui.components.button.PrimaryButton
@@ -76,22 +77,26 @@ import org.koin.compose.viewmodel.koinViewModel
 fun NavGraphBuilder.loginScreen(
     navHostController: NavHostController
 ) {
-    composable<NavRoute.Auth> {
-        LoginScreenContent(
+    composable<NavRoute.Login> {
+        LoginScreen(
             onSuccess = {
                 navHostController.navigate(NavRoute.BaseScreen) {
                     popUpTo<NavRoute.Auth> { inclusive = true }
                 }
-            }
+            },
+            navToForgotPassword = { navHostController.navigate(NavRoute.ForgotPassword) },
+            navToRegister = { navHostController.navigate(NavRoute.Register) }
         )
     }
 }
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)
 @Composable
-private fun LoginScreenContent(
+private fun LoginScreen(
     authViewModel: AuthViewModel = koinViewModel<AuthViewModel>(),
-    onSuccess: () -> Unit
+    onSuccess: UnitCBF,
+    navToForgotPassword: UnitCBF,
+    navToRegister: UnitCBF
 ) {
     LaunchedEffect(Unit) {
         authViewModel.setAuthMode(AuthMode.LOGIN)
@@ -101,7 +106,8 @@ private fun LoginScreenContent(
     var showFill by rememberSaveable { mutableStateOf(false) }
     var showContent by rememberSaveable { mutableStateOf(false) }
 
-    var playAnim by remember { mutableStateOf(false) }
+    var playAnim by rememberSaveable { mutableStateOf(false) }
+
     val fillProgress by animateFloatAsState(
         targetValue = if (playAnim) 1f else 0f,
         animationSpec = tween(1000, easing = LinearEasing),
@@ -109,15 +115,16 @@ private fun LoginScreenContent(
     )
 
     LaunchedEffect(Unit) {
-        scope.launch {
-            delay(750)
-            showFill = true
-            playAnim = true
+        if (!showContent) {
+            scope.launch {
+                delay(750)
+                showFill = true
+                playAnim = true
+            }
+            delay(1000)
+            showLoader = false
+            showContent = true
         }
-
-        delay(1000)
-        showLoader = false
-        showContent = true
     }
 
     Box(
@@ -137,7 +144,9 @@ private fun LoginScreenContent(
             FillAnimationBox(fillProgress = fillProgress)
         }
 
-        Column {
+        Column(
+            modifier = Modifier.align(Alignment.TopStart).padding(top = 100.dp, start = 20.dp)
+        ) {
             Text(
                 text = "Let's Login",
                 style = MaterialTheme.typography.headlineLarge.copy(fontSize = 42.sp),
@@ -147,20 +156,6 @@ private fun LoginScreenContent(
                 text = "And, keep safe ideas",
                 color = MaterialTheme.colorScheme.background,
             )
-        }
-
-        if (false) {
-            Column {
-                Text(
-                    text = "Register Here",
-                    style = MaterialTheme.typography.headlineLarge.copy(fontSize = 42.sp),
-                    color = MaterialTheme.colorScheme.background,
-                )
-                Text(
-                    text = "Join us and start noting.",
-                    color = MaterialTheme.colorScheme.background,
-                )
-            }
         }
 
         val windowInfo = currentWindowAdaptiveInfo()
@@ -184,8 +179,8 @@ private fun LoginScreenContent(
                 .verticalScroll(rememberScrollState())
 
             else -> Modifier
-                .widthIn(max = 500.dp)
-                .heightIn(min = 600.dp, max = 800.dp)
+                .fillMaxWidth()
+                .heightIn(min = 550.dp, max = 800.dp)
                 .imePadding()
         }
 
@@ -203,42 +198,38 @@ private fun LoginScreenContent(
 
                 BottomSheetDefaults.DragHandle()
 
-                LoginScreenContent(viewModel = authViewModel, true)
+                LoginScreenContent(viewModel = authViewModel, true, navToForgotPassword)
+
+                ElevatedButton(
+                    modifier = Modifier.widthIn(max = 300.dp, min = Dp.Infinity),
+                    onClick = navToRegister,
+                    shapes = ButtonDefaults.shapes()
+                ) {
+                    Text(
+                        buildAnnotatedString {
+                            append("Don't have an account? ")
+                            append("Register")
+                        }
+                    )
+                }
             }
-        }
-
-        UiStateHandler(
-            uiState = authViewModel.authState.collectAsState().value,
-            onErrorShowed = {},
-            content = { onSuccess() }
-        )
-    }
-}
-
-
-@Composable
-fun AuthTabs(
-    selectedTabIndex: Int, onClick: (Int) -> Unit, tabs: List<String>
-) {
-    SecondaryTabRow(
-        selectedTabIndex = selectedTabIndex,
-        containerColor = MaterialTheme.colorScheme.background,
-    ) {
-        tabs.forEachIndexed { index, tab ->
-            Tab(
-                selected = selectedTabIndex == index,
-                onClick = { onClick(index) },
-                modifier = Modifier.padding(8.dp)
-            ) {
-                Text(text = tab)
-            }
+            UiStateHandler(
+                uiState = authViewModel.authState.collectAsState().value,
+                onError = {},
+                content = { },
+                onSuccess = onSuccess
+            )
         }
     }
 }
 
 @OptIn(AuthUiExperimental::class, ExperimentalMaterial3Api::class)
 @Composable
-fun LoginScreenContent(viewModel: AuthViewModel, isLogin: Boolean) {
+fun LoginScreenContent(
+    viewModel: AuthViewModel,
+    isLogin: Boolean,
+    navToForgotPassword: UnitCBF? = null
+) {
 
     val email by viewModel.email.collectAsState()
     val password by viewModel.password.collectAsState()
@@ -247,10 +238,11 @@ fun LoginScreenContent(viewModel: AuthViewModel, isLogin: Boolean) {
     val inputModifier = Modifier.fillMaxWidth(.9f)
 
     Column(
-        modifier = Modifier.padding(top = 20.dp).fillMaxWidth(),
-        verticalArrangement = Arrangement.spacedBy(8.dp),
+        modifier = Modifier.padding(top = 20.dp)
+            .fillMaxWidth(),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
+
         OutlinedEmailField(
             modifier = inputModifier,
             value = email,
@@ -274,6 +266,7 @@ fun LoginScreenContent(viewModel: AuthViewModel, isLogin: Boolean) {
                 autoCorrectEnabled = false,
                 imeAction = if (isLogin) ImeAction.Done else ImeAction.Next
             ),
+            rules = viewModel.passwordRules,
             onValueChange = viewModel::onPasswordChange,
             placeholder = { Text("Stasp78JK") },
             label = { Text("Password") },
@@ -289,14 +282,26 @@ fun LoginScreenContent(viewModel: AuthViewModel, isLogin: Boolean) {
                     autoCorrectEnabled = false,
                     imeAction = ImeAction.Done
                 ),
+                rules = viewModel.passwordRules,
                 onValueChange = viewModel::onConfirmPasswordChanged,
                 placeholder = { Text("Stasp78JK") },
                 label = { Text("Confirm Password") },
             )
         }
 
+        AnimatedVisibility(isLogin, modifier = Modifier.align(Alignment.End)) {
+            Text(
+                modifier = Modifier.padding(end = 20.dp, top = 8.dp)
+                    .clickable(onClick = navToForgotPassword!!),
+                text = "Forgot Password?",
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSecondaryContainer
+            )
+        }
+
         PrimaryButton(
-            modifier = Modifier.widthIn(max = 300.dp, min = Dp.Infinity).padding(vertical = 20.dp),
+            modifier = Modifier.widthIn(max = 300.dp, min = Dp.Infinity)
+                .padding(vertical = 20.dp),
             onClick = {
                 if (isLogin) {
                     viewModel.login()
@@ -316,7 +321,7 @@ fun LoginScreenContent(viewModel: AuthViewModel, isLogin: Boolean) {
 }
 
 @Composable
-fun BoxScope.FillAnimationBox(fillProgress: Float) {
+fun BoxScope.FillAnimationBox(fillProgress: Float, startColor: Color? = null) {
     val radiusPx = with(LocalDensity.current) {
         (fillProgress * 2000).dp.toPx()
     }.coerceAtLeast(1f)
@@ -325,11 +330,11 @@ fun BoxScope.FillAnimationBox(fillProgress: Float) {
         modifier = Modifier.matchParentSize()
             .background(
                 Brush.radialGradient(
-                colors = listOf(
-                    MaterialTheme.colorScheme.primary.copy(alpha = 0.8f),
-                    MaterialTheme.colorScheme.background
-                ), center = Offset.Unspecified, radius = radiusPx
+                    colors = listOf(
+                        MaterialTheme.colorScheme.primary.copy(alpha = 0.8f),
+                        (startColor ?: MaterialTheme.colorScheme.background)
+                    ), center = Offset.Unspecified, radius = radiusPx
+                )
             )
-        )
     )
 }

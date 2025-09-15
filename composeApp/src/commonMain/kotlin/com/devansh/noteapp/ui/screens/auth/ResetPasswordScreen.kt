@@ -71,7 +71,7 @@ private fun ResetPasswordScreen(
         topBar = {
             TopAppBar(
                 title = { Text("Reset Password") },
-                navigationIcon = { BackButton(onNavigateToLogin) }
+                navigationIcon = { BackButton(onClick = onNavigateToLogin) }
             )
         }
     ) {

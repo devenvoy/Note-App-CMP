@@ -19,6 +19,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalHapticFeedback
+import com.devansh.noteapp.domain.utils.UnitCBF
 import note_app_cmp.composeapp.generated.resources.Res
 import note_app_cmp.composeapp.generated.resources.cancel
 import note_app_cmp.composeapp.generated.resources.ok
@@ -27,7 +28,7 @@ import org.jetbrains.compose.resources.stringResource
 
 @Composable
 fun RatingDialog(
-    onDismissRequest: () -> Unit,
+    onDismissRequest: UnitCBF,
     onRatingChanged: (Int) -> Unit
 ) {
 

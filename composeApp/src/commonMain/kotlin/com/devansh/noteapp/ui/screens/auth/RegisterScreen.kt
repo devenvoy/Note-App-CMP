@@ -13,14 +13,12 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.BottomSheetDefaults
-import androidx.compose.material3.ContainedLoadingIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.MaterialTheme
@@ -31,12 +29,13 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.backhandler.BackHandler
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
@@ -46,8 +45,10 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import com.devansh.noteapp.core.util.DeviceConfiguration
 import com.devansh.noteapp.core.util.DeviceConfiguration.Companion.fromWindowSizeClass
+import com.devansh.noteapp.domain.utils.UnitCBF
 import com.devansh.noteapp.navigation.NavRoute
 import com.devansh.noteapp.ui.components.UiStateHandler
+import com.devansh.noteapp.ui.utils.ScreenTransitions
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.koin.compose.viewmodel.koinViewModel
@@ -55,77 +56,80 @@ import org.koin.compose.viewmodel.koinViewModel
 fun NavGraphBuilder.registerScreen(
     mainNavController: NavHostController
 ) {
-    composable<NavRoute.Register> {
+    composable<NavRoute.Register>(
+        enterTransition = { ScreenTransitions.slideInFromBottom },
+        exitTransition = { ScreenTransitions.slideOutToBottom },
+        popEnterTransition = { ScreenTransitions.slideInFromBottom },
+        popExitTransition = { ScreenTransitions.slideOutToBottom }
+    ) {
         RegisterScreenContent(onSuccess = {
             mainNavController.navigate(NavRoute.Login) {
                 popUpTo<NavRoute.Register> { inclusive = true }
             }
-        })
+        }, navigateBack = { mainNavController.navigateUp() })
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)
+@OptIn(
+    ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class,
+    ExperimentalComposeUiApi::class
+)
 @Composable
 private fun RegisterScreenContent(
     authViewModel: AuthViewModel = koinViewModel<AuthViewModel>(),
-    onSuccess: () -> Unit
+    onSuccess: UnitCBF,
+    navigateBack: UnitCBF
 ) {
     LaunchedEffect(Unit) {
         authViewModel.setAuthMode(AuthMode.REGISTER)
     }
     val scope = rememberCoroutineScope()
-    var showLoader by rememberSaveable { mutableStateOf(true) }
-    var showFill by rememberSaveable { mutableStateOf(false) }
-    var showContent by rememberSaveable { mutableStateOf(false) }
 
-    var playAnim by remember { mutableStateOf(false) }
+    var playAnim by rememberSaveable { mutableStateOf(false) }
+    var isClosing by rememberSaveable { mutableStateOf(false) }
     val fillProgress by animateFloatAsState(
         targetValue = if (playAnim) 1f else 0f,
-        animationSpec = tween(1000, easing = LinearEasing),
+        animationSpec = tween(500, easing = LinearEasing),
         label = "fillProgress"
     )
 
-    LaunchedEffect(Unit) {
-        scope.launch {
-            delay(750)
-            showFill = true
-            playAnim = true
+    LaunchedEffect(playAnim) {
+        if (isClosing.not()) {
+            scope.launch {
+                delay(500)
+                playAnim = true
+            }
         }
+    }
 
-        delay(1000)
-        showLoader = false
-        showContent = true
+    BackHandler(enabled = playAnim) {
+        isClosing = true
+        playAnim = false
+        navigateBack()
     }
 
     Box(
-        modifier = Modifier.fillMaxSize()
-            .background(MaterialTheme.colorScheme.background), contentAlignment = Alignment.Center
+        modifier = Modifier.fillMaxSize(),
+        contentAlignment = Alignment.Center
     ) {
 
-        AnimatedVisibility(visible = showLoader) {
-            ContainedLoadingIndicator(
-                modifier = Modifier.size(100.dp),
-                containerColor = Color.Transparent,
-                indicatorColor = MaterialTheme.colorScheme.primary,
-            )
-        }
+        FillAnimationBox(fillProgress = fillProgress, startColor = Color.Transparent)
 
-        if (showFill) {
-            FillAnimationBox(fillProgress = fillProgress)
+        if (fillProgress >= .5f) {
+            Column(
+                modifier = Modifier.align(Alignment.TopStart).padding(top = 100.dp, start = 20.dp)
+            ) {
+                Text(
+                    text = "Register Here",
+                    style = MaterialTheme.typography.headlineLarge.copy(fontSize = 42.sp),
+                    color = MaterialTheme.colorScheme.background,
+                )
+                Text(
+                    text = "Join us and start noting.",
+                    color = MaterialTheme.colorScheme.background,
+                )
+            }
         }
-
-        Column {
-            Text(
-                text = "Register Here",
-                style = MaterialTheme.typography.headlineLarge.copy(fontSize = 42.sp),
-                color = MaterialTheme.colorScheme.background,
-            )
-            Text(
-                text = "Join us and start noting.",
-                color = MaterialTheme.colorScheme.background,
-            )
-        }
-
 
         val windowInfo = currentWindowAdaptiveInfo()
         val deviceConfiguration = fromWindowSizeClass(windowInfo.windowSizeClass)
@@ -149,13 +153,13 @@ private fun RegisterScreenContent(
 
             else -> Modifier
                 .widthIn(max = 500.dp)
-                .heightIn(min = 600.dp, max = 800.dp)
+                .heightIn(min = 550.dp, max = 800.dp)
                 .imePadding()
         }
 
         AnimatedVisibility(
             modifier = bottomModifier,
-            visible = showContent,
+            visible = true,
             enter = slideInVertically { it } + fadeIn()
         ) {
             Column(
@@ -167,14 +171,14 @@ private fun RegisterScreenContent(
 
                 BottomSheetDefaults.DragHandle()
 
-                LoginScreenContent(viewModel = authViewModel, true)
+                LoginScreenContent(viewModel = authViewModel, false)
             }
+            UiStateHandler(
+                uiState = authViewModel.authState.collectAsState().value,
+                onError = {},
+                content = {},
+                onSuccess = onSuccess
+            )
         }
-
-        UiStateHandler(
-            uiState = authViewModel.authState.collectAsState().value,
-            onErrorShowed = {},
-            content = { onSuccess() }
-        )
     }
 }

@@ -63,6 +63,7 @@ import androidx.navigation.compose.composable
 import com.alorma.compose.settings.ui.SettingsGroup
 import com.alorma.compose.settings.ui.SettingsMenuLink
 import com.alorma.compose.settings.ui.SettingsSwitch
+import com.devansh.noteapp.domain.utils.UnitCBF
 import com.devansh.noteapp.navigation.NavRoute
 import com.devansh.noteapp.ui.components.button.BackButton
 import com.devansh.noteapp.ui.components.button.PrimaryButton
@@ -99,8 +100,8 @@ fun NavGraphBuilder.settingsScreen(navHostController: NavHostController) {
 @Composable
 fun SettingScreenContent(
     viewModel: SettingViewModel,
-    navigateBack: () -> Unit,
-    logOut: () -> Unit,
+    navigateBack: UnitCBF,
+    logOut: UnitCBF,
 ) {
     val topAppBarState = rememberTopAppBarState()
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior(topAppBarState)
@@ -877,7 +878,7 @@ fun BackupFrequencyDropdownSetting(
 fun PasswordDialog(
     currentPassword: String,
     onPasswordSet: (String) -> Unit,
-    onDismiss: () -> Unit
+    onDismiss: UnitCBF
 ) {
     var password by remember { mutableStateOf(currentPassword) }
 
@@ -911,7 +912,7 @@ fun FormatDialog(
     currentFormat: String,
     suggestions: List<String>,
     onFormatSet: (String) -> Unit,
-    onDismiss: () -> Unit
+    onDismiss: UnitCBF
 ) {
     var format by remember { mutableStateOf(currentFormat) }
 

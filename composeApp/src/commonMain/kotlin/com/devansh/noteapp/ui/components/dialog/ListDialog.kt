@@ -34,6 +34,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.unit.dp
+import com.devansh.noteapp.domain.utils.UnitCBF
 import note_app_cmp.composeapp.generated.resources.Res
 import note_app_cmp.composeapp.generated.resources.cancel
 import note_app_cmp.composeapp.generated.resources.list
@@ -47,7 +48,7 @@ fun ListDialogPreview() {
 
 @Composable
 fun ListDialog(
-    onDismissRequest: () -> Unit,
+    onDismissRequest: UnitCBF,
     onConfirm: (list: List<String>) -> Unit
 ) {
 

@@ -22,6 +22,7 @@ import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.unit.dp
 import com.devansh.noteapp.domain.model.NoteOrder
 import com.devansh.noteapp.domain.model.OrderType
+import com.devansh.noteapp.domain.utils.UnitCBF
 import note_app_cmp.composeapp.generated.resources.Res
 import note_app_cmp.composeapp.generated.resources.ascending
 import note_app_cmp.composeapp.generated.resources.cancel
@@ -36,7 +37,7 @@ import org.jetbrains.compose.resources.stringResource
 fun OrderSectionDialog(
     noteOrder: NoteOrder = NoteOrder.Date(OrderType.Descending),
     onOrderChange: (NoteOrder) -> Unit,
-    onDismiss: () -> Unit
+    onDismiss: UnitCBF
 ) {
 
     val hapticFeedback = LocalHapticFeedback.current

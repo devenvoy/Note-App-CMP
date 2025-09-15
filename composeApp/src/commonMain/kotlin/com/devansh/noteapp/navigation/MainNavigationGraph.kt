@@ -1,6 +1,8 @@
 package com.devansh.noteapp.navigation
 
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
@@ -22,6 +24,8 @@ fun MainNavigationGraph(
 ) {
 
     NavHost(
+        modifier = Modifier
+            .fillMaxSize(),
         navController = mainNavController,
         startDestination = NavRoute.SplashScreen
     ) {

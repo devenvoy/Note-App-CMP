@@ -16,14 +16,15 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.ImeAction
+import com.devansh.noteapp.domain.utils.UnitCBF
 import network.chaintech.sdpcomposemultiplatform.sdp
 
 @Composable
 fun CustomSearchBar(
     query: String,
     onQueryChange: (String) -> Unit,
-    onSearch: () -> Unit,
-    onClearQuery: () -> Unit,
+    onSearch: UnitCBF,
+    onClearQuery: UnitCBF,
     modifier: Modifier = Modifier
 ) {
     OutlinedTextField(

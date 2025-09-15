@@ -50,6 +50,9 @@ class AppCacheSettingImpl : AppCacheSetting {
     override val isLoggedIn: Boolean
         get() = (settings[SettingStorageKeys.ACCESS_TOKEN.key] ?: "").isNotEmpty()
 
+    override val isOnBoardComplete: Boolean
+        get() = (settings[SettingStorageKeys.ONBOARD_COMPLETE.key] ?: false)
+
     override val autoSyncDB: Flow<Boolean>
         get() = observableSettings.getBooleanFlow(
             SettingStorageKeys.AUTO_SYNC_WITH_REMOTE.key,
@@ -217,6 +220,10 @@ class AppCacheSettingImpl : AppCacheSetting {
 
     override suspend fun setShowLineNumbers(showNumbers: Boolean) {
         putPreferenceValue(SettingStorageKeys.SHOW_LINE_NUMBERS.key, showNumbers)
+    }
+
+    override suspend fun setOnBoardStatus(flag: Boolean) {
+        putPreferenceValue(SettingStorageKeys.ONBOARD_COMPLETE.key, flag)
     }
 
     override suspend fun <T> putPreferenceValue(key: String, value: T) {

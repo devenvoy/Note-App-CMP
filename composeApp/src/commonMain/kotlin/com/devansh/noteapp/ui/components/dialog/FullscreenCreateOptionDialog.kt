@@ -34,6 +34,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
+import com.devansh.noteapp.domain.utils.UnitCBF
 import note_app_cmp.composeapp.generated.resources.Res
 import note_app_cmp.composeapp.generated.resources.create_note
 import note_app_cmp.composeapp.generated.resources.create_text_file
@@ -50,7 +51,7 @@ enum class ActionType {
 
 @Composable
 fun FullscreenCreateOptionDialog(
-    onDismiss: () -> Unit,
+    onDismiss: UnitCBF,
     onOptionSelected: (ActionType) -> Unit
 ) {
 

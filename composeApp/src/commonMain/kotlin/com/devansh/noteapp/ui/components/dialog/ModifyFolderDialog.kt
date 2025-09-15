@@ -38,6 +38,7 @@ import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.unit.dp
 import com.devansh.noteapp.domain.model.Category
+import com.devansh.noteapp.domain.utils.UnitCBF
 import com.devansh.noteapp.ui.screens.core.textColors
 import com.maxkeppeker.sheets.core.models.base.rememberUseCaseState
 import com.maxkeppeler.sheets.color.ColorDialog
@@ -57,7 +58,7 @@ import org.jetbrains.compose.resources.stringResource
 @Composable
 fun ModifyFolderDialog(
     category: Category,
-    onDismissRequest: () -> Unit,
+    onDismissRequest: UnitCBF,
     onModify: (Category) -> Unit
 ) {
 
@@ -205,7 +206,7 @@ fun ModifyFolderDialog(
 }
 
 @Composable
-fun ColoredCircle(color: Color, selected: Boolean, onClick: () -> Unit) {
+fun ColoredCircle(color: Color, selected: Boolean, onClick: UnitCBF) {
     val background = MaterialTheme.colorScheme.onSurface
     val selectionRing = if (selected) MaterialTheme.colorScheme.primary else Color.Transparent
 
@@ -234,7 +235,7 @@ fun ColoredCircle(color: Color, selected: Boolean, onClick: () -> Unit) {
 }
 
 @Composable
-fun ColoredCircle2(selected: Boolean, onClick: () -> Unit) {
+fun ColoredCircle2(selected: Boolean, onClick: UnitCBF) {
     val background = MaterialTheme.colorScheme.onSurface
     val selectionRing = if (selected) MaterialTheme.colorScheme.primary else Color.Transparent
 
@@ -263,7 +264,7 @@ fun ColoredCircle2(selected: Boolean, onClick: () -> Unit) {
 }
 
 @Composable
-fun ColoredCircle3(background: Color, selected: Boolean, onClick: () -> Unit) {
+fun ColoredCircle3(background: Color, selected: Boolean, onClick: UnitCBF) {
     val selectionRing = if (selected) MaterialTheme.colorScheme.primary else Color.Transparent
 
     Box(
