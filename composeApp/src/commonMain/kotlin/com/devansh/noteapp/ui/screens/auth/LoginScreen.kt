@@ -1,7 +1,7 @@
 package com.devansh.noteapp.ui.screens.auth
 
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.core.LinearEasing
+import androidx.compose.animation.core.LinearOutSlowInEasing
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
@@ -110,7 +110,7 @@ private fun LoginScreen(
 
     val fillProgress by animateFloatAsState(
         targetValue = if (playAnim) 1f else 0f,
-        animationSpec = tween(1000, easing = LinearEasing),
+        animationSpec = tween(1000, easing = LinearOutSlowInEasing),
         label = "fillProgress"
     )
 
@@ -213,13 +213,13 @@ private fun LoginScreen(
                     )
                 }
             }
-            UiStateHandler(
-                uiState = authViewModel.authState.collectAsState().value,
-                onError = {},
-                content = { },
-                onSuccess = onSuccess
-            )
         }
+        UiStateHandler(
+            uiState = authViewModel.authState.collectAsState().value,
+            onError = {},
+            content = { },
+            onSuccess = onSuccess
+        )
     }
 }
 
@@ -331,7 +331,7 @@ fun BoxScope.FillAnimationBox(fillProgress: Float, startColor: Color? = null) {
             .background(
                 Brush.radialGradient(
                     colors = listOf(
-                        MaterialTheme.colorScheme.primary.copy(alpha = 0.8f),
+                        MaterialTheme.colorScheme.primary.copy(alpha = 1f),
                         (startColor ?: MaterialTheme.colorScheme.background)
                     ), center = Offset.Unspecified, radius = radiusPx
                 )

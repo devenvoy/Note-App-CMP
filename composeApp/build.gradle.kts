@@ -1,4 +1,5 @@
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
+import java.util.Properties
 
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
@@ -224,11 +225,17 @@ sqldelight {
     }
 }
 
+val localProperties = Properties().apply {
+    load(
+        project.file("${project.rootDir}/local.properties").inputStream()
+    )
+}
+
 buildConfig {
-    packageName = "com.jignesh.society"
-    buildConfigField("APP_NAME", project.name)
+    packageName = "com.devansh.noteapp"
+    buildConfigField("APP_NAME", project.displayName)
     buildConfigField("APP_VERSION", provider { "${project.version}" })
-    buildConfigField("APP_SECRET", "Z3JhZGxlLWphdmEtYnVpbGRjb25maWctcGx1Z2lu")
-    buildConfigField("BASE_URL", "https://m0s0wkg40gsws8g00c4cs8ww.65.109.173.240.sslip.io")
-    buildConfigField<String>("OPTIONAL", null)
+    buildConfigField(
+        "BASE_URL",
+        provider { localProperties.getProperty("base_url") ?: "https://default.com" })
 }

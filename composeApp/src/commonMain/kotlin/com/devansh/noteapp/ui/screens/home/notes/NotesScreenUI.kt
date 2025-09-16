@@ -31,9 +31,8 @@ fun NoteScreenContent(
 ) {
 
     val window = currentWindowAdaptiveInfo()
-    val width = window.windowSizeClass.windowWidthSizeClass
 
-    var gridCells by rememberSaveable(width, isGridLayout) {
+    var gridCells by rememberSaveable(window, isGridLayout) {
         val isDesktop = window.windowSizeClass.isWidthAtLeastBreakpoint(1440)
         val isTablet = window.windowSizeClass.isWidthAtLeastBreakpoint(720)
 

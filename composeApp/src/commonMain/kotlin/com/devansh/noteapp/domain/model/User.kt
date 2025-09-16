@@ -6,7 +6,7 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class User(
-    @SerialName("createdAt")    val createdAt: String?,
-    @SerialName("email")    val email: String?,
-    @SerialName("userId")    val userId: String?
+    @SerialName("email") var email: String = "",
+    @SerialName("emailVerified") var emailVerified: Boolean = false,
+    @SerialName("id") var id: String = ""
 )

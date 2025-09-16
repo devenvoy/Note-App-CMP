@@ -1,18 +1,19 @@
 package com.devansh.noteapp.data.remote
 
+import com.devansh.noteapp.BuildConfig
 import com.devansh.noteapp.data.dto.AuthRequest
 import com.devansh.noteapp.data.dto.ForgotPasswordRequest
 import com.devansh.noteapp.data.dto.RefreshRequest
 import com.devansh.noteapp.data.dto.ResetPasswordWithTokenRequest
 import com.devansh.noteapp.data.dto.VerifyOtpRequest
 import com.devansh.noteapp.domain.entity.ServerError
+import com.devansh.noteapp.domain.entity.ServerResponse
 import com.devansh.noteapp.domain.model.AuthResponse
 import com.devansh.noteapp.domain.model.DeviceSessionInfo
 import com.devansh.noteapp.domain.model.LoginResponse
 import com.devansh.noteapp.domain.repo.AuthService
 import com.devansh.noteapp.domain.utils.BaseGateway
 import com.devansh.noteapp.domain.utils.Result
-import com.jignesh.society.BuildConfig
 import io.ktor.client.HttpClient
 import io.ktor.client.request.delete
 import io.ktor.client.request.get
@@ -46,7 +47,10 @@ class AuthServiceImpl(private val httpClient: HttpClient) : AuthService, BaseGat
         }
     }
 
-    override suspend fun register(email: String, password: String): Result<Unit, ServerError> {
+    override suspend fun register(
+        email: String,
+        password: String
+    ): Result<ServerResponse<String>, ServerError> {
         return tryToExecute {
             post(BuildConfig.BASE_URL + register) {
                 contentType(ContentType.Application.Json)

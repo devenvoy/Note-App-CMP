@@ -7,10 +7,10 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class  ServerResponse<T>(
-    @SerialName("statusCode") val code: Int?,
+    @SerialName("statusCode") val code: Int = 200,
     @SerialName("data") val value: T? = null,
     @SerialName("message") val detail: String?,
-    @SerialName("isSuccessful") val status: Boolean = false
+    @SerialName("isSuccessful") val status: Boolean = true
 )
 
 @Serializable

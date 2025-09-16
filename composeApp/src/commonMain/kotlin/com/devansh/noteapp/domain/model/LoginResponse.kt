@@ -1,11 +1,12 @@
-
 package com.devansh.noteapp.domain.model
 
 import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
-@kotlinx.serialization.Serializable
+@Serializable
 data class LoginResponse(
-    @SerialName("accessToken") val accessToken: String,
-    @SerialName("refreshToken") val refreshToken: String,
+    @SerialName("accessToken") var accessToken: String = "",
+    @SerialName("refreshToken") var refreshToken: String = "",
+    @SerialName("user") var user: User = User()
 )
 

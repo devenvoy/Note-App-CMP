@@ -1,4 +1,3 @@
-
 package com.devansh.noteapp.domain.model
 
 import kotlinx.serialization.SerialName
@@ -6,8 +5,10 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class DeviceSessionInfo(
-    @SerialName("deviceId") val deviceId: String,
-    @SerialName("ipAddress") val ipAddress: String,
-    @SerialName("userAgent") val userAgent: String,
-    @SerialName("lastActive") val lastActive: String
+    @SerialName("current") var current: Boolean = false,
+    @SerialName("deviceId") var deviceId: String = "",
+    @SerialName("deviceName") var deviceName: String = "",
+    @SerialName("deviceType") var deviceType: String = "",
+    @SerialName("ipAddress") var ipAddress: String = "",
+    @SerialName("lastUsedAt") var lastUsedAt: String = ""
 )

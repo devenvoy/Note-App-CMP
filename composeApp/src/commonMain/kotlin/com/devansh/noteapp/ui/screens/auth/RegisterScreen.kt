@@ -1,12 +1,13 @@
 package com.devansh.noteapp.ui.screens.auth
 
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.core.LinearEasing
+import androidx.compose.animation.core.LinearOutSlowInEasing
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.slideInVertically
 import androidx.compose.foundation.background
+import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -28,16 +29,22 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.backhandler.BackHandler
+import androidx.compose.ui.backhandler.PredictiveBackHandler
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.LocalWindowInfo
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavGraphBuilder
@@ -48,19 +55,20 @@ import com.devansh.noteapp.core.util.DeviceConfiguration.Companion.fromWindowSiz
 import com.devansh.noteapp.domain.utils.UnitCBF
 import com.devansh.noteapp.navigation.NavRoute
 import com.devansh.noteapp.ui.components.UiStateHandler
+import com.devansh.noteapp.ui.components.button.BackButton
 import com.devansh.noteapp.ui.utils.ScreenTransitions
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.koin.compose.viewmodel.koinViewModel
+import kotlin.coroutines.cancellation.CancellationException
 
 fun NavGraphBuilder.registerScreen(
     mainNavController: NavHostController
 ) {
     composable<NavRoute.Register>(
         enterTransition = { ScreenTransitions.slideInFromBottom },
-        exitTransition = { ScreenTransitions.slideOutToBottom },
+//        exitTransition = { ScreenTransitions.slideOutToBottom },
         popEnterTransition = { ScreenTransitions.slideInFromBottom },
-        popExitTransition = { ScreenTransitions.slideOutToBottom }
+//        popExitTransition = { ScreenTransitions.slideOutToBottom }
     ) {
         RegisterScreenContent(onSuccess = {
             mainNavController.navigate(NavRoute.Login) {
@@ -85,31 +93,43 @@ private fun RegisterScreenContent(
     }
     val scope = rememberCoroutineScope()
 
-    var playAnim by rememberSaveable { mutableStateOf(false) }
+    var playAnim by rememberSaveable { mutableFloatStateOf(0f) }
     var isClosing by rememberSaveable { mutableStateOf(false) }
+    var offsetY by remember { mutableFloatStateOf(0f) }
+    val screenHeight = LocalWindowInfo.current.containerSize.height
+    val density = LocalDensity.current
+    val screenHeightPx = with(density) { screenHeight.toDp().toPx() }
+
     val fillProgress by animateFloatAsState(
-        targetValue = if (playAnim) 1f else 0f,
-        animationSpec = tween(500, easing = LinearEasing),
+        targetValue = playAnim,
+        animationSpec = tween(500, easing = LinearOutSlowInEasing),
         label = "fillProgress"
     )
 
     LaunchedEffect(playAnim) {
         if (isClosing.not()) {
             scope.launch {
-                delay(500)
-                playAnim = true
+                playAnim = 1f
             }
         }
     }
 
-    BackHandler(enabled = playAnim) {
-        isClosing = true
-        playAnim = false
-        navigateBack()
+    PredictiveBackHandler(enabled = !isClosing) { progress ->
+        try {
+            progress.collect { backEvent ->
+                playAnim = playAnim - (1F * backEvent.progress)
+            }
+            isClosing = true
+            navigateBack()
+        } catch (e: CancellationException) {
+            throw e
+        }
     }
 
+
     Box(
-        modifier = Modifier.fillMaxSize(),
+        modifier = Modifier.fillMaxSize()
+            .background(Color.Transparent),
         contentAlignment = Alignment.Center
     ) {
 
@@ -158,7 +178,27 @@ private fun RegisterScreenContent(
         }
 
         AnimatedVisibility(
-            modifier = bottomModifier,
+            modifier = bottomModifier
+                .graphicsLayer {
+                    translationY = (translationY + offsetY)
+                }
+                .pointerInput(Unit) {
+                    detectDragGestures(
+                        onDragEnd = {
+                            if (offsetY > screenHeightPx / 3) {
+                                navigateBack()
+                            } else {
+                                offsetY = 0f
+                            }
+                        }
+                    ) { change, dragAmount ->
+                        change.consume()
+                        val newOffset = offsetY + dragAmount.y
+                        if (newOffset >= 0) {
+                            offsetY = newOffset
+                        }
+                    }
+                },
             visible = true,
             enter = slideInVertically { it } + fadeIn()
         ) {
@@ -173,12 +213,19 @@ private fun RegisterScreenContent(
 
                 LoginScreenContent(viewModel = authViewModel, false)
             }
-            UiStateHandler(
-                uiState = authViewModel.authState.collectAsState().value,
-                onError = {},
-                content = {},
-                onSuccess = onSuccess
-            )
         }
+
+        if (fillProgress >= .8f) {
+            Box(modifier = Modifier.align(Alignment.BottomStart).padding(10.dp, 20.dp)) {
+                BackButton(showBackText = true, text = "Back to Login") { navigateBack() }
+            }
+        }
+
+        UiStateHandler(
+            uiState = authViewModel.authState.collectAsState().value,
+            onError = {},
+            content = {},
+            onSuccess = onSuccess
+        )
     }
 }

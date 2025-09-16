@@ -1,11 +1,11 @@
 package com.devansh.noteapp.data.remote
 
+import com.devansh.noteapp.BuildConfig
 import com.devansh.noteapp.domain.entity.ServerError
 import com.devansh.noteapp.domain.model.Note
 import com.devansh.noteapp.domain.repo.NoteService
 import com.devansh.noteapp.domain.utils.BaseGateway
 import com.devansh.noteapp.domain.utils.Result
-import com.jignesh.society.BuildConfig
 import io.ktor.client.HttpClient
 import io.ktor.client.plugins.logging.Logger
 import io.ktor.client.plugins.logging.SIMPLE
