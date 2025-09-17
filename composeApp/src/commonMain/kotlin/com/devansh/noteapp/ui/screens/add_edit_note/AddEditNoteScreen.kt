@@ -47,6 +47,7 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalClipboard
 import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -108,6 +109,14 @@ fun AddEditScreenContent(
         if (richTextState.toHtml() != currentNote.content) {
             richTextState.setHtml(currentNote.content)
         }
+    }
+
+    LaunchedEffect(Unit){
+        richTextState.config.linkColor = Color.Blue
+        richTextState.config.linkTextDecoration = TextDecoration.Underline
+        richTextState.config.codeSpanColor = Color.Yellow
+        richTextState.config.codeSpanBackgroundColor = Color.Transparent
+        richTextState.config.codeSpanStrokeColor = Color.LightGray
     }
 
     // Sync rich text content with ViewModel whenever it changes

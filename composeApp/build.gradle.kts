@@ -82,7 +82,7 @@ kotlin {
             implementation(libs.material3.adaptive.navigation.suite)
 
             implementation(libs.kotlin.logging)
-            implementation("org.jetbrains.compose.ui:ui-backhandler:1.9.0-alpha01")
+            implementation("org.jetbrains.compose.ui:ui-backhandler:1.9.0-rc02")
 
             api(libs.koin.core)
             implementation(libs.koin.compose)
@@ -107,8 +107,8 @@ kotlin {
             implementation(libs.composeSettings.ui)
             implementation(libs.composeSettings.ui.extended)
 
-            implementation("io.github.jan-tennert.supabase:compose-auth:3.2.2")
-            implementation("io.github.jan-tennert.supabase:compose-auth-ui:3.2.2")
+            implementation("io.github.jan-tennert.supabase:compose-auth:3.2.3")
+            implementation("io.github.jan-tennert.supabase:compose-auth-ui:3.2.3")
 
             implementation(projects.sheetCore)
             implementation(projects.color)
