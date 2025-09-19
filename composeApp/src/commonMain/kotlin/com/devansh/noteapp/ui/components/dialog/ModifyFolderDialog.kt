@@ -40,13 +40,6 @@ import androidx.compose.ui.unit.dp
 import com.devansh.noteapp.domain.model.Category
 import com.devansh.noteapp.domain.utils.UnitCBF
 import com.devansh.noteapp.ui.screens.core.textColors
-import com.maxkeppeker.sheets.core.models.base.rememberUseCaseState
-import com.maxkeppeler.sheets.color.ColorDialog
-import com.maxkeppeler.sheets.color.models.ColorConfig
-import com.maxkeppeler.sheets.color.models.ColorSelection
-import com.maxkeppeler.sheets.color.models.ColorSelectionMode
-import com.maxkeppeler.sheets.color.models.MultipleColors
-import com.maxkeppeler.sheets.color.models.SingleColor
 import note_app_cmp.composeapp.generated.resources.Res
 import note_app_cmp.composeapp.generated.resources.cancel
 import note_app_cmp.composeapp.generated.resources.modify
@@ -175,34 +168,6 @@ fun ModifyFolderDialog(
             }
         }
     )
-
-    if (showColorDialog) {
-        val colorState = rememberUseCaseState()
-        val templateColors = MultipleColors.ColorsInt(*textColors.map { it.toArgb() }.toIntArray())
-
-        ColorDialog(
-            state = colorState,
-            selection = ColorSelection(
-                selectedColor = SingleColor(
-                    if (isCustomColor && selectedIndex == Category.folderColors.size + 1) {
-                        Color(color!!).toArgb()
-                    } else {
-                        Color.Red.toArgb() // Default starting color
-                    }
-                ),
-                onSelectColor = { selectedColor ->
-                    val newColorLong = selectedColor.toLong()
-                    color = newColorLong
-                    println("DEBUG: Custom color selected: $newColorLong")
-                    showColorDialog = false
-                },
-            ),
-            config = ColorConfig(
-                displayMode = ColorSelectionMode.TEMPLATE,
-                templateColors = templateColors,
-            )
-        )
-    }
 }
 
 @Composable

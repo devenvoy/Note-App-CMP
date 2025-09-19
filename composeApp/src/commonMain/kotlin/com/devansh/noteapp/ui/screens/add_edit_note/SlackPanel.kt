@@ -42,6 +42,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
@@ -69,14 +70,8 @@ import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Popup
+import com.devansh.noteapp.core.util.DeviceConfiguration
 import com.devansh.noteapp.ui.screens.core.textColors
-import com.maxkeppeker.sheets.core.models.base.rememberUseCaseState
-import com.maxkeppeler.sheets.color.ColorDialog
-import com.maxkeppeler.sheets.color.models.ColorConfig
-import com.maxkeppeler.sheets.color.models.ColorSelection
-import com.maxkeppeler.sheets.color.models.ColorSelectionMode
-import com.maxkeppeler.sheets.color.models.MultipleColors
-import com.maxkeppeler.sheets.color.models.SingleColor
 import com.mohamedrejeb.richeditor.model.RichTextState
 
 data class TypographyStyle(
@@ -109,29 +104,16 @@ fun SlackPanel(
     modifier: Modifier = Modifier,
 ) {
 
+    val windowInfo = currentWindowAdaptiveInfo()
+    val deviceInfo = DeviceConfiguration.fromWindowSizeClass(windowInfo.windowSizeClass)
     var selectedTextColor by remember { mutableStateOf(Color.White.toArgb()) }
     var showColorPalette by remember { mutableStateOf(false) }
     var showTypographyMenu by remember { mutableStateOf(false) }
     var currentIndentLevel by remember { mutableStateOf(0) }
 
-    val colorState = rememberUseCaseState(
-        onFinishedRequest = { state.toggleSpanStyle(SpanStyle(color = Color(selectedTextColor))) })
-
-    val templateColors = MultipleColors.ColorsInt(*textColors.map { it.toArgb() }.toIntArray())
     var paletteCords by remember { mutableStateOf<LayoutCoordinates?>(null) }
     var paletteIconPosition by remember { mutableStateOf(IntOffset.Zero) }
 
-    ColorDialog(
-        state = colorState,
-        selection = ColorSelection(
-            selectedColor = SingleColor(selectedTextColor),
-            onSelectColor = { selectedTextColor = it },
-        ),
-        config = ColorConfig(
-            displayMode = ColorSelectionMode.TEMPLATE,
-            templateColors = templateColors,
-        )
-    )
 
     if (showColorPalette && paletteCords != null) {
         val posInRoot = paletteCords!!.positionInWindow()
@@ -143,9 +125,9 @@ fun SlackPanel(
                 state.toggleSpanStyle(SpanStyle(color = color))
                 showColorPalette = false
             },
-            IntOffset(
+            intOffSet = IntOffset(
                 ((posInRoot.x.toInt()) / 2),
-                (posInRoot.y.toInt() - 220)
+                (posInRoot.y.toInt() - if (deviceInfo.isExpanded()) 220 else 550)
             ),
             paletteIconPosition = paletteIconPosition
         )
@@ -178,7 +160,7 @@ fun SlackPanel(
                     DropdownMenu(
                         expanded = showTypographyMenu,
                         onDismissRequest = { showTypographyMenu = false },
-                        modifier = Modifier.width(200.dp)
+                        modifier = Modifier.padding(horizontal = 20.dp)
                     ) {
                         typographyStyles.forEach { style ->
                             DropdownMenuItem(

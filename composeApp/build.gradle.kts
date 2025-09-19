@@ -110,8 +110,8 @@ kotlin {
             implementation("io.github.jan-tennert.supabase:compose-auth:3.2.3")
             implementation("io.github.jan-tennert.supabase:compose-auth-ui:3.2.3")
 
-            implementation(projects.sheetCore)
-            implementation(projects.color)
+//            implementation(projects.sheetCore)
+//            implementation(projects.color)
 
         }
 

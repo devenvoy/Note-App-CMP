@@ -29,5 +29,3 @@ dependencyResolutionManagement {
 }
 
 include(":composeApp")
-include(":sheetCore")
-include(":color")
