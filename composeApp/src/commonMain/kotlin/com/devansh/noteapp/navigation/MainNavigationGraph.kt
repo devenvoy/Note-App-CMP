@@ -24,8 +24,7 @@ fun MainNavigationGraph(
 ) {
 
     NavHost(
-        modifier = Modifier
-            .fillMaxSize(),
+        modifier = Modifier.fillMaxSize(),
         navController = mainNavController,
         startDestination = NavRoute.SplashScreen
     ) {

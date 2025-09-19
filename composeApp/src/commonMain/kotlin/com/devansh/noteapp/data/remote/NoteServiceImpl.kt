@@ -44,15 +44,14 @@ class NoteServiceImpl(
     }
 
 
-    override suspend fun deleteNote(id: String, accessToken: String) {
-        try {
-            executeOrThrow<Unit> {
-                delete(BuildConfig.BASE_URL + "/notes/$id") {
-                    header(HttpHeaders.Authorization, "Bearer $accessToken")
-                }
+    override suspend fun deleteNote(
+        id: String,
+        accessToken: String
+    ): Result<Map<String, String>, ServerError> {
+        return tryToExecute<Map<String, String>> {
+            delete(BuildConfig.BASE_URL + "/notes/$id") {
+                header(HttpHeaders.Authorization, "Bearer $accessToken")
             }
-        } catch (e: Exception) {
-            Logger.SIMPLE.log("network ${e.message}")
         }
     }
 }

@@ -27,17 +27,17 @@ fun NavGraphBuilder.splashScreen(navController: NavHostController) {
     composable<NavRoute.SplashScreen> {
         SplashScreen(
             navToHome = {
-                navController.navigate(NavRoute.AddNote()) {
+                navController.navigate(NavRoute.BaseScreen) {
                     popUpTo(NavRoute.SplashScreen) { inclusive = true }
                 }
             },
             navToAuth = {
-                navController.navigate(NavRoute.AddNote()) {
+                navController.navigate(NavRoute.Auth) {
                     popUpTo(NavRoute.SplashScreen) { inclusive = true }
                 }
             },
             navToOnBoard = {
-                navController.navigate(NavRoute.AddNote()) {
+                navController.navigate(NavRoute.OnBoardScreen) {
                     popUpTo(NavRoute.SplashScreen) { inclusive = true }
                 }
             }

@@ -1,5 +1,6 @@
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 import java.util.Properties
+import javax.swing.text.StyleConstants.Family
 
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
@@ -107,12 +108,10 @@ kotlin {
             implementation(libs.composeSettings.ui)
             implementation(libs.composeSettings.ui.extended)
 
+            implementation(libs.compose.colorpicker)
+            api("com.mohamedrejeb.calf:calf-ui:0.8.0")
             implementation("io.github.jan-tennert.supabase:compose-auth:3.2.3")
             implementation("io.github.jan-tennert.supabase:compose-auth-ui:3.2.3")
-
-//            implementation(projects.sheetCore)
-//            implementation(projects.color)
-
         }
 
         iosMain.dependencies {
@@ -162,7 +161,7 @@ android {
     }
     buildTypes {
         named("debug") {
-//            applicationIdSuffix = ".debug"
+            applicationIdSuffix = ".debug"
             signingConfig = signingConfigs.getByName("debug")
         }
         named("release") {

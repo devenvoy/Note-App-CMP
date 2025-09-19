@@ -12,6 +12,5 @@ class NoteApp : Application() {
     override fun onCreate() {
         super.onCreate()
         AppContext = this
-        DeviceInfo.initialize(this)
     }
 }

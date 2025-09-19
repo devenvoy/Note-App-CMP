@@ -42,7 +42,6 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
-import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
@@ -102,10 +101,9 @@ fun SlackPanel(
     state: RichTextState,
     openLinkDialog: MutableState<Boolean>,
     modifier: Modifier = Modifier,
+    deviceInfo: DeviceConfiguration,
 ) {
 
-    val windowInfo = currentWindowAdaptiveInfo()
-    val deviceInfo = DeviceConfiguration.fromWindowSizeClass(windowInfo.windowSizeClass)
     var selectedTextColor by remember { mutableStateOf(Color.White.toArgb()) }
     var showColorPalette by remember { mutableStateOf(false) }
     var showTypographyMenu by remember { mutableStateOf(false) }
@@ -125,25 +123,20 @@ fun SlackPanel(
                 state.toggleSpanStyle(SpanStyle(color = color))
                 showColorPalette = false
             },
-            intOffSet = IntOffset(
-                ((posInRoot.x.toInt()) / 2),
-                (posInRoot.y.toInt() - if (deviceInfo.isExpanded()) 220 else 550)
-            ),
+            intOffSet = IntOffset(posInRoot.x.toInt() - 100, posInRoot.y.toInt() - 200),
             paletteIconPosition = paletteIconPosition
         )
     }
 
     Column(
-        modifier = Modifier.imePadding()
-            .then(modifier)
-            .background(MaterialTheme.colorScheme.surface)
-            .padding(vertical = 8.dp),
+        modifier = Modifier.imePadding().then(modifier),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
 
         LazyRow(
             modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.Center,
             verticalAlignment = Alignment.CenterVertically
         ) {
 
@@ -308,8 +301,8 @@ fun SlackPanel(
 
             item {
                 Box(
-                    Modifier.height(24.dp).width(1.dp)
-                        .background(MaterialTheme.colorScheme.outline)
+                    Modifier.height(28.dp).width(2.dp)
+                        .background(MaterialTheme.colorScheme.onBackground)
                 )
             }
 
@@ -382,37 +375,6 @@ fun ColorPopUp(
     paletteIconPosition: IntOffset
 ) {
     var cardWidth by remember { mutableStateOf(0) }
-    /*
-    val configuration = LocalWindowInfo.current.containerSize
-    val screenWidth = configuration.width
-    val windowInfo = currentWindowAdaptiveInfo()
-    val deviceConfig = DeviceConfiguration.fromWindowSizeClass(windowInfo.windowSizeClass)
-
-    val adaptiveOffset = remember(intOffSet, paletteIconPosition, screenWidth) {
-        when {
-            deviceConfig.isMobile() -> {
-                IntOffset(
-                    x = (screenWidth / 2 - 120),
-                    y = intOffSet.y - 250
-                )
-            }
-            deviceConfig.isMobile() -> {
-                IntOffset(
-                    x = (paletteIconPosition.x - 140).coerceIn(20, screenWidth - 280),
-                    y = intOffSet.y - 230
-                )
-            }
-            else -> {
-                IntOffset(
-                    x = (paletteIconPosition.x - 120).coerceIn(20, screenWidth - 240),
-                    y = intOffSet.y - 220
-                )
-            }
-        }
-    }
-*/
-
-
     Popup(
         onDismissRequest = onDismissRequest,
         offset = intOffSet
@@ -437,56 +399,16 @@ fun ColorPopUp(
                 )
             }
 
-            /*when {
-                deviceConfig.isMobile() -> {
-                    Canvas(modifier = Modifier.width(cardWidth.dp).height(16.dp)) {
-                        if (size.width > 0) {
-                            val centerX = size.width / 2f
-                            val path = Path().apply {
-                                moveTo(centerX - 10f, 0f)
-                                lineTo(centerX, 12f)
-                                lineTo(centerX + 10f, 0f)
-                                close()
-                            }
-                            drawPath(path, color)
-                        }
-                    }
-                }
-
-                else -> {
-                    Canvas(modifier = Modifier.width(cardWidth.dp).height(20.dp)) {
-                        if (size.width > 0) {
-                            val iconRelativeX = (paletteIconPosition.x - adaptiveOffset.x).toFloat()
-                            val minBound = 15f
-                            val maxBound = maxOf(size.width - 15f, minBound + 1f)
-
-                            val pointerX = iconRelativeX.coerceIn(minBound, maxBound)
-
-                            val path = Path().apply {
-                                moveTo(pointerX - 8f, 0f)
-                                lineTo(pointerX, 15f)
-                                lineTo(pointerX + 8f, 0f)
-                                close()
-                            }
-                            drawPath(path, color)
-                        }
-                    }
-                }
-            }*/
             Canvas(modifier = Modifier.width(cardWidth.dp).height(20.dp)) {
-                if (size.width > 0) { // Safety check to ensure canvas has valid size
-                    // Calculate where the palette icon is relative to the popup
+                if (size.width > 0) {
                     val iconRelativeX = (paletteIconPosition.x - intOffSet.x).toFloat()
 
-                    // Define safe bounds with minimum padding
                     val minPadding = 15f
                     val maxPadding = 15f
 
-                    // Ensure minimum bounds are valid (min < max)
                     val minBound = minPadding
                     val maxBound = maxOf(size.width - maxPadding, minBound + 1f) // Ensure max > min
 
-                    // Clamp the pointer position to stay within safe bounds
                     val pointerX = if (iconRelativeX < minBound) {
                         minBound
                     } else if (iconRelativeX > maxBound) {
@@ -496,9 +418,9 @@ fun ColorPopUp(
                     }
 
                     val path = Path().apply {
-                        moveTo(pointerX - 8f, 0f)   // Left point of triangle (smaller triangle)
-                        lineTo(pointerX, 15f)       // Bottom point (tip pointing to icon)
-                        lineTo(pointerX + 8f, 0f)   // Right point of triangle
+                        moveTo(pointerX - 8f, 0f)
+                        lineTo(pointerX, 15f)
+                        lineTo(pointerX + 8f, 0f)
                         close()
                     }
                     drawPath(path, color)

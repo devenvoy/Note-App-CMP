@@ -5,6 +5,8 @@ CREATE TABLE IF NOT EXISTS noteEntity(
     colorRes INTEGER NOT NULL,
     categoryId TEXT,
     isSynced INTEGER NOT NULL DEFAULT 0,
+    isDeleted INTEGER NOT NULL DEFAULT 0,
+    pendingDeletion INTEGER NOT NULL DEFAULT 0,
     createdAt TEXT,
     updatedAt TEXT,
     FOREIGN KEY (categoryId) REFERENCES categoryEntity(categoryId)
@@ -12,24 +14,26 @@ CREATE TABLE IF NOT EXISTS noteEntity(
         ON UPDATE CASCADE
 );
 
+-- Existing queries
 getAllNotes:
-SELECT * FROM noteEntity;
+SELECT * FROM noteEntity
+WHERE isDeleted = 0;
 
 getAllUnsyncedNotes:
 SELECT * FROM noteEntity
-WHERE isSynced = 0;
+WHERE isSynced = 0 AND isDeleted = 0;
 
 getAllSyncedNotes:
 SELECT * FROM noteEntity
-WHERE isSynced = 1;
+WHERE isSynced = 1 AND isDeleted = 0;
 
 getNoteById:
 SELECT * FROM noteEntity
-WHERE id = ?;
+WHERE id = ? AND isDeleted = 0;
 
 insertNote:
-INSERT OR REPLACE INTO noteEntity (id,title,content,colorRes,categoryId,isSynced,createdAt,updatedAt)
-VALUES (?, ?, ?, ?, ?, ?, ?, ?);
+INSERT OR REPLACE INTO noteEntity (id,title,content,colorRes,categoryId,isSynced,isDeleted,pendingDeletion,createdAt,updatedAt)
+VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
 
 markNoteAsSynced:
 UPDATE noteEntity SET isSynced = 1 WHERE id = ?;
@@ -39,3 +43,37 @@ DELETE FROM noteEntity WHERE id = ?;
 
 emptyNoteTable:
 DELETE FROM noteEntity;
+
+-- New queries for deletion handling
+markAsDeleted:
+UPDATE noteEntity
+SET isDeleted = 1, pendingDeletion = 0, isSynced = 0
+WHERE id = ?;
+
+markForDeletion:
+UPDATE noteEntity
+SET pendingDeletion = 1, isSynced = 0
+WHERE id = ?;
+
+getNotesMarkedForDeletion:
+SELECT * FROM noteEntity
+WHERE pendingDeletion = 1;
+
+getDeletedNote:
+SELECT * FROM noteEntity
+WHERE id = ? AND isDeleted = 1;
+
+-- Additional helpful queries
+softDeleteNote:
+UPDATE noteEntity
+SET isDeleted = 1, pendingDeletion = 1, isSynced = 0
+WHERE id = ?;
+
+restoreNote:
+UPDATE noteEntity
+SET isDeleted = 0, pendingDeletion = 0, isSynced = 0
+WHERE id = ?;
+
+getAllDeletedNotes:
+SELECT * FROM noteEntity
+WHERE isDeleted = 1;

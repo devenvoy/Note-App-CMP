@@ -30,7 +30,6 @@ fun HintUI(
             singleLine = singleLine,
             textStyle = textStyle,
             modifier = Modifier
-                .fillMaxWidth()
                 .onFocusChanged { onFocusChange(it) }
         )
         if (isHintVisible) {

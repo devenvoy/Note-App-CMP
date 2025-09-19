@@ -211,7 +211,7 @@ fun HomeScreenContent(
                         message = "Copied to clipboard", type = ToastType.Info
                     )
                     dismissSheet()
-                }, showEditOption = true
+                    }
                 )
             }
         }
@@ -272,11 +272,10 @@ fun HomeScreenContent(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun NoteMenuBottomSheet(
-    onEditClick: UnitCBF,
     onCopyClick: UnitCBF,
     onShareClick: UnitCBF,
     onDeleteClick: UnitCBF,
-    showEditOption: Boolean
+    onEditClick: UnitCBF? = null,
 ) {
     Column(
         modifier = Modifier.fillMaxWidth().navigationBarsPadding().padding(16.dp)
@@ -286,7 +285,7 @@ fun NoteMenuBottomSheet(
 
         Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
 
-            if (showEditOption) {
+            if (onEditClick != null) {
                 BottomSheetOptionItem("Edit", Res.drawable.ic_menu_edit, onEditClick)
             }
 

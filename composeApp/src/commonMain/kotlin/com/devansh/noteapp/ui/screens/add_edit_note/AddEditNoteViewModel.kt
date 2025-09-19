@@ -10,6 +10,8 @@ import com.devansh.noteapp.domain.repo.NoteDataSource
 import com.devansh.noteapp.domain.repo.NoteService
 import com.devansh.noteapp.domain.utils.onFailure
 import com.devansh.noteapp.domain.utils.onSuccess
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
@@ -28,12 +30,12 @@ class AddEditNoteViewModel(
 
     val noteTitle = mutableStateOf(NoteTextFieldState(hint = "Enter title"))
 
-    private val _currentNote = MutableStateFlow(emptyNote())
+    private val _currentNote: MutableStateFlow<Note> = MutableStateFlow(emptyNote())
     val currentNote = _currentNote.asStateFlow()
 
     private val _eventFlow = MutableSharedFlow<UiEvent>()
     val eventFlow = _eventFlow.asSharedFlow()
-
+    private val contentUpdateJob = mutableStateOf<Job?>(null)
 
     init {
         if (currentNoteId != null) {
@@ -67,6 +69,13 @@ class AddEditNoteViewModel(
 
             is AddEditNoteEvent.EnteredContent -> {
                 _currentNote.update { it.copy(content = event.newContent) }
+
+                contentUpdateJob.value?.cancel()
+
+                contentUpdateJob.value = viewModelScope.launch {
+                    delay(500)
+                    onEvent(AddEditNoteEvent.SaveNote)
+                }
             }
 
             is AddEditNoteEvent.ChangeContentFocus -> {}
@@ -78,32 +87,8 @@ class AddEditNoteViewModel(
             is AddEditNoteEvent.SaveNote -> {
                 viewModelScope.launch {
                     try {
-
-                        val currentNoteValue = _currentNote.value
-
-                        if (currentNoteValue.title.isBlank() && currentNoteValue.content.isBlank()) {
-                            _eventFlow.emit(UiEvent.ShowSnackbar("Note cannot be empty"))
-                            return@launch
-                        }
-
-                        val note = Note(
-                            id = currentNoteId,
-                            title = currentNoteValue.title,
-                            content = currentNoteValue.content,
-                            category = currentNoteValue.category,
-                            colorRes = currentNoteValue.colorRes,
-                            createdAt = currentNoteValue.createdAt.takeIf { currentNoteId != null }
-                                ?: Clock.System.now().toString(),
-                        )
-                        noteService.upsert(note, pref.accessToken.toString())
-                            .onSuccess {
-                                noteDataSource.insertNote(
-                                    it.copy(createdAt = note.createdAt),
-                                    true
-                                )
-                            }
-                            .onFailure { noteDataSource.insertNote(note, false) }
-                        _eventFlow.emit(UiEvent.SaveNote)
+                        val note = validateAndGetNote()
+                        note?.let { noteDataSource.insertNote(note, false) }
                     } catch (e: Exception) {
                         _eventFlow.emit(
                             UiEvent.ShowSnackbar(message = e.message ?: "Couldn't Save Note")
@@ -116,12 +101,40 @@ class AddEditNoteViewModel(
 
     fun deleteNoteById() {
         viewModelScope.launch {
-            currentNoteId?.let { noteDataSource.deleteNoteById(it) }
+            currentNoteId?.let {
+                noteService.deleteNote(it, pref.accessToken.toString())
+                noteDataSource.deleteNoteById(it)
+                _eventFlow.emit(UiEvent.ShowSnackbar("Note Deleted"))
+                delay(2000)
+                _eventFlow.emit(UiEvent.Navigate())
+            }
         }
+    }
+
+    @OptIn(ExperimentalTime::class)
+    suspend fun validateAndGetNote(): Note? {
+        val currentNoteValue = _currentNote.value
+
+        if (currentNoteValue.title.isBlank() && currentNoteValue.content.isBlank()) {
+            _eventFlow.emit(UiEvent.ShowSnackbar("Note cannot be empty"))
+            return null
+        }
+
+        val currentTime = Clock.System.now().toString()
+
+        return Note(
+            id = currentNoteId,
+            title = currentNoteValue.title,
+            content = currentNoteValue.content,
+            category = currentNoteValue.category,
+            colorRes = currentNoteValue.colorRes,
+            createdAt = currentNoteValue.createdAt.takeIf { currentNoteId != null } ?: currentTime,
+            updatedAt = currentTime,
+        )
     }
 }
 
 sealed interface UiEvent {
     data class ShowSnackbar(val message: String) : UiEvent
-    data object SaveNote : UiEvent
+    data class Navigate(val route: Any? = null) : UiEvent
 }

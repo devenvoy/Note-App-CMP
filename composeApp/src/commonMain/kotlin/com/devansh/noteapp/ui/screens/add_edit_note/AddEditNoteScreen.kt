@@ -1,26 +1,21 @@
 package com.devansh.noteapp.ui.screens.add_edit_note
 
 import androidx.compose.animation.Animatable
-import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.isSystemInDarkTheme
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.systemBarsPadding
-import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.layout.widthIn
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.MoreVert
-import androidx.compose.material.icons.filled.Save
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.FilledTonalIconButton
@@ -32,6 +27,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -40,14 +36,16 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalClipboard
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.style.TextDecoration
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -55,8 +53,8 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import androidx.navigation.toRoute
+import com.devansh.noteapp.core.util.DeviceConfiguration
 import com.devansh.noteapp.di.platform_di.clipEntryOf
-import com.devansh.noteapp.domain.model.Note
 import com.devansh.noteapp.domain.utils.UnitCBF
 import com.devansh.noteapp.navigation.NavRoute
 import com.devansh.noteapp.ui.components.HintUI
@@ -66,11 +64,26 @@ import com.dokar.sonner.ToastType
 import com.dokar.sonner.Toaster
 import com.dokar.sonner.ToasterDefaults
 import com.dokar.sonner.rememberToasterState
+import com.github.skydoves.colorpicker.compose.AlphaSlider
+import com.github.skydoves.colorpicker.compose.BrightnessSlider
+import com.github.skydoves.colorpicker.compose.ColorEnvelope
+import com.github.skydoves.colorpicker.compose.HsvColorPicker
+import com.github.skydoves.colorpicker.compose.rememberColorPickerController
+import com.mohamedrejeb.calf.ui.sheet.AdaptiveBottomSheet
+import com.mohamedrejeb.calf.ui.sheet.rememberAdaptiveSheetState
 import com.mohamedrejeb.richeditor.model.rememberRichTextState
 import com.mohamedrejeb.richeditor.ui.material3.RichTextEditor
 import com.mohamedrejeb.richeditor.ui.material3.RichTextEditorDefaults
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.drop
+import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.launch
+import note_app_cmp.composeapp.generated.resources.Res
+import note_app_cmp.composeapp.generated.resources.apparel_24px
+import org.jetbrains.compose.resources.painterResource
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
 
@@ -87,47 +100,62 @@ fun NavGraphBuilder.addNoteScreen(navHostController: NavHostController) {
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun AddEditScreenContent(
-    viewModel: AddEditNoteViewModel, onNavigateUp: UnitCBF
+    viewModel: AddEditNoteViewModel,
+    onNavigateUp: UnitCBF
 ) {
     val clipboardManager = LocalClipboard.current
 
-    val titleState by viewModel.noteTitle
     val currentNote by viewModel.currentNote.collectAsStateWithLifecycle()
+    val titleState by viewModel.noteTitle
     val selectedBgColor = currentNote.colorRes
 
     val scope = rememberCoroutineScope()
     val toasterState = rememberToasterState()
     val richTextState = rememberRichTextState()
     val sheetState = rememberModalBottomSheetState()
+    val windowInfo = currentWindowAdaptiveInfo()
+    val controller = rememberColorPickerController()
+    val colorSheetState = rememberAdaptiveSheetState(true)
+    val deviceInfo = DeviceConfiguration.fromWindowSizeClass(windowInfo.windowSizeClass)
 
+    var openBottomSheet by remember { mutableStateOf(false) }
     val openLinkDialog = remember { mutableStateOf(false) }
     var isBottomSheetVisible by remember { mutableStateOf(false) }
+    var isUpdatingFromViewModel by remember { mutableStateOf(false) }
     val noteBgAnimation = remember(selectedBgColor) { Animatable(Color(selectedBgColor)) }
 
 
     LaunchedEffect(currentNote.content) {
-        if (richTextState.toHtml() != currentNote.content) {
+        val currentHtml = richTextState.toHtml()
+        if (currentNote.content != currentHtml && !isUpdatingFromViewModel) {
+            isUpdatingFromViewModel = true
             richTextState.setHtml(currentNote.content)
-        }
-    }
-
-    LaunchedEffect(Unit){
-        richTextState.config.linkColor = Color.Blue
-        richTextState.config.linkTextDecoration = TextDecoration.Underline
-        richTextState.config.codeSpanColor = Color.Yellow
-        richTextState.config.codeSpanBackgroundColor = Color.Transparent
-        richTextState.config.codeSpanStrokeColor = Color.LightGray
-    }
-
-    // Sync rich text content with ViewModel whenever it changes
-    LaunchedEffect(richTextState.toHtml()) {
-        val htmlContent = richTextState.toHtml()
-        if (htmlContent != currentNote.content) {
-            viewModel.onEvent(AddEditNoteEvent.EnteredContent(htmlContent))
+            delay(50)
+            isUpdatingFromViewModel = false
         }
     }
 
     LaunchedEffect(Unit) {
+        snapshotFlow { richTextState.toHtml() }
+            .drop(1)
+            .filter { !isUpdatingFromViewModel }
+            .debounce(300)
+            .distinctUntilChanged()
+            .collect { htmlContent ->
+                if (htmlContent != currentNote.content) {
+                    viewModel.onEvent(AddEditNoteEvent.EnteredContent(htmlContent))
+                }
+            }
+    }
+
+    LaunchedEffect(Unit) {
+        {
+            richTextState.config.linkColor = Color.Blue
+            richTextState.config.linkTextDecoration = TextDecoration.Underline
+            richTextState.config.codeSpanColor = Color.Yellow
+            richTextState.config.codeSpanBackgroundColor = Color.Transparent
+            richTextState.config.codeSpanStrokeColor = Color.LightGray
+        }
         viewModel.eventFlow.collectLatest { event ->
             when (event) {
                 is UiEvent.ShowSnackbar -> {
@@ -138,7 +166,58 @@ fun AddEditScreenContent(
                     )
                 }
 
-                is UiEvent.SaveNote -> onNavigateUp()
+                is UiEvent.Navigate -> {
+                    if (event.route == null) onNavigateUp()
+                }
+            }
+        }
+    }
+
+    if (openBottomSheet) {
+        AdaptiveBottomSheet(
+            onDismissRequest = { openBottomSheet = false },
+            adaptiveSheetState = colorSheetState,
+            shape = RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp),
+            containerColor = MaterialTheme.colorScheme.surface,
+        ) {
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                HsvColorPicker(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(450.dp),
+                    controller = controller,
+                    initialColor = Color(selectedBgColor),
+                    onColorChanged = { colorEnvelope: ColorEnvelope ->
+                        viewModel.onEvent(
+                            AddEditNoteEvent.ChangeColor(
+                                colorEnvelope.color.toArgb().toLong()
+                            )
+                        )
+                    }
+                )
+                AlphaSlider(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = 10.dp)
+                        .height(35.dp)
+                        .align(Alignment.CenterHorizontally),
+                    controller = controller,
+                )
+
+                BrightnessSlider(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = 10.dp)
+                        .height(35.dp)
+                        .align(Alignment.CenterHorizontally),
+                    controller = controller,
+                )
+
             }
         }
     }
@@ -146,23 +225,34 @@ fun AddEditScreenContent(
     Scaffold(
         topBar = {
             TopAppBar(
-                colors = TopAppBarDefaults.topAppBarColors(
-                    noteBgAnimation.value.copy(.4f)
-                ),
+                colors = TopAppBarDefaults.topAppBarColors(noteBgAnimation.value),
                 actions = {
+                    /*     FilledTonalIconButton(
+                             modifier = Modifier.size(width = 52.dp, height = 32.dp),
+                             shapes = IconButtonDefaults.shapes(),
+                             colors = IconButtonDefaults.filledIconButtonColors(
+                                 containerColor = MaterialTheme.colorScheme.primary,
+                                 contentColor = MaterialTheme.colorScheme.onPrimary,
+                             ), onClick = {
+                                 viewModel.onEvent(AddEditNoteEvent.EnteredContent(richTextState.toHtml()))
+                                 viewModel.onEvent(AddEditNoteEvent.SaveNote)
+                             }) {
+                             Icon(
+                                 modifier = Modifier.padding(4.dp),
+                                 imageVector = Icons.Default.Save,
+                                 contentDescription = "Save Note"
+                             )
+                         }*/
                     FilledTonalIconButton(
                         modifier = Modifier.size(width = 52.dp, height = 32.dp),
                         shapes = IconButtonDefaults.shapes(),
                         colors = IconButtonDefaults.filledIconButtonColors(
                             containerColor = MaterialTheme.colorScheme.primary,
                             contentColor = MaterialTheme.colorScheme.onPrimary,
-                        ), onClick = {
-                            viewModel.onEvent(AddEditNoteEvent.EnteredContent(richTextState.toHtml()))
-                            viewModel.onEvent(AddEditNoteEvent.SaveNote)
-                        }) {
+                        ), onClick = { openBottomSheet = true }) {
                         Icon(
                             modifier = Modifier.padding(4.dp),
-                            imageVector = Icons.Default.Save,
+                            painter = painterResource(Res.drawable.apparel_24px),
                             contentDescription = "Save Note"
                         )
                     }
@@ -174,10 +264,7 @@ fun AddEditScreenContent(
                             contentColor = MaterialTheme.colorScheme.onPrimary,
                         ),
                         onClick = { isBottomSheetVisible = true }) {
-                        Icon(
-                            imageVector = Icons.Default.MoreVert,
-                            contentDescription = null,
-                        )
+                        Icon(imageVector = Icons.Default.MoreVert, contentDescription = null)
                     }
                 },
                 navigationIcon = { BackButton { onNavigateUp() } },
@@ -206,16 +293,13 @@ fun AddEditScreenContent(
                 dragHandle = null
             ) {
                 NoteMenuBottomSheet(
-                    onEditClick = {}, onShareClick = {}, onDeleteClick = {
+                    onShareClick = {},
+                    onDeleteClick = {
                         viewModel.deleteNoteById()
-                        toasterState.show(
-                            "Note deleted successfully",
-                            duration = ToasterDefaults.DurationLong,
-                            type = ToastType.Warning
-                        )
                         dismissSheet()
                         onNavigateUp()
-                    }, onCopyClick = {
+                    },
+                    onCopyClick = {
                         scope.launch {
                             clipboardManager.setClipEntry(
                                 clipEntryOf(AnnotatedString("$titleState \n\n ${richTextState.toText()}").toString())
@@ -227,45 +311,15 @@ fun AddEditScreenContent(
                             type = ToastType.Info
                         )
                         dismissSheet()
-                    }, showEditOption = false
+                    }
                 )
             }
         }
 
         Column(
             modifier = Modifier.padding(padding).fillMaxSize()
-                .background(noteBgAnimation.value.copy(alpha = .4f))
+                .background(noteBgAnimation.value.copy(alpha = .8f))
         ) {
-            Row(
-                modifier = Modifier.padding(4.dp).fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                Note.colors.forEach { colorInt ->
-                    val color = Color(colorInt)
-
-                    Box(
-                        modifier = Modifier.size(40.dp).shadow(15.dp, CircleShape).clip(CircleShape)
-                            .background(color).border(
-                                width = 3.dp, color = if (selectedBgColor == colorInt) {
-                                    Color.White
-                                } else {
-                                    Color.Transparent  //color is deselected
-                                }, shape = CircleShape
-                            ).clickable(
-                                onClick = {
-                                    scope.launch {
-                                        noteBgAnimation.animateTo(
-                                            targetValue = Color(colorInt),
-                                            animationSpec = tween(durationMillis = 500)
-                                        )
-                                    }
-
-                                    viewModel.onEvent(AddEditNoteEvent.ChangeColor(colorInt))
-                                })
-                    )
-                }
-            }
-
 
             HintUI(
                 text = titleState.text,
@@ -273,24 +327,25 @@ fun AddEditScreenContent(
                 onValueChange = { viewModel.onEvent(AddEditNoteEvent.EnteredTitle(it)) },
                 onFocusChange = { viewModel.onEvent(AddEditNoteEvent.ChangeTitleFocus(it)) },
                 isHintVisible = titleState.isHintVisible,
-                singleLine = true,
-                textStyle = MaterialTheme.typography.titleLarge
+                singleLine = false,
+                textStyle = MaterialTheme.typography.titleLarge,
+                modifier = Modifier.padding(top = 12.dp, start = 12.dp, end = 12.dp)
+                    .widthIn(max = 720.dp, min = Dp.Infinity)
             )
 
             Spacer(Modifier.height(12.dp))
 
             RichTextEditor(
                 state = richTextState,
-                placeholder = { Text(text = "#write note content here") },
+                placeholder = { Text(text = "# write note content here") },
                 textStyle = MaterialTheme.typography.bodyLarge,
                 colors = RichTextEditorDefaults.richTextEditorColors(
-                    textColor = MaterialTheme.colorScheme.onSurface,
                     containerColor = Color.Transparent,
                     focusedIndicatorColor = Color.Transparent,
                     unfocusedIndicatorColor = Color.Transparent,
-                    placeholderColor = Color.Gray.copy(alpha = .6f),
+                    placeholderColor = richTextState.currentSpanStyle.color.copy(alpha = .6f),
                 ),
-                modifier = Modifier.fillMaxWidth().weight(1f)
+                modifier = Modifier.widthIn(max = 720.dp, min = Dp.Infinity).weight(1f)
             )
         }
 
@@ -301,9 +356,17 @@ fun AddEditScreenContent(
             SlackPanel(
                 state = richTextState,
                 openLinkDialog = openLinkDialog,
-                modifier = Modifier.fillMaxWidth().systemBarsPadding()
+                deviceInfo = deviceInfo,
+                modifier = Modifier
+                    .navigationBarsPadding()
+                    .padding(4.dp)
+                    .fillMaxWidth()
+                    .padding(8.dp)
+                    .clip(RoundedCornerShape(25))
+                    .background(MaterialTheme.colorScheme.surface)
             )
         }
+
 
         if (openLinkDialog.value) {
             Dialog(onDismissRequest = { openLinkDialog.value = false }) {

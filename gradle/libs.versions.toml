@@ -51,6 +51,7 @@ dateTimeVersion = "0.7.1"
 sqlDelight = "2.1.0"
 lifecycleViewmodelCompose = "2.9.2"
 
+colorpicker = "1.1.2"
 sdpSspComposeMultiplatform = "1.0.7"
 richeditorCompose = "1.0.0-rc13"
 compose-settings="2.13.0"
@@ -78,6 +79,7 @@ kmp-date-time-picker = { module = "network.chaintech:kmp-date-time-picker", vers
 
 sdp-ssp-compose-multiplatform = { module = "network.chaintech:sdp-ssp-compose-multiplatform", version.ref = "sdpSspComposeMultiplatform" }
 sonner = { module = "io.github.dokar3:sonner", version = "0.3.8" }
+compose-colorpicker = { module = "com.github.skydoves:colorpicker-compose", version.ref = "colorpicker" }
 
 koin-core = { module = "io.insert-koin:koin-core", version.ref = "koin" }
 koin-android = { module = "io.insert-koin:koin-android", version.ref = "koin" }

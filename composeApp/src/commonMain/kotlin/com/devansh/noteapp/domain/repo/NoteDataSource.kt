@@ -13,4 +13,9 @@ interface NoteDataSource {
     suspend fun getSyncedNotes() : List<Note>
     suspend fun markNoteAsSynced(id: String)
     suspend fun emptyNoteTable()
+    suspend fun markAsDeleted(id: String)
+    suspend fun markForDeletion(id: String)
+    suspend fun getNotesMarkedForDeletion(): List<Note>
+    suspend fun getDeletedNote(id: String): Note?
+    suspend fun cleanupDeletedNotes()
 }
