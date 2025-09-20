@@ -61,6 +61,11 @@ data class Note(
     fun markAsSynced(): Note = copy(isSynced = true)
 
     /**
+     * Create a copy marked for update
+     */
+    fun checkNullStringId(): Note = copy(id = if (id?.contains("null") == true) null else id)
+
+    /**
      * Create a copy marked for deletion
      */
     fun markForDeletion(): Note = copy(pendingDeletion = true, isSynced = false)

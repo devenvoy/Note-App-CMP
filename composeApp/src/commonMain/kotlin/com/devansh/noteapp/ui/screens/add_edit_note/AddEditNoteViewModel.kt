@@ -8,8 +8,6 @@ import com.devansh.noteapp.domain.model.Note.Companion.emptyNote
 import com.devansh.noteapp.domain.repo.AppCacheSetting
 import com.devansh.noteapp.domain.repo.NoteDataSource
 import com.devansh.noteapp.domain.repo.NoteService
-import com.devansh.noteapp.domain.utils.onFailure
-import com.devansh.noteapp.domain.utils.onSuccess
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -68,12 +66,10 @@ class AddEditNoteViewModel(
             }
 
             is AddEditNoteEvent.EnteredContent -> {
-                _currentNote.update { it.copy(content = event.newContent) }
-
                 contentUpdateJob.value?.cancel()
-
+                _currentNote.update { it.copy(content = event.newContent) }
                 contentUpdateJob.value = viewModelScope.launch {
-                    delay(500)
+                    delay(200)
                     onEvent(AddEditNoteEvent.SaveNote)
                 }
             }
@@ -115,7 +111,7 @@ class AddEditNoteViewModel(
     suspend fun validateAndGetNote(): Note? {
         val currentNoteValue = _currentNote.value
 
-        if (currentNoteValue.title.isBlank() && currentNoteValue.content.isBlank()) {
+        if (currentNoteValue.content.isBlank()) {
             _eventFlow.emit(UiEvent.ShowSnackbar("Note cannot be empty"))
             return null
         }

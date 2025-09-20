@@ -3,7 +3,7 @@ package com.devansh.noteapp.di.platform_di
 import app.cash.sqldelight.async.coroutines.synchronous
 import app.cash.sqldelight.db.SqlDriver
 import app.cash.sqldelight.driver.native.NativeSqliteDriver
-import com.devansh.noteapp.NoteDatabase
+import com.devansh.noteapp.NoteAppDatabase
 import org.koin.core.module.Module
 import org.koin.dsl.module
 import platform.UIKit.UIActivityViewController
@@ -12,7 +12,7 @@ import platform.UIKit.UIViewController
 
 actual fun platformModule(): Module = module {
     single<SqlDriver> {
-        NativeSqliteDriver(NoteDatabase.Schema.synchronous(), "note_db.db")
+        NativeSqliteDriver(NoteAppDatabase.Schema.synchronous(), "note_db.db")
     }
 }
 

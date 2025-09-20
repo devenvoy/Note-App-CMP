@@ -1,6 +1,5 @@
 package com.devansh.noteapp.ui.screens.home
 
-import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import co.touchlab.kermit.Logger
@@ -12,6 +11,7 @@ import com.devansh.noteapp.domain.repo.SearchNotes
 import com.devansh.noteapp.domain.utils.onFailure
 import com.devansh.noteapp.domain.utils.onSuccess
 import com.devansh.noteapp.ui.screens.home.notes.NoteListState
+import dev.tmapps.konnection.Konnection
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.delay
@@ -40,8 +40,6 @@ class HomeScreenViewModel(
 
     val isGridLayout = pref.listType
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000L), false)
-
-    var isRefreshing = mutableStateOf(false)
 
     private val _isSyncing = MutableStateFlow(false)
     val isSyncing = _isSyncing.asStateFlow()
@@ -357,7 +355,7 @@ class HomeScreenViewModel(
 
         notes.forEach { note ->
             try {
-                noteService.upsert(note, pref.accessToken.toString())
+                noteService.upsert(note.checkNullStringId(), pref.accessToken.toString())
                     .onSuccess {
                         noteDataSource.insertNote(note.markAsSynced(), true)
                         Logger.d("Successfully synced note ${note.id}",null,"Sync")
@@ -403,8 +401,7 @@ class HomeScreenViewModel(
      * Check if device is online
      */
     private fun isOnline(): Boolean {
-        // Implement your connectivity check here
-        return true // Placeholder
+        return Konnection.instance.isConnected()
     }
 }
 

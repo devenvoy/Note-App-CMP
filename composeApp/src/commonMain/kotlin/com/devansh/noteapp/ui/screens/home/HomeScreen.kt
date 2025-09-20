@@ -114,7 +114,7 @@ fun HomeScreenContent(
     val sheetState = rememberModalBottomSheetState()
 
     val noteState by homeScreenModel.noteState.collectAsState()
-    var isRefreshing by homeScreenModel.isRefreshing
+    var isRefreshing by remember { mutableStateOf(false) }
 
     var selectedNote by remember { mutableStateOf<Note?>(null) }
     var isBottomSheetVisible by remember { mutableStateOf(false) }

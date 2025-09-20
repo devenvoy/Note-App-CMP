@@ -74,6 +74,7 @@ import com.mohamedrejeb.calf.ui.sheet.rememberAdaptiveSheetState
 import com.mohamedrejeb.richeditor.model.rememberRichTextState
 import com.mohamedrejeb.richeditor.ui.material3.RichTextEditor
 import com.mohamedrejeb.richeditor.ui.material3.RichTextEditorDefaults
+import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.debounce
@@ -97,7 +98,9 @@ fun NavGraphBuilder.addNoteScreen(navHostController: NavHostController) {
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class,
+    FlowPreview::class
+)
 @Composable
 fun AddEditScreenContent(
     viewModel: AddEditNoteViewModel,
@@ -139,7 +142,7 @@ fun AddEditScreenContent(
         snapshotFlow { richTextState.toHtml() }
             .drop(1)
             .filter { !isUpdatingFromViewModel }
-            .debounce(300)
+            .debounce(100)
             .distinctUntilChanged()
             .collect { htmlContent ->
                 if (htmlContent != currentNote.content) {

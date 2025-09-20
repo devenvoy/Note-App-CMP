@@ -19,6 +19,7 @@ import androidx.compose.material3.SearchBarDefaults
 import androidx.compose.material3.SearchBarState
 import androidx.compose.material3.SearchBarValue
 import androidx.compose.material3.Text
+import androidx.compose.material3.TooltipAnchorPosition
 import androidx.compose.material3.TooltipBox
 import androidx.compose.material3.TooltipDefaults
 import androidx.compose.material3.rememberTooltipState
@@ -105,7 +106,7 @@ fun SearchbarInputField(
         leadingIcon = {
             if (searchBarState.currentValue == SearchBarValue.Expanded) {
                 TooltipBox(
-                    positionProvider = TooltipDefaults.rememberTooltipPositionProvider(),
+                    positionProvider = TooltipDefaults.rememberTooltipPositionProvider(TooltipAnchorPosition.Below),
                     tooltip = { PlainTooltip { Text(text = "Back") } },
                     state = rememberTooltipState(),
                 ) {
@@ -121,7 +122,7 @@ fun SearchbarInputField(
         trailingIcon = {
             TooltipBox(
                 positionProvider =
-                    TooltipDefaults.rememberTooltipPositionProvider(),
+                    TooltipDefaults.rememberTooltipPositionProvider(TooltipAnchorPosition.Below),
                 tooltip = { PlainTooltip { Text(text = "search") } },
                 state = rememberTooltipState(),
             ) {

@@ -1,6 +1,6 @@
+
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 import java.util.Properties
-import javax.swing.text.StyleConstants.Family
 
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
@@ -46,10 +46,8 @@ kotlin {
 
             implementation(libs.sqldelight.android.driver)
 
-            implementation(compose.preview)
-            implementation(libs.androidx.activity.compose)
 
-            implementation("com.github.chuckerteam.chucker:library:4.2.0")
+            implementation(libs.chucker.library)
             implementation(project.dependencies.platform("com.google.firebase:firebase-bom:34.2.0"))
             implementation("com.google.firebase:firebase-analytics")
             implementation("com.google.firebase:firebase-config")
@@ -62,19 +60,15 @@ kotlin {
 
             implementation(libs.kotlinx.coroutines.core)
             implementation(libs.kotlinx.serialization.json)
-            implementation(libs.androidx.navigation.compose)
 
             implementation(libs.bundles.ktor.common)
 
-            implementation(compose.ui)
-            implementation(compose.runtime)
-            implementation(compose.animation)
-            implementation(compose.foundation)
+            implementation(libs.bundles.jetbrains.compose)
+//            implementation("org.jetbrains.compose:compose-full:1.10.0-alpha01")
             implementation(compose.components.resources)
             implementation(compose.materialIconsExtended)
 
-            implementation(libs.androidx.lifecycle.viewmodel)
-            implementation(libs.androidx.lifecycle.runtime.compose)
+            implementation(libs.bundles.jetbrains.lifecycle)
 
             implementation(libs.material3.adaptive)
             implementation(libs.material3.expressive)
@@ -83,7 +77,6 @@ kotlin {
             implementation(libs.material3.adaptive.navigation.suite)
 
             implementation(libs.kotlin.logging)
-            implementation("org.jetbrains.compose.ui:ui-backhandler:1.9.0-rc02")
 
             api(libs.koin.core)
             implementation(libs.koin.compose)
@@ -109,9 +102,10 @@ kotlin {
             implementation(libs.composeSettings.ui.extended)
 
             implementation(libs.compose.colorpicker)
-            api("com.mohamedrejeb.calf:calf-ui:0.8.0")
-            implementation("io.github.jan-tennert.supabase:compose-auth:3.2.3")
-            implementation("io.github.jan-tennert.supabase:compose-auth-ui:3.2.3")
+            implementation(libs.konnection)
+            implementation(libs.calf.ui)
+            implementation(libs.supabase.compose.auth)
+            implementation(libs.supabase.compose.auth.ui)
         }
 
         iosMain.dependencies {

@@ -18,6 +18,7 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.PlainTooltip
 import androidx.compose.material3.Text
+import androidx.compose.material3.TooltipAnchorPosition
 import androidx.compose.material3.TooltipBox
 import androidx.compose.material3.TooltipDefaults
 import androidx.compose.material3.rememberTooltipState
@@ -94,7 +95,7 @@ fun ExpandedSearchView(
             leadingIcon = {
                 TooltipBox(
                     positionProvider =
-                        TooltipDefaults.rememberTooltipPositionProvider(),
+                        TooltipDefaults.rememberTooltipPositionProvider(TooltipAnchorPosition.Below),
                     tooltip = { PlainTooltip { Text(text = "close") } },
                     state = rememberTooltipState(),
                 ) {
@@ -106,7 +107,7 @@ fun ExpandedSearchView(
             trailingIcon = {
                 TooltipBox(
                     positionProvider =
-                        TooltipDefaults.rememberTooltipPositionProvider(),
+                        TooltipDefaults.rememberTooltipPositionProvider(TooltipAnchorPosition.Below),
                     tooltip = { PlainTooltip { Text(text = "search") } },
                     state = rememberTooltipState(),
                 ) {

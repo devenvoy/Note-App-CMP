@@ -7,8 +7,6 @@ import com.devansh.noteapp.domain.repo.NoteService
 import com.devansh.noteapp.domain.utils.BaseGateway
 import com.devansh.noteapp.domain.utils.Result
 import io.ktor.client.HttpClient
-import io.ktor.client.plugins.logging.Logger
-import io.ktor.client.plugins.logging.SIMPLE
 import io.ktor.client.request.delete
 import io.ktor.client.request.get
 import io.ktor.client.request.header
@@ -47,8 +45,8 @@ class NoteServiceImpl(
     override suspend fun deleteNote(
         id: String,
         accessToken: String
-    ): Result<Map<String, String>, ServerError> {
-        return tryToExecute<Map<String, String>> {
+    ): Result<Unit, ServerError> {
+        return tryToExecute<Unit> {
             delete(BuildConfig.BASE_URL + "/notes/$id") {
                 header(HttpHeaders.Authorization, "Bearer $accessToken")
             }
