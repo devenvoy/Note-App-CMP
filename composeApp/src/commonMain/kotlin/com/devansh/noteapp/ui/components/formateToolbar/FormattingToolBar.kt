@@ -1,4 +1,4 @@
-package com.devansh.noteapp.ui.screens.add_edit_note
+package com.devansh.noteapp.ui.components.formateToolbar
 
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
@@ -65,31 +65,13 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextIndent
 import androidx.compose.ui.unit.IntOffset
-import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Popup
 import com.devansh.noteapp.core.util.DeviceConfiguration
+import com.devansh.noteapp.ui.components.formateToolbar.TypographyStyle.Companion.typographyStyles
 import com.devansh.noteapp.ui.screens.core.textColors
 import com.mohamedrejeb.richeditor.model.RichTextState
-
-data class TypographyStyle(
-    val name: String,
-    val fontSize: TextUnit,
-    val fontWeight: FontWeight,
-    val description: String
-)
-
-val typographyStyles = listOf(
-    TypographyStyle("Title", 32.sp, FontWeight.Bold, "Large title text"),
-    TypographyStyle("Subtitle", 28.sp, FontWeight.SemiBold, "Subtitle text"),
-    TypographyStyle("Headline 1", 24.sp, FontWeight.Bold, "Main heading"),
-    TypographyStyle("Headline 2", 20.sp, FontWeight.SemiBold, "Sub heading"),
-    TypographyStyle("Headline 3", 18.sp, FontWeight.Medium, "Section heading"),
-    TypographyStyle("Body Large", 16.sp, FontWeight.Normal, "Large body text"),
-    TypographyStyle("Body", 14.sp, FontWeight.Normal, "Regular body text"),
-    TypographyStyle("Caption", 12.sp, FontWeight.Normal, "Small caption text")
-)
 
 @OptIn(
     ExperimentalLayoutApi::class,
@@ -97,7 +79,7 @@ val typographyStyles = listOf(
     ExperimentalMaterial3ExpressiveApi::class
 )
 @Composable
-fun SlackPanel(
+fun FormattingToolBar(
     state: RichTextState,
     openLinkDialog: MutableState<Boolean>,
     modifier: Modifier = Modifier,
@@ -143,7 +125,7 @@ fun SlackPanel(
             // Basic Formatting
             item {
                 Box {
-                    SlackPanelButton(
+                    FormateButton(
                         onClick = { showTypographyMenu = !showTypographyMenu },
                         isSelected = false,
                         icon = Icons.Filled.TextFields,
@@ -186,7 +168,7 @@ fun SlackPanel(
             }
 
             item {
-                SlackPanelButton(
+                FormateButton(
                     onClick = { state.toggleSpanStyle(SpanStyle(fontWeight = FontWeight.Bold)) },
                     isSelected = state.currentSpanStyle.fontWeight == FontWeight.Bold,
                     icon = Icons.Filled.FormatBold
@@ -194,7 +176,7 @@ fun SlackPanel(
             }
 
             item {
-                SlackPanelButton(
+                FormateButton(
                     onClick = { state.toggleSpanStyle(SpanStyle(fontStyle = FontStyle.Italic)) },
                     isSelected = state.currentSpanStyle.fontStyle == FontStyle.Italic,
                     icon = Icons.Filled.FormatItalic
@@ -202,7 +184,7 @@ fun SlackPanel(
             }
 
             item {
-                SlackPanelButton(
+                FormateButton(
                     onClick = { state.toggleSpanStyle(SpanStyle(textDecoration = TextDecoration.Underline)) },
                     isSelected = state.currentSpanStyle.textDecoration?.contains(TextDecoration.Underline) == true,
                     icon = Icons.Filled.FormatUnderlined
@@ -210,7 +192,7 @@ fun SlackPanel(
             }
 
             item {
-                SlackPanelButton(
+                FormateButton(
                     onClick = { state.toggleSpanStyle(SpanStyle(textDecoration = TextDecoration.LineThrough)) },
                     isSelected = state.currentSpanStyle.textDecoration?.contains(TextDecoration.LineThrough) == true,
                     icon = Icons.Filled.FormatStrikethrough
@@ -218,7 +200,7 @@ fun SlackPanel(
             }
 
             item {
-                SlackPanelButton(
+                FormateButton(
                     onClick = { state.toggleSpanStyle(SpanStyle(background = Color.Yellow)) },
                     isSelected = state.currentSpanStyle.background == Color.Yellow,
                     icon = Icons.Filled.Highlight,
@@ -235,7 +217,7 @@ fun SlackPanel(
             }
 
             item {
-                SlackPanelButton(
+                FormateButton(
                     onClick = { _ -> showColorPalette = !showColorPalette },
                     isSelected = showColorPalette,
                     icon = Icons.Filled.Palette,
@@ -252,7 +234,7 @@ fun SlackPanel(
             }
 
             item {
-                SlackPanelButton(
+                FormateButton(
                     onClick = { openLinkDialog.value = true },
                     isSelected = state.isLink,
                     icon = Icons.Filled.Link
@@ -260,7 +242,7 @@ fun SlackPanel(
             }
 
             item {
-                SlackPanelButton(
+                FormateButton(
                     onClick = { state.toggleCodeSpan() },
                     isSelected = state.isCodeSpan,
                     icon = Icons.Filled.Code,
@@ -276,7 +258,7 @@ fun SlackPanel(
             }
 
             item {
-                SlackPanelButton(
+                FormateButton(
                     onClick = { state.addParagraphStyle(ParagraphStyle(textAlign = TextAlign.Left)) },
                     isSelected = state.currentParagraphStyle.textAlign == TextAlign.Left,
                     icon = Icons.AutoMirrored.Filled.FormatAlignLeft
@@ -284,7 +266,7 @@ fun SlackPanel(
             }
 
             item {
-                SlackPanelButton(
+                FormateButton(
                     onClick = { state.addParagraphStyle(ParagraphStyle(textAlign = TextAlign.Center)) },
                     isSelected = state.currentParagraphStyle.textAlign == TextAlign.Center,
                     icon = Icons.Filled.AlignHorizontalCenter
@@ -292,7 +274,7 @@ fun SlackPanel(
             }
 
             item {
-                SlackPanelButton(
+                FormateButton(
                     onClick = { state.addParagraphStyle(ParagraphStyle(textAlign = TextAlign.Right)) },
                     isSelected = state.currentParagraphStyle.textAlign == TextAlign.Right,
                     icon = Icons.AutoMirrored.Filled.FormatAlignRight
@@ -308,7 +290,7 @@ fun SlackPanel(
 
             // Indentation
             item {
-                SlackPanelButton(
+                FormateButton(
                     onClick = {
                         if (currentIndentLevel > 0) {
                             currentIndentLevel--
@@ -326,7 +308,7 @@ fun SlackPanel(
             }
 
             item {
-                SlackPanelButton(
+                FormateButton(
                     onClick = {
                         if (currentIndentLevel < 5) {
                             currentIndentLevel++
@@ -349,14 +331,14 @@ fun SlackPanel(
             }
 
             item {
-                SlackPanelButton(
+                FormateButton(
                     onClick = { state.toggleUnorderedList() },
                     isSelected = state.isUnorderedList,
                     icon = Icons.AutoMirrored.Filled.FormatListBulleted
                 )
             }
             item {
-                SlackPanelButton(
+                FormateButton(
                     onClick = { state.toggleOrderedList() },
                     isSelected = state.isOrderedList,
                     icon = Icons.Filled.FormatListNumbered,

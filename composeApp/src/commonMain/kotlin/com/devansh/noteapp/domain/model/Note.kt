@@ -15,7 +15,8 @@ import kotlin.time.Instant
 
 @Serializable
 data class Note(
-    @SerialName("id") val id: String?,
+    @Transient val id: Long = 0,
+    @SerialName("id") val noteId: String?,
     @SerialName("title") val title: String,
     @SerialName("content") val content: String,
     @SerialName("color") val colorRes: Long,
@@ -61,11 +62,6 @@ data class Note(
     fun markAsSynced(): Note = copy(isSynced = true)
 
     /**
-     * Create a copy marked for update
-     */
-    fun checkNullStringId(): Note = copy(id = if (id?.contains("null") == true) null else id)
-
-    /**
      * Create a copy marked for deletion
      */
     fun markForDeletion(): Note = copy(pendingDeletion = true, isSynced = false)
@@ -87,7 +83,7 @@ data class Note(
         fun generateRandomColor() = colors.random()
 
         fun emptyNote() = Note(
-            id = null,
+            noteId = null,
             title = "",
             content = "",
             colorRes = generateRandomColor(),
@@ -99,6 +95,7 @@ data class Note(
 }
 fun NoteEntity.toNote() = Note(
     id = id,
+    noteId = note_id,
     title = title,
     content = content,
     colorRes = colorRes,

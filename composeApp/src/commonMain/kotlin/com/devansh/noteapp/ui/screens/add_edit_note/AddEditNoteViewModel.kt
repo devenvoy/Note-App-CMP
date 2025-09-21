@@ -54,7 +54,7 @@ class AddEditNoteViewModel(
     @OptIn(ExperimentalTime::class)
     fun onEvent(event: AddEditNoteEvent) {
         when (event) {
-            is AddEditNoteEvent.EnteredTitle -> {
+            is AddEditNoteEvent.OnTitleChange -> {
                 noteTitle.value = noteTitle.value.copy(text = event.newTitle)
             }
 
@@ -65,7 +65,7 @@ class AddEditNoteViewModel(
                 _currentNote.update { it.copy(title = noteTitle.value.text) }
             }
 
-            is AddEditNoteEvent.EnteredContent -> {
+            is AddEditNoteEvent.OnContentChange -> {
                 contentUpdateJob.value?.cancel()
                 _currentNote.update { it.copy(content = event.newContent) }
                 contentUpdateJob.value = viewModelScope.launch {
@@ -76,7 +76,7 @@ class AddEditNoteViewModel(
 
             is AddEditNoteEvent.ChangeContentFocus -> {}
 
-            is AddEditNoteEvent.ChangeColor -> {
+            is AddEditNoteEvent.OnColorChange -> {
                 _currentNote.update { it.copy(colorRes = event.color) }
             }
 
@@ -119,7 +119,7 @@ class AddEditNoteViewModel(
         val currentTime = Clock.System.now().toString()
 
         return Note(
-            id = currentNoteId,
+            noteId = currentNoteId,
             title = currentNoteValue.title,
             content = currentNoteValue.content,
             category = currentNoteValue.category,

@@ -59,6 +59,7 @@ import com.devansh.noteapp.domain.utils.UnitCBF
 import com.devansh.noteapp.navigation.NavRoute
 import com.devansh.noteapp.ui.components.HintUI
 import com.devansh.noteapp.ui.components.button.BackButton
+import com.devansh.noteapp.ui.components.formateToolbar.FormattingToolBar
 import com.devansh.noteapp.ui.screens.home.NoteMenuBottomSheet
 import com.dokar.sonner.ToastType
 import com.dokar.sonner.Toaster
@@ -146,7 +147,7 @@ fun AddEditScreenContent(
             .distinctUntilChanged()
             .collect { htmlContent ->
                 if (htmlContent != currentNote.content) {
-                    viewModel.onEvent(AddEditNoteEvent.EnteredContent(htmlContent))
+                    viewModel.onEvent(AddEditNoteEvent.OnContentChange(htmlContent))
                 }
             }
     }
@@ -197,7 +198,7 @@ fun AddEditScreenContent(
                     initialColor = Color(selectedBgColor),
                     onColorChanged = { colorEnvelope: ColorEnvelope ->
                         viewModel.onEvent(
-                            AddEditNoteEvent.ChangeColor(
+                            AddEditNoteEvent.OnColorChange(
                                 colorEnvelope.color.toArgb().toLong()
                             )
                         )
@@ -327,7 +328,7 @@ fun AddEditScreenContent(
             HintUI(
                 text = titleState.text,
                 hint = titleState.hint,
-                onValueChange = { viewModel.onEvent(AddEditNoteEvent.EnteredTitle(it)) },
+                onValueChange = { viewModel.onEvent(AddEditNoteEvent.OnTitleChange(it)) },
                 onFocusChange = { viewModel.onEvent(AddEditNoteEvent.ChangeTitleFocus(it)) },
                 isHintVisible = titleState.isHintVisible,
                 singleLine = false,
@@ -356,7 +357,7 @@ fun AddEditScreenContent(
             modifier = Modifier.fillMaxSize(),
             contentAlignment = Alignment.BottomCenter
         ) {
-            SlackPanel(
+            FormattingToolBar(
                 state = richTextState,
                 openLinkDialog = openLinkDialog,
                 deviceInfo = deviceInfo,

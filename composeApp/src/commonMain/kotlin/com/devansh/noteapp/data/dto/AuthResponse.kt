@@ -1,5 +1,4 @@
-package com.devansh.noteapp.domain.model
-
+package com.devansh.noteapp.data.dto
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable

@@ -1,5 +1,6 @@
 CREATE TABLE IF NOT EXISTS noteEntity(
-    id TEXT PRIMARY KEY,
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    note_id TEXT UNIQUE ,
     title TEXT NOT NULL,
     content TEXT NOT NULL,
     colorRes INTEGER NOT NULL,
@@ -29,17 +30,20 @@ WHERE isSynced = 1 AND isDeleted = 0;
 
 getNoteById:
 SELECT * FROM noteEntity
-WHERE id = ? AND isDeleted = 0;
+WHERE note_id= ? AND isDeleted = 0;
 
 insertNote:
-INSERT OR REPLACE INTO noteEntity (id,title,content,colorRes,categoryId,isSynced,isDeleted,pendingDeletion,createdAt,updatedAt)
-VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
+INSERT OR REPLACE INTO noteEntity (id,note_id,title,content,colorRes,categoryId,isSynced,isDeleted,pendingDeletion,createdAt,updatedAt)
+VALUES (?,?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
 
 markNoteAsSynced:
 UPDATE noteEntity SET isSynced = 1 WHERE id = ?;
 
 deleteNoteById:
 DELETE FROM noteEntity WHERE id = ?;
+
+deleteNoteByNoteId:
+DELETE FROM noteEntity WHERE note_id = ?;
 
 emptyNoteTable:
 DELETE FROM noteEntity;
@@ -48,12 +52,12 @@ DELETE FROM noteEntity;
 markAsDeleted:
 UPDATE noteEntity
 SET isDeleted = 1, pendingDeletion = 0, isSynced = 0
-WHERE id = ?;
+WHERE note_id = ?;
 
 markForDeletion:
 UPDATE noteEntity
 SET pendingDeletion = 1, isSynced = 0
-WHERE id = ?;
+WHERE note_id = ?;
 
 getNotesMarkedForDeletion:
 SELECT * FROM noteEntity
@@ -61,13 +65,13 @@ WHERE pendingDeletion = 1;
 
 getDeletedNote:
 SELECT * FROM noteEntity
-WHERE id = ? AND isDeleted = 1;
+WHERE note_id = ? AND isDeleted = 1;
 
 -- Additional helpful queries
 softDeleteNote:
 UPDATE noteEntity
 SET isDeleted = 1, pendingDeletion = 1, isSynced = 0
-WHERE id = ?;
+WHERE note_id = ?;
 
 restoreNote:
 UPDATE noteEntity
@@ -75,5 +79,4 @@ SET isDeleted = 0, pendingDeletion = 0, isSynced = 0
 WHERE id = ?;
 
 getAllDeletedNotes:
-SELECT * FROM noteEntity
-WHERE isDeleted = 1;
+SELECT * FROM noteEntity WHERE isDeleted = 1;

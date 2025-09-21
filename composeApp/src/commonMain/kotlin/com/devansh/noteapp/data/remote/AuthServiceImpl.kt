@@ -8,7 +8,7 @@ import com.devansh.noteapp.data.dto.ResetPasswordWithTokenRequest
 import com.devansh.noteapp.data.dto.VerifyOtpRequest
 import com.devansh.noteapp.domain.entity.ServerError
 import com.devansh.noteapp.domain.entity.ServerResponse
-import com.devansh.noteapp.domain.model.AuthResponse
+import com.devansh.noteapp.data.dto.AuthResponse
 import com.devansh.noteapp.domain.model.DeviceSessionInfo
 import com.devansh.noteapp.domain.model.LoginResponse
 import com.devansh.noteapp.domain.repo.AuthService

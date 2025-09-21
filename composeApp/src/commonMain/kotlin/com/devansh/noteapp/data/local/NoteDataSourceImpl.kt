@@ -44,9 +44,9 @@ class NoteDataSourceImpl(
             .map { list -> list.map { entity -> entity.toNote() } }
     }
 
-    override suspend fun getNoteById(id: String): Note? = withContext(dispatcher) {
+    override suspend fun getNoteById(noteId: String): Note? = withContext(dispatcher) {
         val database = db.first()
-        database.noteDatabaseQueries.getNoteById(id = id)
+        database.noteDatabaseQueries.getNoteById(noteId)
             .executeAsOneOrNull()
             ?.toNote()
     }
@@ -54,7 +54,8 @@ class NoteDataSourceImpl(
     override suspend fun insertNote(note: Note, synced: Boolean) = withContext(dispatcher) {
         val database = db.first()
         database.noteDatabaseQueries.insertNote(
-            id = note.id.toString(),
+            id = note.id,
+            note_id = note.noteId,
             title = note.title,
             content = note.content,
             colorRes = note.colorRes,
@@ -68,9 +69,14 @@ class NoteDataSourceImpl(
         Unit
     }
 
-    override suspend fun deleteNoteById(id: String) = withContext(dispatcher) {
+    override suspend fun deleteNoteById(id: Long) = withContext(dispatcher) {
         val database = db.first()
         database.noteDatabaseQueries.deleteNoteById(id = id)
+        Unit
+    }
+    override suspend fun deleteNoteById(noteId: String) = withContext(dispatcher) {
+        val database = db.first()
+        database.noteDatabaseQueries.deleteNoteByNoteId(noteId)
         Unit
     }
 
@@ -88,7 +94,7 @@ class NoteDataSourceImpl(
             .map { it.toNote() }
     }
 
-    override suspend fun markNoteAsSynced(id: String) = withContext(dispatcher) {
+    override suspend fun markNoteAsSynced(id: Long) = withContext(dispatcher) {
         db.first().noteDatabaseQueries.markNoteAsSynced(id)
         Unit
     }
@@ -99,16 +105,15 @@ class NoteDataSourceImpl(
     }
 
     // DELETION HANDLING METHODS
-
-    override suspend fun markAsDeleted(id: String) = withContext(dispatcher) {
+    override suspend fun markAsDeleted(noteId: String) = withContext(dispatcher) {
         val database = db.first()
-        database.noteDatabaseQueries.markAsDeleted(id)
+        database.noteDatabaseQueries.markAsDeleted(noteId)
         Unit
     }
 
-    override suspend fun markForDeletion(id: String) = withContext(dispatcher) {
+    override suspend fun markForDeletion(noteId: String) = withContext(dispatcher) {
         val database = db.first()
-        database.noteDatabaseQueries.markForDeletion(id)
+        database.noteDatabaseQueries.markForDeletion(noteId)
         Unit
     }
 
@@ -119,9 +124,9 @@ class NoteDataSourceImpl(
             .map { it.toNote() }
     }
 
-    override suspend fun getDeletedNote(id: String): Note? = withContext(dispatcher) {
+    override suspend fun getDeletedNote(noteId: String): Note? = withContext(dispatcher) {
         val database = db.first()
-        database.noteDatabaseQueries.getDeletedNote(id)
+        database.noteDatabaseQueries.getDeletedNote(noteId)
             .executeAsOneOrNull()
             ?.toNote()
     }
@@ -131,16 +136,16 @@ class NoteDataSourceImpl(
     /**
      * Soft delete - marks note as deleted but keeps it for sync
      */
-    suspend fun softDeleteNote(id: String) = withContext(dispatcher) {
+    suspend fun softDeleteNote(noteId: String) = withContext(dispatcher) {
         val database = db.first()
-        database.noteDatabaseQueries.softDeleteNote(id)
+        database.noteDatabaseQueries.softDeleteNote(noteId)
         Unit
     }
 
     /**
      * Restore a soft-deleted note
      */
-    suspend fun restoreNote(id: String) = withContext(dispatcher) {
+    suspend fun restoreNote(id: Long) = withContext(dispatcher) {
         val database = db.first()
         database.noteDatabaseQueries.restoreNote(id)
         Unit
@@ -173,6 +178,5 @@ class NoteDataSourceImpl(
                 )
             }
         }*/
-        Unit
     }
 }

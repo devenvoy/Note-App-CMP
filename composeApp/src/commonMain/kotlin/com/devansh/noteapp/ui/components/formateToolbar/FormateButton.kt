@@ -1,4 +1,4 @@
-package com.devansh.noteapp.ui.screens.add_edit_note
+package com.devansh.noteapp.ui.components.formateToolbar
 
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButtonDefaults
@@ -11,7 +11,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import com.devansh.noteapp.domain.utils.BooleanCBF
 
 @Composable
-fun SlackPanelButton(
+fun FormateButton(
     onClick: BooleanCBF,
     icon: ImageVector,
     tint: Color? = null,
@@ -29,7 +29,7 @@ fun SlackPanelButton(
         !enabled -> MaterialTheme.colorScheme.onSurface.copy(alpha = 0.38f)
         tint != null -> tint
         isSelected -> MaterialTheme.colorScheme.primary
-        else -> MaterialTheme.colorScheme.onSurfaceVariant
+        else -> MaterialTheme.colorScheme.onPrimaryContainer
     }
 
     IconToggleButton(
@@ -41,7 +41,7 @@ fun SlackPanelButton(
             containerColor = Color.Transparent,
             checkedContainerColor = backgroundColor,
             contentColor = tint ?: MaterialTheme.colorScheme.onSurface,
-            checkedContentColor = tint ?: MaterialTheme.colorScheme.onPrimaryContainer
+            checkedContentColor = iconTint
         ),
         content = {
             Icon(imageVector = icon, contentDescription = icon.name)
