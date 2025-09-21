@@ -1,4 +1,4 @@
-rootProject.name = "Note-App-CMP"
+rootProject.name = "NoteApp"
 enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
 
 pluginManagement {
@@ -12,6 +12,7 @@ pluginManagement {
         }
         mavenCentral()
         gradlePluginPortal()
+        maven("https://maven.pkg.jetbrains.space/public/p/compose/dev")
     }
 }
 
@@ -30,3 +31,17 @@ dependencyResolutionManagement {
 }
 
 include(":composeApp")
+// Core modules
+include(":shared:core:common")
+include(":shared:core:network")
+include(":shared:core:database")
+include(":shared:core:design-system")
+
+// Data modules
+include(":shared:data:models")
+include(":shared:data:repository")
+
+// Feature modules
+include(":shared:feature:notes")
+include(":shared:feature:settings")
+include(":shared:feature:authentication")

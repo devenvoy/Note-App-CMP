@@ -20,7 +20,7 @@ import kotlin.time.Clock
 import kotlin.time.ExperimentalTime
 
 class AddEditNoteViewModel(
-    private val currentNoteId: String? = null,
+    private val currentNoteId: Long,
     private val pref: AppCacheSetting,
     private val noteDataSource: NoteDataSource,
     private val noteService: NoteService
@@ -36,17 +36,17 @@ class AddEditNoteViewModel(
     private val contentUpdateJob = mutableStateOf<Job?>(null)
 
     init {
-        if (currentNoteId != null) {
-            viewModelScope.launch {
-                noteDataSource.getNoteById(currentNoteId)?.also { note ->
+        viewModelScope.launch {
+            noteDataSource.getNoteById(currentNoteId)?.also { note ->
 
-                    noteTitle.value = noteTitle.value.copy(
-                        text = note.title,
-                        isHintVisible = note.title.isBlank()
-                    )
+                noteTitle.value = noteTitle.value.copy(
+                    text = note.title,
+                    isHintVisible = note.title.isBlank()
+                )
 
-                    _currentNote.update { note }
-                }
+                _currentNote.update { note }
+            } ?: run {
+                _currentNote.update { emptyNote() }
             }
         }
     }
@@ -97,7 +97,7 @@ class AddEditNoteViewModel(
 
     fun deleteNoteById() {
         viewModelScope.launch {
-            currentNoteId?.let {
+            _currentNote.value.noteId?.let {
                 noteService.deleteNote(it, pref.accessToken.toString())
                 noteDataSource.deleteNoteById(it)
                 _eventFlow.emit(UiEvent.ShowSnackbar("Note Deleted"))
@@ -119,12 +119,13 @@ class AddEditNoteViewModel(
         val currentTime = Clock.System.now().toString()
 
         return Note(
-            noteId = currentNoteId,
+            id = currentNoteValue.id,
+            noteId = currentNoteValue.noteId,
             title = currentNoteValue.title,
             content = currentNoteValue.content,
             category = currentNoteValue.category,
             colorRes = currentNoteValue.colorRes,
-            createdAt = currentNoteValue.createdAt.takeIf { currentNoteId != null } ?: currentTime,
+            createdAt = currentNoteValue.createdAt.takeIf { currentNoteId != 0L } ?: currentTime,
             updatedAt = currentTime,
         )
     }

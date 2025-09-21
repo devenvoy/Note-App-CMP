@@ -33,8 +33,8 @@ import com.github.skydoves.colorpicker.compose.ColorEnvelope
 import com.github.skydoves.colorpicker.compose.HsvColorPicker
 import com.github.skydoves.colorpicker.compose.rememberColorPickerController
 import com.devansh.noteapp.ui.utils.toHexColor
-import note_app_cmp.composeapp.generated.resources.Res
-import note_app_cmp.composeapp.generated.resources.color_picker
+import noteapp.composeapp.generated.resources.Res
+import noteapp.composeapp.generated.resources.color_picker
 import org.jetbrains.compose.resources.stringResource
 
 @OptIn(ExperimentalMaterial3Api::class)

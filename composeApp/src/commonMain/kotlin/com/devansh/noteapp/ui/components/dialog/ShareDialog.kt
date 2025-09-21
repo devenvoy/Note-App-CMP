@@ -13,12 +13,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import com.devansh.noteapp.domain.utils.UnitCBF
 import com.devansh.noteapp.ui.components.button.TextOptionButton
-import note_app_cmp.composeapp.generated.resources.Res
-import note_app_cmp.composeapp.generated.resources.file
-import note_app_cmp.composeapp.generated.resources.image
-import note_app_cmp.composeapp.generated.resources.markdown_copy
-import note_app_cmp.composeapp.generated.resources.share_note_as
-import note_app_cmp.composeapp.generated.resources.text
+import noteapp.composeapp.generated.resources.Res
+import noteapp.composeapp.generated.resources.file
+import noteapp.composeapp.generated.resources.image
+import noteapp.composeapp.generated.resources.markdown_copy
+import noteapp.composeapp.generated.resources.share_note_as
+import noteapp.composeapp.generated.resources.text
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 

@@ -40,11 +40,11 @@ import androidx.compose.ui.unit.dp
 import com.devansh.noteapp.domain.model.Category
 import com.devansh.noteapp.domain.utils.UnitCBF
 import com.devansh.noteapp.ui.screens.core.textColors
-import note_app_cmp.composeapp.generated.resources.Res
-import note_app_cmp.composeapp.generated.resources.cancel
-import note_app_cmp.composeapp.generated.resources.modify
-import note_app_cmp.composeapp.generated.resources.name
-import note_app_cmp.composeapp.generated.resources.ok
+import noteapp.composeapp.generated.resources.Res
+import noteapp.composeapp.generated.resources.cancel
+import noteapp.composeapp.generated.resources.modify
+import noteapp.composeapp.generated.resources.name
+import noteapp.composeapp.generated.resources.ok
 import org.jetbrains.compose.resources.stringResource
 
 @OptIn(ExperimentalMaterial3Api::class)

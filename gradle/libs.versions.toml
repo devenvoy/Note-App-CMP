@@ -53,6 +53,11 @@ materialKolor = "3.0.1"
 cmpImagePickNCrop = "1.1.2"
 kmpDateTimePicker = "1.1.1"
 uiBackhandler = "1.9.0-rc02"
+kotlinStdlib = "2.2.20"
+kotlinTest = "2.2.20"
+runner = "1.5.2"
+core = "1.5.0"
+junit = "1.3.0"
 
 [libraries]
 
@@ -150,6 +155,11 @@ lifecycle-viewmodel = { group = "org.jetbrains.androidx.lifecycle", name = "life
 lifecycle-viewmodel-compose = { group = "org.jetbrains.androidx.lifecycle", name = "lifecycle-viewmodel-compose", version.ref = "lifecycle" }
 lifecycle-runtime-compose = { group = "org.jetbrains.androidx.lifecycle", name = "lifecycle-runtime-compose", version.ref = "lifecycle" }
 lifecycle-common = { group = "org.jetbrains.androidx.lifecycle", name = "lifecycle-common", version.ref = "lifecycle" }
+kotlin-stdlib = { group = "org.jetbrains.kotlin", name = "kotlin-stdlib", version.ref = "kotlinStdlib" }
+kotlin-test = { group = "org.jetbrains.kotlin", name = "kotlin-test", version.ref = "kotlinTest" }
+androidx-runner = { group = "androidx.test", name = "runner", version.ref = "runner" }
+androidx-core = { group = "androidx.test", name = "core", version.ref = "core" }
+androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junit" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }
@@ -164,6 +174,7 @@ hot-reload = { id = "org.jetbrains.compose.hot-reload", version.ref = "compose-h
 cocoapods = { id = "org.jetbrains.kotlin.native.cocoapods", version.ref = "kotlin" }
 buildConfig = { id = "com.github.gmazzo.buildconfig", version.ref = "buildConfig" }
 dokka = { id = "org.jetbrains.dokka", version.ref = "dokka" }
+android-lint = { id = "com.android.lint", version.ref = "agp" }
 
 [bundles]
 ktor-common = ["ktor-client-core", "ktor-client-logging", "ktor-client-serialization", "ktor-client-contentNegotiation", "ktor-client-websockets"]

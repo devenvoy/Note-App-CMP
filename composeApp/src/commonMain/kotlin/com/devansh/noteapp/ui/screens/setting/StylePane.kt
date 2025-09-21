@@ -41,12 +41,12 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.devansh.noteapp.ui.screens.setting.AppColor.Companion.toInt
 import com.devansh.noteapp.ui.screens.setting.AppTheme.Companion.toInt
-import note_app_cmp.composeapp.generated.resources.Res
-import note_app_cmp.composeapp.generated.resources.color_platte
-import note_app_cmp.composeapp.generated.resources.dark
-import note_app_cmp.composeapp.generated.resources.dynamic_only_android_12
-import note_app_cmp.composeapp.generated.resources.light
-import note_app_cmp.composeapp.generated.resources.system_default
+import noteapp.composeapp.generated.resources.Res
+import noteapp.composeapp.generated.resources.color_platte
+import noteapp.composeapp.generated.resources.dark
+import noteapp.composeapp.generated.resources.dynamic_only_android_12
+import noteapp.composeapp.generated.resources.light
+import noteapp.composeapp.generated.resources.system_default
 import org.jetbrains.compose.resources.stringResource
 
 @Composable

@@ -7,9 +7,9 @@ import androidx.compose.material.icons.filled.Folder
 import androidx.compose.material.icons.filled.FolderOpen
 import androidx.lifecycle.ViewModel
 import com.devansh.noteapp.navigation.NavRoute
-import note_app_cmp.composeapp.generated.resources.Res
-import note_app_cmp.composeapp.generated.resources.category
-import note_app_cmp.composeapp.generated.resources.note
+import noteapp.composeapp.generated.resources.Res
+import noteapp.composeapp.generated.resources.category
+import noteapp.composeapp.generated.resources.note
 
 class BaseScreenViewModel() : ViewModel() {
 

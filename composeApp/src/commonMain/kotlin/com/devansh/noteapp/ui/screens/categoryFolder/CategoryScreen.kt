@@ -78,16 +78,16 @@ import com.devansh.noteapp.ui.components.dialog.WarningDialog
 import com.devansh.noteapp.ui.theme.LocalAppTheme
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import note_app_cmp.composeapp.generated.resources.Res
-import note_app_cmp.composeapp.generated.resources.delete
-import note_app_cmp.composeapp.generated.resources.deleting_a_folder_will_also_delete_all_the_notes_it_contains_and_they_cannot_be_restored_do_you_want_to_continue
-import note_app_cmp.composeapp.generated.resources.folders
-import note_app_cmp.composeapp.generated.resources.modify
-import note_app_cmp.composeapp.generated.resources.navigate_back
-import note_app_cmp.composeapp.generated.resources.no_task
-import note_app_cmp.composeapp.generated.resources.no_task_light
-import note_app_cmp.composeapp.generated.resources.note
-import note_app_cmp.composeapp.generated.resources.notes
+import noteapp.composeapp.generated.resources.Res
+import noteapp.composeapp.generated.resources.delete
+import noteapp.composeapp.generated.resources.deleting_a_folder_will_also_delete_all_the_notes_it_contains_and_they_cannot_be_restored_do_you_want_to_continue
+import noteapp.composeapp.generated.resources.folders
+import noteapp.composeapp.generated.resources.modify
+import noteapp.composeapp.generated.resources.navigate_back
+import noteapp.composeapp.generated.resources.no_task
+import noteapp.composeapp.generated.resources.no_task_light
+import noteapp.composeapp.generated.resources.note
+import noteapp.composeapp.generated.resources.notes
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 

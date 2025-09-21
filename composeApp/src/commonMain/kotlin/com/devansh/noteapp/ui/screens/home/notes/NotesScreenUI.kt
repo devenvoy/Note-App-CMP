@@ -25,7 +25,7 @@ import com.devansh.noteapp.domain.model.Note
 @Composable
 fun NoteScreenContent(
     state: NoteListState,
-    onNavigateToAddEditNote: (String?) -> Unit,
+    onNavigateToAddEditNote: (Long) -> Unit,
     isGridLayout: Boolean,
     onLongPress: (Note) -> Unit
 ) {

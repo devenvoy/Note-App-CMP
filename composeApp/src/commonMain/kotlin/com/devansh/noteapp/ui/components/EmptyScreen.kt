@@ -25,8 +25,8 @@ import com.devansh.noteapp.core.util.DeviceConfiguration
 import com.devansh.noteapp.domain.utils.UnitCBF
 import com.devansh.noteapp.ui.components.button.PrimaryButton
 import com.devansh.noteapp.ui.screens.base.LocalDeviceConfiguration
-import note_app_cmp.composeapp.generated.resources.Res
-import note_app_cmp.composeapp.generated.resources.no_task_light
+import noteapp.composeapp.generated.resources.Res
+import noteapp.composeapp.generated.resources.no_task_light
 import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.painterResource
 

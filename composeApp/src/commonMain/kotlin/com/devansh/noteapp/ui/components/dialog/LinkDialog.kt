@@ -23,14 +23,14 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import com.devansh.noteapp.domain.utils.UnitCBF
 import com.devansh.noteapp.ui.screens.core.urlRegex
-import note_app_cmp.composeapp.generated.resources.Res
-import note_app_cmp.composeapp.generated.resources.cancel
-import note_app_cmp.composeapp.generated.resources.incorrect_link_format
-import note_app_cmp.composeapp.generated.resources.link
-import note_app_cmp.composeapp.generated.resources.name
-import note_app_cmp.composeapp.generated.resources.ok
-import note_app_cmp.composeapp.generated.resources.uri_example
-import note_app_cmp.composeapp.generated.resources.web_url
+import noteapp.composeapp.generated.resources.Res
+import noteapp.composeapp.generated.resources.cancel
+import noteapp.composeapp.generated.resources.incorrect_link_format
+import noteapp.composeapp.generated.resources.link
+import noteapp.composeapp.generated.resources.name
+import noteapp.composeapp.generated.resources.ok
+import noteapp.composeapp.generated.resources.uri_example
+import noteapp.composeapp.generated.resources.web_url
 import org.jetbrains.compose.resources.stringResource
 
 

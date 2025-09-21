@@ -146,7 +146,7 @@ private fun BaseScreen(
                     verticalArrangement = Arrangement.spacedBy(10.dp)
                 ) {
                     ExtendedFloatingActionButton(
-                        onClick = { mainNavController.navigate(NavRoute.AddNote(null)) },
+                        onClick = { mainNavController.navigate(NavRoute.AddNote()) },
                         containerColor = MaterialTheme.colorScheme.primary,
                         contentColor = MaterialTheme.colorScheme.onPrimary,
                         content = {

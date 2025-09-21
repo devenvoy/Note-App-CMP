@@ -30,6 +30,10 @@ WHERE isSynced = 1 AND isDeleted = 0;
 
 getNoteById:
 SELECT * FROM noteEntity
+WHERE id = ? AND isDeleted = 0;
+
+getNoteByNoteId:
+SELECT * FROM noteEntity
 WHERE note_id= ? AND isDeleted = 0;
 
 insertNote:

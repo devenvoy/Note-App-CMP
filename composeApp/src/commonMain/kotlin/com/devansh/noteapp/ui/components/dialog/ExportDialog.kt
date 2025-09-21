@@ -8,8 +8,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import com.devansh.noteapp.domain.utils.UnitCBF
 import com.devansh.noteapp.ui.components.button.TextOptionButton
-import note_app_cmp.composeapp.generated.resources.Res
-import note_app_cmp.composeapp.generated.resources.export_as
+import noteapp.composeapp.generated.resources.Res
+import noteapp.composeapp.generated.resources.export_as
 import org.jetbrains.compose.resources.stringResource
 
 enum class ExportType {

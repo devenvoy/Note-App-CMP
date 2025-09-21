@@ -35,10 +35,10 @@ import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.unit.dp
 import com.devansh.noteapp.domain.utils.UnitCBF
-import note_app_cmp.composeapp.generated.resources.Res
-import note_app_cmp.composeapp.generated.resources.cancel
-import note_app_cmp.composeapp.generated.resources.list
-import note_app_cmp.composeapp.generated.resources.ok
+import noteapp.composeapp.generated.resources.Res
+import noteapp.composeapp.generated.resources.cancel
+import noteapp.composeapp.generated.resources.list
+import noteapp.composeapp.generated.resources.ok
 import org.jetbrains.compose.resources.stringResource
 
 @Composable

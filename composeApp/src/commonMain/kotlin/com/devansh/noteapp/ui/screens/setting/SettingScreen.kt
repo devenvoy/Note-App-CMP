@@ -72,10 +72,10 @@ import com.devansh.noteapp.ui.utils.ListItemShapes.firstIndexShape
 import com.devansh.noteapp.ui.utils.ListItemShapes.lastIndexShape
 import com.devansh.noteapp.ui.utils.ListItemShapes.middleIndexShape
 import com.devansh.noteapp.ui.utils.ListItemShapes.singleItemIndex
-import note_app_cmp.composeapp.generated.resources.Res
-import note_app_cmp.composeapp.generated.resources.center
-import note_app_cmp.composeapp.generated.resources.left
-import note_app_cmp.composeapp.generated.resources.right
+import noteapp.composeapp.generated.resources.Res
+import noteapp.composeapp.generated.resources.center
+import noteapp.composeapp.generated.resources.left
+import noteapp.composeapp.generated.resources.right
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 import kotlin.math.roundToInt

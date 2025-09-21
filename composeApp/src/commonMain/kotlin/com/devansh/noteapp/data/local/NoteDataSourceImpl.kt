@@ -44,9 +44,16 @@ class NoteDataSourceImpl(
             .map { list -> list.map { entity -> entity.toNote() } }
     }
 
-    override suspend fun getNoteById(noteId: String): Note? = withContext(dispatcher) {
+    override suspend fun getNoteById(id: Long): Note? = withContext(dispatcher) {
         val database = db.first()
-        database.noteDatabaseQueries.getNoteById(noteId)
+        database.noteDatabaseQueries.getNoteById(id)
+            .executeAsOneOrNull()
+            ?.toNote()
+    }
+
+    override suspend fun getNoteByNoteId(noteId: String): Note? = withContext(dispatcher) {
+        val database = db.first()
+        database.noteDatabaseQueries.getNoteByNoteId(noteId)
             .executeAsOneOrNull()
             ?.toNote()
     }

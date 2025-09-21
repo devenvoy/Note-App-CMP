@@ -23,14 +23,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.input.key.Key.Companion.R
-import note_app_cmp.composeapp.generated.resources.Res
-import note_app_cmp.composeapp.generated.resources.cancel
-import note_app_cmp.composeapp.generated.resources.ok
-import note_app_cmp.composeapp.generated.resources.warning
+import noteapp.composeapp.generated.resources.Res
+import noteapp.composeapp.generated.resources.cancel
+import noteapp.composeapp.generated.resources.ok
+import noteapp.composeapp.generated.resources.warning
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.DialogProperties
 import com.devansh.noteapp.domain.utils.UnitCBF
-import note_app_cmp.composeapp.generated.resources.progress
+import noteapp.composeapp.generated.resources.progress
 import org.jetbrains.compose.resources.stringResource
 
 @Composable

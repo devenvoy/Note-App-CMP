@@ -35,11 +35,11 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import com.devansh.noteapp.domain.utils.UnitCBF
-import note_app_cmp.composeapp.generated.resources.Res
-import note_app_cmp.composeapp.generated.resources.create_note
-import note_app_cmp.composeapp.generated.resources.create_text_file
-import note_app_cmp.composeapp.generated.resources.edit_text_file
-import note_app_cmp.composeapp.generated.resources.sample_note
+import noteapp.composeapp.generated.resources.Res
+import noteapp.composeapp.generated.resources.create_note
+import noteapp.composeapp.generated.resources.create_text_file
+import noteapp.composeapp.generated.resources.edit_text_file
+import noteapp.composeapp.generated.resources.sample_note
 import org.jetbrains.compose.resources.stringResource
 
 enum class ActionType {

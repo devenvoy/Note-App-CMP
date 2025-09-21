@@ -74,15 +74,15 @@ import com.dokar.sonner.rememberToasterState
 import com.mohamedrejeb.richeditor.model.rememberRichTextState
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import note_app_cmp.composeapp.generated.resources.Res
-import note_app_cmp.composeapp.generated.resources.ic_menu_copy
-import note_app_cmp.composeapp.generated.resources.ic_menu_delete
-import note_app_cmp.composeapp.generated.resources.ic_menu_edit
-import note_app_cmp.composeapp.generated.resources.ic_menu_share
-import note_app_cmp.composeapp.generated.resources.no_conversation
-import note_app_cmp.composeapp.generated.resources.no_conversation_light
-import note_app_cmp.composeapp.generated.resources.no_results
-import note_app_cmp.composeapp.generated.resources.no_results_light
+import noteapp.composeapp.generated.resources.Res
+import noteapp.composeapp.generated.resources.ic_menu_copy
+import noteapp.composeapp.generated.resources.ic_menu_delete
+import noteapp.composeapp.generated.resources.ic_menu_edit
+import noteapp.composeapp.generated.resources.ic_menu_share
+import noteapp.composeapp.generated.resources.no_conversation
+import noteapp.composeapp.generated.resources.no_conversation_light
+import noteapp.composeapp.generated.resources.no_results
+import noteapp.composeapp.generated.resources.no_results_light
 import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.painterResource
 import org.koin.compose.viewmodel.koinViewModel
@@ -102,7 +102,7 @@ fun NavGraphBuilder.homeScreen(mainNavController: NavHostController) {
 @Composable
 fun HomeScreenContent(
     homeScreenModel: HomeScreenViewModel,
-    onNavigateToAddEditNote: (String?) -> Unit,
+    onNavigateToAddEditNote: (Long) -> Unit,
     goToSettings: UnitCBF,
 ) {
     val theme = LocalAppTheme.current
@@ -187,7 +187,7 @@ fun HomeScreenContent(
             ) {
                 NoteMenuBottomSheet(
                     onEditClick = {
-                    onNavigateToAddEditNote(selectedNote?.id)
+                    onNavigateToAddEditNote(selectedNote?.id?:0)
                     dismissSheet()
                 }, onShareClick = {
                     shareText(
@@ -195,7 +195,7 @@ fun HomeScreenContent(
                         mimeType = "plain/text"
                     )
                 }, onDeleteClick = {
-                    homeScreenModel.deleteNoteById(selectedNote?.id!!)
+                    homeScreenModel.deleteNoteById(selectedNote?.noteId!!)
                     toasterState.show(
                         message = "Note deleted successfully",
                         duration = ToasterDefaults.DurationLong,

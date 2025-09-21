@@ -8,11 +8,11 @@ package com.devansh.noteapp.ui.utils
 //import kotlinx.coroutines.flow.first
 //import kotlinx.coroutines.withContext
 //import kotlinx.serialization.json.Json
-import note_app_cmp.composeapp.generated.resources.daily
-import note_app_cmp.composeapp.generated.resources.monthly
-import note_app_cmp.composeapp.generated.resources.Res as R
-import note_app_cmp.composeapp.generated.resources.never
-import note_app_cmp.composeapp.generated.resources.weekly
+import noteapp.composeapp.generated.resources.daily
+import noteapp.composeapp.generated.resources.monthly
+import noteapp.composeapp.generated.resources.Res as R
+import noteapp.composeapp.generated.resources.never
+import noteapp.composeapp.generated.resources.weekly
 import org.jetbrains.compose.resources.Resource
 
 enum class BackupFrequency(val days: Int, val textRes: Resource) {

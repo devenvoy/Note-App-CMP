@@ -30,10 +30,10 @@ import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.unit.dp
 import com.devansh.noteapp.domain.utils.UnitCBF
 import kotlinx.serialization.Serializable
-import note_app_cmp.composeapp.generated.resources.Res
-import note_app_cmp.composeapp.generated.resources.cancel
-import note_app_cmp.composeapp.generated.resources.ok
-import note_app_cmp.composeapp.generated.resources.task
+import noteapp.composeapp.generated.resources.Res
+import noteapp.composeapp.generated.resources.cancel
+import noteapp.composeapp.generated.resources.ok
+import noteapp.composeapp.generated.resources.task
 import org.jetbrains.compose.resources.stringResource
 
 @Stable

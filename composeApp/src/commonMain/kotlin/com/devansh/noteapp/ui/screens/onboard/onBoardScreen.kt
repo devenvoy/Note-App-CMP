@@ -44,10 +44,10 @@ import com.devansh.noteapp.domain.utils.UnitCBF
 import com.devansh.noteapp.navigation.NavRoute
 import com.devansh.noteapp.ui.components.button.BackButton
 import kotlinx.coroutines.launch
-import note_app_cmp.composeapp.generated.resources.Res
-import note_app_cmp.composeapp.generated.resources.onboard1
-import note_app_cmp.composeapp.generated.resources.onboard2
-import note_app_cmp.composeapp.generated.resources.onboard3
+import noteapp.composeapp.generated.resources.Res
+import noteapp.composeapp.generated.resources.onboard1
+import noteapp.composeapp.generated.resources.onboard2
+import noteapp.composeapp.generated.resources.onboard3
 import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.painterResource
 import org.koin.compose.koinInject

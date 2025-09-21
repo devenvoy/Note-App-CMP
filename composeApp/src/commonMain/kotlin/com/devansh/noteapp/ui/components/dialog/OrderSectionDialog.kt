@@ -23,14 +23,14 @@ import androidx.compose.ui.unit.dp
 import com.devansh.noteapp.domain.model.NoteOrder
 import com.devansh.noteapp.domain.model.OrderType
 import com.devansh.noteapp.domain.utils.UnitCBF
-import note_app_cmp.composeapp.generated.resources.Res
-import note_app_cmp.composeapp.generated.resources.ascending
-import note_app_cmp.composeapp.generated.resources.cancel
-import note_app_cmp.composeapp.generated.resources.date
-import note_app_cmp.composeapp.generated.resources.descending
-import note_app_cmp.composeapp.generated.resources.ok
-import note_app_cmp.composeapp.generated.resources.sort_by
-import note_app_cmp.composeapp.generated.resources.title
+import noteapp.composeapp.generated.resources.Res
+import noteapp.composeapp.generated.resources.ascending
+import noteapp.composeapp.generated.resources.cancel
+import noteapp.composeapp.generated.resources.date
+import noteapp.composeapp.generated.resources.descending
+import noteapp.composeapp.generated.resources.ok
+import noteapp.composeapp.generated.resources.sort_by
+import noteapp.composeapp.generated.resources.title
 import org.jetbrains.compose.resources.stringResource
 
 @Composable

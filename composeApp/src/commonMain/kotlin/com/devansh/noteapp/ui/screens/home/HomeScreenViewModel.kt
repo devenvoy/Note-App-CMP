@@ -158,7 +158,7 @@ class HomeScreenViewModel(
 
         notesToDelete.forEach { note ->
             try {
-                val result = noteService.deleteNote(note.id!!, pref.accessToken.toString())
+                val result = noteService.deleteNote(note.noteId!!, pref.accessToken.toString())
                 result.onSuccess {
                     // Successfully deleted from server - remove completely
                     noteDataSource.deleteNoteById(note.id)
@@ -223,7 +223,7 @@ class HomeScreenViewModel(
                 }
             } else {
                 // No local conflict - check if note was deleted locally
-                val deletedNote = noteDataSource.getDeletedNote(serverNote.id!!)
+                val deletedNote = noteDataSource.getDeletedNote(serverNote.noteId!!)
                 if (deletedNote == null) {
                     // Not deleted locally, safe to insert
                     noteDataSource.insertNote(serverNote.markAsSynced(), true)
@@ -355,7 +355,7 @@ class HomeScreenViewModel(
 
         notes.forEach { note ->
             try {
-                noteService.upsert(note.checkNullStringId(), pref.accessToken.toString())
+                noteService.upsert(note, pref.accessToken.toString())
                     .onSuccess {
                         noteDataSource.insertNote(note.markAsSynced(), true)
                         Logger.d("Successfully synced note ${note.id}",null,"Sync")
