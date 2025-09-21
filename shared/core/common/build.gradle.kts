@@ -21,6 +21,7 @@ kotlin {
             implementation(libs.kotlin.logging)
             implementation(libs.compose.runtime)
             implementation(libs.koin.core)
+            implementation(libs.material3.adaptive.layout)
         }
 
         androidMain.dependencies {

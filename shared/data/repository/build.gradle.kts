@@ -12,15 +12,19 @@ kotlin {
 
     sourceSets {
         commonMain.dependencies {
-            implementation(project(":shared:core:common"))
-            implementation(project(":shared:core:network"))
-            implementation(project(":shared:core:database"))
-            implementation(project(":shared:data:models"))
+
+            implementation(projects.shared.core.common)
+            implementation(projects.shared.core.network)
+            implementation(projects.shared.core.database)
+
+            implementation(projects.shared.data.models)
 
             implementation(libs.kotlinx.coroutines.core)
             implementation(libs.koin.core)
             implementation(libs.multiplatform.settings.no.arg)
             implementation(libs.multiplatform.settings.coroutines)
+
+            implementation(libs.bundles.ktor.common)
         }
     }
 }

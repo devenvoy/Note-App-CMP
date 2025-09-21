@@ -7,16 +7,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navigation
-import com.devansh.noteapp.ui.screens.add_edit_note.addNoteScreen
-import com.devansh.noteapp.ui.screens.auth.forgotPasswordScreen
-import com.devansh.noteapp.ui.screens.auth.loginScreen
-import com.devansh.noteapp.ui.screens.auth.registerScreen
-import com.devansh.noteapp.ui.screens.auth.resetPasswordScreen
-import com.devansh.noteapp.ui.screens.base.baseScreen
-import com.devansh.noteapp.ui.screens.onboard.onBoardScreen
-import com.devansh.noteapp.ui.screens.setting.settingsScreen
-import com.devansh.noteapp.ui.screens.splash.splashScreen
-
+import com.devansh.noteapp.base.baseScreen
 
 @Composable
 fun MainNavigationGraph(

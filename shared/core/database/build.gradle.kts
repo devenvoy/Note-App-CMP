@@ -13,7 +13,9 @@ kotlin {
 
     sourceSets {
         commonMain.dependencies {
-            implementation(project(":shared:core:common"))
+            implementation(projects.shared.core.common)
+            implementation(projects.shared.data.models)
+
             implementation(libs.sqldelight.runtime)
             implementation(libs.sqldelight.coroutines)
             implementation(libs.kotlinx.coroutines.core)

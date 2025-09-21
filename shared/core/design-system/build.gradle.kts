@@ -14,16 +14,15 @@ kotlin {
 
     sourceSets {
         commonMain.dependencies {
-            implementation(project(":shared:core:common"))
+            implementation(projects.shared.core.common)
             implementation(libs.bundles.jetbrains.compose)
+            implementation(libs.bundles.jetbrains.lifecycle)
+            implementation(libs.bundles.jetbrains.material3)
+
             implementation(compose.components.resources)
             implementation(compose.materialIconsExtended)
 
-            implementation(libs.material3.adaptive)
-            implementation(libs.material3.expressive)
-            implementation(libs.material3.adaptive.layout)
-            implementation(libs.material3.adaptive.navigation)
-            implementation(libs.material3.adaptive.navigation.suite)
+            implementation(libs.kotlinx.datetime)
 
             implementation(libs.coil.compose)
             implementation(libs.sonner)
@@ -31,6 +30,11 @@ kotlin {
             implementation(libs.richeditor.compose)
             implementation(libs.compose.colorpicker)
             implementation(libs.sdp.ssp.compose.multiplatform)
+
+            // Koin dependencies for dependency injection
+            api(libs.koin.core)
+            implementation(libs.koin.compose)
+            implementation(libs.koin.compose.viewmodel)
         }
 
         jvmMain.dependencies {

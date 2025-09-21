@@ -14,16 +14,24 @@ kotlin {
 
     sourceSets {
         commonMain.dependencies {
-            implementation(project(":shared:core:common"))
-            implementation(project(":shared:core:design-system"))
-            implementation(project(":shared:data:repository"))
-            implementation(project(":shared:data:models"))
+            implementation(projects.shared.core.common)
+            implementation(projects.shared.core.database)
+            implementation(projects.shared.core.designSystem)
+
+            implementation(projects.shared.data.models)
+            implementation(projects.shared.data.repository)
 
             implementation(libs.bundles.jetbrains.compose)
+            implementation(libs.bundles.jetbrains.material3)
             implementation(libs.bundles.jetbrains.lifecycle)
             implementation(libs.koin.core)
             implementation(libs.koin.compose)
             implementation(libs.koin.compose.viewmodel)
+
+            implementation(libs.composeSettings.ui)
+            implementation(libs.composeSettings.ui.extended)
+            implementation(compose.materialIconsExtended)
+            implementation(compose.components.resources)
         }
 
         androidMain.dependencies {

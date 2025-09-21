@@ -42,6 +42,7 @@ slf4j-simple = "2.0.17"
 sqldelight = "2.1.0"
 sqlite-bundled = "2.6.0"
 touchlab-stately = "2.1.0"
+touchlab-logger = "2.0.8"
 
 sqlDelight = "2.1.0"
 
@@ -132,6 +133,7 @@ sqlite-bundled = { module = "androidx.sqlite:sqlite-bundled", version.ref = "sql
 sqldelight-runtime = { module = "app.cash.sqldelight:runtime", version.ref = "sqlDelight" }
 
 touchlab-stately-common = { module = "co.touchlab:stately-common", version.ref = "touchlab-stately" }
+touchlab-kermit = { module = "co.touchlab:kermit", version.ref = "touchlab-logger" }
 touchlab-stately-concurrent-collections = { module = "co.touchlab:stately-concurrent-collections", version.ref = "touchlab-stately" }
 touchlab-stately-isolate = { module = "co.touchlab:stately-isolate", version.ref = "touchlab-stately" }
 touchlab-stately-iso-collections = { module = "co.touchlab:stately-iso-collections", version.ref = "touchlab-stately" }
@@ -180,3 +182,4 @@ android-lint = { id = "com.android.lint", version.ref = "agp" }
 ktor-common = ["ktor-client-core", "ktor-client-logging", "ktor-client-serialization", "ktor-client-contentNegotiation", "ktor-client-websockets"]
 jetbrains-lifecycle = ["lifecycle-common","lifecycle-viewmodel","lifecycle-runtime-compose","lifecycle-viewmodel-compose"]
 jetbrains-compose=["compose-ui","compose-ui-backhandler","compose-animation","compose-foundation","compose-navigation","compose-runtime"]
+jetbrains-material3=["material3-adaptive","material3-adaptive-navigation","material3-adaptive-layout","material3-expressive","material3-adaptive-navigation-suite"]
