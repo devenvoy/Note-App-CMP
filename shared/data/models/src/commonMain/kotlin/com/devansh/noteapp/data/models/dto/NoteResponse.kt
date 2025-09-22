@@ -13,7 +13,7 @@ data class NoteResponse(
     @SerialName("id") val noteId: String?,
     @SerialName("title") val title: String,
     @SerialName("content") val content: String,
-    @SerialName("color") val colorRes: Long,
+    @SerialName("color") val colorRes: Long?,
     @SerialName("categoryId") val category: String? = null,
     @SerialName("createdAt") val createdAt: String? = null,
     @SerialName("updatedAt") val updatedAt: String? = null,
@@ -86,7 +86,7 @@ data class NoteResponse(
             noteId = null,
             title = "",
             content = "",
-            colorRes = generateRandomColor(),
+            colorRes = null,
             category = null,
             createdAt = null,
             updatedAt = null

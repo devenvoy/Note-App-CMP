@@ -36,21 +36,19 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
-import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalClipboard
 import androidx.compose.ui.text.AnnotatedString
-import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.devansh.noteapp.core.designsystem.components.HintUI
 import com.devansh.noteapp.core.designsystem.components.button.BackButton
+import com.devansh.noteapp.core.designsystem.components.colorPickerBottomSheet.ColorPickerBottomSheet
 import com.devansh.noteapp.core.designsystem.components.formateToolbar.FormattingToolBar
 import com.devansh.noteapp.core.designsystem.resources.NoteAppDrawables
 import com.devansh.noteapp.core.utils.DeviceConfiguration
@@ -61,23 +59,12 @@ import com.dokar.sonner.ToastType
 import com.dokar.sonner.Toaster
 import com.dokar.sonner.ToasterDefaults
 import com.dokar.sonner.rememberToasterState
-import com.github.skydoves.colorpicker.compose.AlphaSlider
-import com.github.skydoves.colorpicker.compose.BrightnessSlider
-import com.github.skydoves.colorpicker.compose.ColorEnvelope
-import com.github.skydoves.colorpicker.compose.HsvColorPicker
 import com.github.skydoves.colorpicker.compose.rememberColorPickerController
-import com.mohamedrejeb.calf.ui.sheet.AdaptiveBottomSheet
 import com.mohamedrejeb.calf.ui.sheet.rememberAdaptiveSheetState
-import com.mohamedrejeb.richeditor.model.rememberRichTextState
 import com.mohamedrejeb.richeditor.ui.material3.RichTextEditor
 import com.mohamedrejeb.richeditor.ui.material3.RichTextEditorDefaults
 import kotlinx.coroutines.FlowPreview
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.debounce
-import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.coroutines.flow.drop
-import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.painterResource
 
@@ -94,55 +81,25 @@ fun AddEditScreenContent(
 
     val currentNote by viewModel.currentNote.collectAsStateWithLifecycle()
     val titleState by viewModel.noteTitle
-    val selectedBgColor = currentNote.colorRes
+    val selectedBgColor = currentNote.colorRes?.let { Color(it) }
+        ?: MaterialTheme.colorScheme.surface
+    val richTextState = viewModel.richTextState
 
     val scope = rememberCoroutineScope()
     val toasterState = rememberToasterState()
-    val richTextState = rememberRichTextState()
     val sheetState = rememberModalBottomSheetState()
     val windowInfo = currentWindowAdaptiveInfo()
     val controller = rememberColorPickerController()
-    val colorSheetState = rememberAdaptiveSheetState(true)
+    val colorSheetState = rememberAdaptiveSheetState()
     val deviceInfo = DeviceConfiguration.fromWindowSizeClass(windowInfo.windowSizeClass)
 
     var openBottomSheet by remember { mutableStateOf(false) }
     val openLinkDialog = remember { mutableStateOf(false) }
     var isBottomSheetVisible by remember { mutableStateOf(false) }
-    var isUpdatingFromViewModel by remember { mutableStateOf(false) }
-    val noteBgAnimation = remember(selectedBgColor) { Animatable(Color(selectedBgColor)) }
+    val noteBgAnimation = remember(selectedBgColor) { Animatable(selectedBgColor) }
 
-
-    LaunchedEffect(currentNote.content) {
-        val currentHtml = richTextState.toHtml()
-        if (currentNote.content != currentHtml && !isUpdatingFromViewModel) {
-            isUpdatingFromViewModel = true
-            richTextState.setHtml(currentNote.content)
-            delay(50)
-            isUpdatingFromViewModel = false
-        }
-    }
 
     LaunchedEffect(Unit) {
-        snapshotFlow { richTextState.toHtml() }
-            .drop(1)
-            .filter { !isUpdatingFromViewModel }
-            .debounce(100)
-            .distinctUntilChanged()
-            .collect { htmlContent ->
-                if (htmlContent != currentNote.content) {
-                    viewModel.onEvent(AddEditNoteEvent.OnContentChange(htmlContent))
-                }
-            }
-    }
-
-    LaunchedEffect(Unit) {
-        {
-            richTextState.config.linkColor = Color.Blue
-            richTextState.config.linkTextDecoration = TextDecoration.Underline
-            richTextState.config.codeSpanColor = Color.Yellow
-            richTextState.config.codeSpanBackgroundColor = Color.Transparent
-            richTextState.config.codeSpanStrokeColor = Color.LightGray
-        }
         viewModel.eventFlow.collectLatest { event ->
             when (event) {
                 is UiEvent.ShowSnackbar -> {
@@ -160,54 +117,16 @@ fun AddEditScreenContent(
         }
     }
 
-    if (openBottomSheet) {
-        AdaptiveBottomSheet(
-            onDismissRequest = { openBottomSheet = false },
-            adaptiveSheetState = colorSheetState,
-            shape = RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp),
-            containerColor = MaterialTheme.colorScheme.surface,
-        ) {
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(16.dp),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                HsvColorPicker(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(450.dp),
-                    controller = controller,
-                    initialColor = Color(selectedBgColor),
-                    onColorChanged = { colorEnvelope: ColorEnvelope ->
-                        viewModel.onEvent(
-                            AddEditNoteEvent.OnColorChange(
-                                colorEnvelope.color.toArgb().toLong()
-                            )
-                        )
-                    }
-                )
-                AlphaSlider(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(top = 10.dp)
-                        .height(35.dp)
-                        .align(Alignment.CenterHorizontally),
-                    controller = controller,
-                )
-
-                BrightnessSlider(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(top = 10.dp)
-                        .height(35.dp)
-                        .align(Alignment.CenterHorizontally),
-                    controller = controller,
-                )
-
-            }
-        }
-    }
+    ColorPickerBottomSheet(
+        isOpen = openBottomSheet,
+        onDismiss = { openBottomSheet = false },
+        currentColor = currentNote.colorRes,
+        onColorChanged = { color ->
+            viewModel.onEvent(AddEditNoteEvent.OnColorChange(color))
+        },
+        sheetState = colorSheetState,
+        controller = controller
+    )
 
     Scaffold(
         topBar = {

@@ -1,18 +1,28 @@
 package com.devansh.noteapp.feature.notes.presentation.add_edit
 
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.snapshotFlow
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.devansh.noteapp.core.database.repo.NoteDataSource
 import com.devansh.noteapp.data.models.dto.NoteResponse
 import com.devansh.noteapp.data.models.dto.NoteResponse.Companion.emptyNote
 import com.devansh.noteapp.data.repository.repo.NoteService
+import com.mohamedrejeb.richeditor.model.RichTextState
+import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.drop
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlin.time.Clock
@@ -26,6 +36,8 @@ class AddEditNoteViewModel(
 
     val noteTitle = mutableStateOf(NoteTextFieldState(hint = "Enter title"))
 
+    val richTextState = RichTextState()
+
     private val _currentNoteResponse: MutableStateFlow<NoteResponse> = MutableStateFlow(emptyNote())
     val currentNote = _currentNoteResponse.asStateFlow()
 
@@ -34,20 +46,63 @@ class AddEditNoteViewModel(
     private val contentUpdateJob = mutableStateOf<Job?>(null)
 
     init {
+
+        setupRichTextConfig()
+        setupContentSyncing()
+        loadNote()
+    }
+
+    @OptIn(FlowPreview::class)
+    private fun setupContentSyncing() {
+        snapshotFlow {
+            richTextState.toHtml()
+        }.drop(1)
+            .debounce(300)
+            .distinctUntilChanged()
+            .onEach { htmlContent ->
+                if (htmlContent != _currentNoteResponse.value.content) {
+                    updateNoteContent(htmlContent)
+                }
+            }
+            .launchIn(viewModelScope)
+    }
+
+    private fun setupRichTextConfig() {
+        richTextState.config.apply {
+            linkColor = Color.Blue
+            linkTextDecoration = TextDecoration.Underline
+            codeSpanColor = Color.Yellow
+            codeSpanBackgroundColor = Color.Transparent
+            codeSpanStrokeColor = Color.LightGray
+        }
+    }
+
+    private fun loadNote() {
         viewModelScope.launch {
             noteDataSource.getNoteById(currentNoteId)?.also { note ->
-
                 noteTitle.value = noteTitle.value.copy(
                     text = note.title,
                     isHintVisible = note.title.isBlank()
                 )
-
                 _currentNoteResponse.update { note }
+
+                richTextState.setHtml(note.content)
             } ?: run {
                 _currentNoteResponse.update { emptyNote() }
             }
         }
     }
+
+    private fun updateNoteContent(newContent: String) {
+        contentUpdateJob.value?.cancel()
+        _currentNoteResponse.update { it.copy(content = newContent) }
+
+        contentUpdateJob.value = viewModelScope.launch {
+            delay(500) // Auto-save delay
+            onEvent(AddEditNoteEvent.SaveNote)
+        }
+    }
+
 
     @OptIn(ExperimentalTime::class)
     fun onEvent(event: AddEditNoteEvent) {
@@ -64,12 +119,7 @@ class AddEditNoteViewModel(
             }
 
             is AddEditNoteEvent.OnContentChange -> {
-                contentUpdateJob.value?.cancel()
-                _currentNoteResponse.update { it.copy(content = event.newContent) }
-                contentUpdateJob.value = viewModelScope.launch {
-                    delay(200)
-                    onEvent(AddEditNoteEvent.SaveNote)
-                }
+                richTextState.setHtml(event.newContent)
             }
 
             is AddEditNoteEvent.ChangeContentFocus -> {}

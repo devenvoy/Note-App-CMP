@@ -3,7 +3,7 @@ CREATE TABLE IF NOT EXISTS noteEntity(
     note_id TEXT UNIQUE ,
     title TEXT NOT NULL,
     content TEXT NOT NULL,
-    colorRes INTEGER NOT NULL,
+    colorRes INTEGER,
     categoryId TEXT,
     isSynced INTEGER NOT NULL DEFAULT 0,
     isDeleted INTEGER NOT NULL DEFAULT 0,

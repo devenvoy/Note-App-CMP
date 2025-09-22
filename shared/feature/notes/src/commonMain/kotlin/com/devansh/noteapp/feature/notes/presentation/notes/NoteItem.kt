@@ -30,17 +30,16 @@ fun NoteItemUI(
 ) {
     Card(
         modifier = modifier,
-        border = BorderStroke(
-            width = 2.dp,
-            color = MaterialTheme.colorScheme.onSurface
-        ),
+        border = BorderStroke(width = 2.dp, color = MaterialTheme.colorScheme.onSurface),
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
     ) {
         val content = rememberRichTextState().setHtml(noteResponse.content)
+        val bgColor = noteResponse.colorRes?.let { Color(it) }
+            ?: MaterialTheme.colorScheme.surface
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .background(Color(noteResponse.colorRes).copy(.8f))
+                .background(bgColor.copy(.8f))
                 .padding(8.dp)
         ) {
             Column {
