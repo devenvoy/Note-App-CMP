@@ -36,16 +36,11 @@ kotlin {
 
         androidMain.dependencies {
             implementation(libs.androidx.appcompat)
-            implementation(libs.androidx.activity.compose)
             implementation(libs.kotlinx.coroutines.android)
 
             implementation(libs.koin.android)
-            implementation(libs.koin.androidx.compose)
 
             implementation(libs.ktor.client.android)
-
-            implementation(libs.sqldelight.android.driver)
-
 
             implementation(libs.chucker.library)
             implementation(project.dependencies.platform("com.google.firebase:firebase-bom:34.2.0"))
@@ -55,71 +50,46 @@ kotlin {
 
         commonMain.dependencies {
 
-            implementation(libs.sqldelight.runtime)
-            implementation(libs.sqldelight.coroutines)
+            implementation(projects.shared.core.common)
+            implementation(projects.shared.core.network)
+            implementation(projects.shared.core.database)
+            implementation(projects.shared.core.designSystem)
 
-            implementation(libs.kotlinx.coroutines.core)
-            implementation(libs.kotlinx.serialization.json)
+            implementation(projects.shared.data.models)
+            implementation(projects.shared.data.repository)
+
+            implementation(projects.shared.feature.authentication)
+            implementation(projects.shared.feature.notes)
+            implementation(projects.shared.feature.settings)
 
             implementation(libs.bundles.ktor.common)
 
+            implementation(libs.bundles.jetbrains.lifecycle)
+            implementation(libs.bundles.jetbrains.material3)
             implementation(libs.bundles.jetbrains.compose)
+
 //            implementation("org.jetbrains.compose:compose-full:1.10.0-alpha01")
             implementation(compose.components.resources)
             implementation(compose.materialIconsExtended)
 
-            implementation(libs.bundles.jetbrains.lifecycle)
-
-            implementation(libs.material3.adaptive)
-            implementation(libs.material3.expressive)
-            implementation(libs.material3.adaptive.layout)
-            implementation(libs.material3.adaptive.navigation)
-            implementation(libs.material3.adaptive.navigation.suite)
-
-            implementation(libs.kotlin.logging)
 
             api(libs.koin.core)
             implementation(libs.koin.compose)
             implementation(libs.koin.compose.viewmodel)
 
-            // #1 - Basic settings
-            implementation(libs.multiplatform.settings.no.arg)
-            implementation(libs.multiplatform.settings.coroutines)
-
-            implementation(libs.kotlinx.datetime)
-
-            implementation(libs.sdp.ssp.compose.multiplatform)
-
-            implementation(libs.sqlite.bundled)
-
-            implementation(libs.coil.compose)
-
             implementation(libs.sonner)
             implementation(libs.color.materialKolor)
 
-            implementation(libs.richeditor.compose)
-            implementation(libs.composeSettings.ui)
-            implementation(libs.composeSettings.ui.extended)
-
-            implementation(libs.compose.colorpicker)
-            implementation(libs.konnection)
-            implementation(libs.calf.ui)
-            implementation(libs.supabase.compose.auth)
-            implementation(libs.supabase.compose.auth.ui)
         }
 
         iosMain.dependencies {
-            implementation(libs.ktor.client.darwin)
-            implementation(libs.sqldelight.native.driver)
             implementation(libs.touchlab.stately.isolate)
             implementation(libs.touchlab.stately.iso.collections)
         }
 
         jvmMain.dependencies {
             implementation(libs.slf4j.simple)
-            implementation(libs.ktor.client.java)
             implementation(compose.desktop.currentOs)
-            implementation(libs.sqldelight.sqlite.driver)
             implementation(libs.kotlinx.coroutines.swing)
         }
     }
@@ -205,15 +175,6 @@ compose.desktop {
         buildTypes.release.proguard {
             obfuscate.set(false)
             configurationFiles.from(project.file("assemble/proguard-rules.pro"))
-        }
-    }
-}
-
-sqldelight {
-    databases {
-        create("NoteAppDatabase") {
-            packageName = "com.devansh.noteapp"
-            generateAsync.set(true)
         }
     }
 }
