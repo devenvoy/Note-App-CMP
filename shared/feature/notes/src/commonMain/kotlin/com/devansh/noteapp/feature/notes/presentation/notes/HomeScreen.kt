@@ -168,12 +168,14 @@ fun HomeScreenContent(
                     },
                     onShareClick = { onShareText("${selectedNoteResponse?.title} \n\n ${richContent.toText()}") },
                     onDeleteClick = {
-                        homeScreenModel.deleteNoteById(selectedNoteResponse?.noteId!!)
-                    toasterState.show(
-                        message = "Note deleted successfully",
-                        duration = ToasterDefaults.DurationLong,
-                        type = ToastType.Error
-                    )
+                        selectedNoteResponse?.noteId?.let {
+                            homeScreenModel.deleteNoteById(selectedNoteResponse?.noteId!!)
+                            toasterState.show(
+                                message = "Note deleted successfully",
+                                duration = ToasterDefaults.DurationLong,
+                                type = ToastType.Error
+                            )
+                        }
                     dismissSheet()
                 }, onCopyClick = {
                     scope.launch {

@@ -51,7 +51,7 @@ val screenModelsModule = module {
     viewModel { AuthViewModel(get(), get()) }
     viewModel { HomeScreenViewModel(get(), get(), get()) }
     viewModel { CategoryViewModel(get(), get(), get()) }
-    viewModel { (id: Long) -> AddEditNoteViewModel(id, get(), get()) }
+    viewModel { (id: Long) -> AddEditNoteViewModel(id, get(), get(), get()) }
     viewModel { SettingViewModel(get(), get()) }
 }
 

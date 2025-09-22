@@ -20,13 +20,18 @@ data class Category(
         id: String,
         name: String,
         color: Long?,
-        isSynced: Boolean,
-        notesCount: Long = 0,
         createdAt: String? = null,
         updatedAt: String? = null
-    ) : this(id, name, color, isSynced) {
-        this.notesCount = notesCount
+    ) : this(id, name, color) {
         this.createdAt = createdAt
         this.updatedAt = updatedAt
+    }
+
+    fun updateNoteCount(noteCount: Long) {
+        this.notesCount = noteCount
+    }
+
+    companion object {
+        fun emptyCategory() = Category(name = "Uncategorized", color = 4286611584, isSynced = true)
     }
 }

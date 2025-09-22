@@ -1,28 +1,26 @@
 package com.devansh.noteapp.feature.notes.presentation.add_edit
 
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.devansh.noteapp.core.database.repo.CategoryDataSource
 import com.devansh.noteapp.core.database.repo.NoteDataSource
+import com.devansh.noteapp.data.models.dto.Category
+import com.devansh.noteapp.data.models.dto.Category.Companion.emptyCategory
 import com.devansh.noteapp.data.models.dto.NoteResponse
 import com.devansh.noteapp.data.models.dto.NoteResponse.Companion.emptyNote
 import com.devansh.noteapp.data.repository.repo.NoteService
 import com.mohamedrejeb.richeditor.model.RichTextState
-import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.IO
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.debounce
-import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.coroutines.flow.drop
-import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlin.time.Clock
@@ -31,40 +29,39 @@ import kotlin.time.ExperimentalTime
 class AddEditNoteViewModel(
     private val currentNoteId: Long,
     private val noteDataSource: NoteDataSource,
+    private val categoryDataSource: CategoryDataSource,
     private val noteService: NoteService
 ) : ViewModel() {
 
-    val noteTitle = mutableStateOf(NoteTextFieldState(hint = "Enter title"))
-
     val richTextState = RichTextState()
-
+    private var contentUpdateJob: Job? = null
+    private var titleUpdateJob: Job? = null
+    val noteTitle = mutableStateOf(NoteTextFieldState(hint = "Enter title"))
     private val _currentNoteResponse: MutableStateFlow<NoteResponse> = MutableStateFlow(emptyNote())
     val currentNote = _currentNoteResponse.asStateFlow()
 
+    private val _categories = MutableStateFlow(emptyList<Category>())
+    val categories = _categories.asStateFlow()
+
+    private val _selectedCategory = MutableStateFlow<Category>(emptyCategory())
+    val selectedCategory = _selectedCategory.asStateFlow()
+
     private val _eventFlow = MutableSharedFlow<UiEvent>()
     val eventFlow = _eventFlow.asSharedFlow()
-    private val contentUpdateJob = mutableStateOf<Job?>(null)
+
 
     init {
-
         setupRichTextConfig()
-        setupContentSyncing()
+        loadCategories()
         loadNote()
     }
 
-    @OptIn(FlowPreview::class)
-    private fun setupContentSyncing() {
-        snapshotFlow {
-            richTextState.toHtml()
-        }.drop(1)
-            .debounce(300)
-            .distinctUntilChanged()
-            .onEach { htmlContent ->
-                if (htmlContent != _currentNoteResponse.value.content) {
-                    updateNoteContent(htmlContent)
-                }
+    private fun loadCategories() {
+        viewModelScope.launch {
+            categoryDataSource.getAllCategories().collect { list ->
+                _categories.update { list }
             }
-            .launchIn(viewModelScope)
+        }
     }
 
     private fun setupRichTextConfig() {
@@ -80,26 +77,40 @@ class AddEditNoteViewModel(
     private fun loadNote() {
         viewModelScope.launch {
             noteDataSource.getNoteById(currentNoteId)?.also { note ->
-                noteTitle.value = noteTitle.value.copy(
-                    text = note.title,
-                    isHintVisible = note.title.isBlank()
-                )
+                noteTitle.value =
+                    noteTitle.value.copy(text = note.title, isHintVisible = note.title.isBlank())
+
                 _currentNoteResponse.update { note }
+
+                categoryDataSource.getCategoryById(note.category ?: "")
+                    ?.let { cat -> _selectedCategory.update { cat } }
 
                 richTextState.setHtml(note.content)
             } ?: run {
                 _currentNoteResponse.update { emptyNote() }
+                _selectedCategory.update { emptyCategory() }
             }
         }
     }
 
     private fun updateNoteContent(newContent: String) {
-        contentUpdateJob.value?.cancel()
+        contentUpdateJob?.cancel()
         _currentNoteResponse.update { it.copy(content = newContent) }
 
-        contentUpdateJob.value = viewModelScope.launch {
-            delay(500) // Auto-save delay
-            onEvent(AddEditNoteEvent.SaveNote)
+        contentUpdateJob = viewModelScope.launch(Dispatchers.IO) {
+            delay(500)
+//            onEvent(AddEditNoteEvent.SaveNote)
+            saveNote()
+        }
+    }
+
+    private fun updateNoteTitle(newTitle: String) {
+        titleUpdateJob?.cancel()
+        _currentNoteResponse.update { it.copy(title = newTitle) }
+
+        titleUpdateJob = viewModelScope.launch(Dispatchers.IO) {
+            delay(300) // Shorter delay for title changes
+            saveNote() // Auto-save when title changes
         }
     }
 
@@ -109,6 +120,7 @@ class AddEditNoteViewModel(
         when (event) {
             is AddEditNoteEvent.OnTitleChange -> {
                 noteTitle.value = noteTitle.value.copy(text = event.newTitle)
+                updateNoteTitle(event.newTitle)
             }
 
             is AddEditNoteEvent.ChangeTitleFocus -> {
@@ -116,30 +128,52 @@ class AddEditNoteViewModel(
                     isHintVisible = !event.focusState.isFocused && noteTitle.value.text.isBlank()
                 )
                 _currentNoteResponse.update { it.copy(title = noteTitle.value.text) }
+                if (!event.focusState.isFocused) {
+                    viewModelScope.launch { saveNote() }
+                }
             }
 
             is AddEditNoteEvent.OnContentChange -> {
-                richTextState.setHtml(event.newContent)
+//                richTextState.setHtml(event.newContent)
+                updateNoteContent(richTextState.toHtml())
             }
 
-            is AddEditNoteEvent.ChangeContentFocus -> {}
+            is AddEditNoteEvent.ChangeContentFocus -> {
+                if (!event.focusState.isFocused) {
+                    viewModelScope.launch { saveNote() }
+                }
+            }
 
             is AddEditNoteEvent.OnColorChange -> {
                 _currentNoteResponse.update { it.copy(colorRes = event.color) }
+                updateNoteContent(richTextState.toHtml())
             }
 
             is AddEditNoteEvent.SaveNote -> {
-                viewModelScope.launch {
-                    try {
-                        val note = validateAndGetNote()
-                        note?.let { noteDataSource.insertNote(note, false) }
-                    } catch (e: Exception) {
-                        _eventFlow.emit(
-                            UiEvent.ShowSnackbar(message = e.message ?: "Couldn't Save Note")
-                        )
-                    }
-                }
+                viewModelScope.launch { saveNote() }
             }
+
+            is AddEditNoteEvent.OnCategoryChange -> {
+                _selectedCategory.update { event.category }
+                _currentNoteResponse.update { it.copy(category = event.category.id) }
+            }
+        }
+    }
+
+    private suspend fun saveNote() {
+        try {
+            val note = validateAndGetNote()
+            note?.let {
+                noteDataSource.insertNote(note, false)
+                // Optional: Emit success event
+//                _eventFlow.emit(UiEvent.ShowSnackbar("Note saved"))
+            }
+        } catch (e: Exception) {
+            _eventFlow.emit(
+                UiEvent.ShowSnackbar(
+                    message = e.message ?: "Couldn't Save Note"
+                )
+            )
         }
     }
 
@@ -176,6 +210,24 @@ class AddEditNoteViewModel(
             createdAt = currentNoteValue.createdAt.takeIf { currentNoteId != 0L } ?: currentTime,
             updatedAt = currentTime,
         )
+    }
+
+    fun forceSave() {
+        viewModelScope.launch { saveNote() }
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+        // Cancel any pending jobs
+        contentUpdateJob?.cancel()
+        titleUpdateJob?.cancel()
+    }
+
+    fun addCategory(item: Category) {
+        viewModelScope.launch {
+            categoryDataSource.insertCategory(item, true)
+            _selectedCategory.update { item }
+        }
     }
 }
 

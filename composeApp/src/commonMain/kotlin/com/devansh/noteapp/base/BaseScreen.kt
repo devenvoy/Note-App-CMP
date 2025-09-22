@@ -17,13 +17,11 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
-import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
 import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteItem
 import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteScaffold
 import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteType
 import androidx.compose.material3.adaptive.navigationsuite.rememberNavigationSuiteScaffoldState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -42,7 +40,6 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.devansh.noteapp.core.designsystem.theme.LocalAppTheme
 import com.devansh.noteapp.core.designsystem.utils.LocalDeviceConfiguration
-import com.devansh.noteapp.core.utils.DeviceConfiguration
 import com.devansh.noteapp.core.utils.DeviceConfiguration.DESKTOP
 import com.devansh.noteapp.core.utils.DeviceConfiguration.MOBILE_LANDSCAPE
 import com.devansh.noteapp.core.utils.DeviceConfiguration.MOBILE_PORTRAIT
@@ -72,12 +69,8 @@ private fun BaseScreen(
 
     var isRailExpanded by rememberSaveable { mutableStateOf(false) }
 
-    val windowAdaptiveInfo = currentWindowAdaptiveInfo()
-
     val currentBackStack by bottomNavController.currentBackStackEntryAsState()
-
-    val deviceConfiguration =
-        DeviceConfiguration.fromWindowSizeClass(windowAdaptiveInfo.windowSizeClass)
+    val deviceConfiguration = LocalDeviceConfiguration.current
 
     val layoutType = when (deviceConfiguration) {
         MOBILE_LANDSCAPE -> NavigationSuiteType.ShortNavigationBarMedium
@@ -121,67 +114,65 @@ private fun BaseScreen(
         }
     }
 
-    CompositionLocalProvider(LocalDeviceConfiguration provides deviceConfiguration) {
-        NavigationSuiteScaffold(
-            navigationSuiteType = layoutType,
-            navigationItemVerticalArrangement = Arrangement.Center,
-            state = navigationSuiteScaffoldState,
-            content = {
-                Box {
-                    NavHost(
-                        navController = bottomNavController,
-                        startDestination = NavRoute.HomeScreen
-                    ) {
-                        homeScreen(mainNavController)
-                        categoryScreen(mainNavController){
-                            bottomNavController.navigateUp()
-                        }
-                    }
-                }
-            },
-            primaryActionContent = {
-                Column(
-                    modifier = Modifier.padding(horizontal = 8.dp),
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.spacedBy(10.dp)
+    NavigationSuiteScaffold(
+        navigationSuiteType = layoutType,
+        navigationItemVerticalArrangement = Arrangement.Center,
+        state = navigationSuiteScaffoldState,
+        content = {
+            Box {
+                NavHost(
+                    navController = bottomNavController,
+                    startDestination = NavRoute.HomeScreen
                 ) {
-                    ExtendedFloatingActionButton(
-                        onClick = { mainNavController.navigate(NavRoute.AddNote()) },
-                        containerColor = MaterialTheme.colorScheme.primary,
-                        contentColor = MaterialTheme.colorScheme.onPrimary,
-                        content = {
-                            Icon(
-                                modifier = Modifier.size(24.dp),
-                                imageVector = Icons.Default.Add,
-                                contentDescription = "Add Note"
-                            )
-                            AnimatedVisibility(deviceConfiguration.isMobile() || isRailExpanded) {
-                                Text(text = "Add Note")
-                            }
+                    homeScreen(mainNavController)
+                    categoryScreen(mainNavController){
+                        bottomNavController.navigateUp()
+                    }
+                }
+            }
+        },
+        primaryActionContent = {
+            Column(
+                modifier = Modifier.padding(horizontal = 8.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.spacedBy(10.dp)
+            ) {
+                ExtendedFloatingActionButton(
+                    onClick = { mainNavController.navigate(NavRoute.AddNote()) },
+                    containerColor = MaterialTheme.colorScheme.primary,
+                    contentColor = MaterialTheme.colorScheme.onPrimary,
+                    content = {
+                        Icon(
+                            modifier = Modifier.size(24.dp),
+                            imageVector = Icons.Default.Add,
+                            contentDescription = "Add Note"
+                        )
+                        AnimatedVisibility(deviceConfiguration.isMobile() || isRailExpanded) {
+                            Text(text = "Add Note")
                         }
-                    )
-                    if (!deviceConfiguration.isMobile()) {
-                        Box(
-                            modifier = Modifier.width(IntrinsicSize.Min),
-                            contentAlignment = Alignment.Center
-                        ) {
-                            IconButton(
-                                onClick = { isRailExpanded = !isRailExpanded }) {
-                                Icon(
-                                    imageVector = if (isRailExpanded) Icons.AutoMirrored.Filled.MenuOpen else Icons.Default.Menu,
-                                    contentDescription = "menu"
-                                )
-                            }
+                    }
+                )
+                if (!deviceConfiguration.isMobile()) {
+                    Box(
+                        modifier = Modifier.width(IntrinsicSize.Min),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        IconButton(
+                            onClick = { isRailExpanded = !isRailExpanded }) {
+                            Icon(
+                                imageVector = if (isRailExpanded) Icons.AutoMirrored.Filled.MenuOpen else Icons.Default.Menu,
+                                contentDescription = "menu"
+                            )
                         }
                     }
                 }
-            },
-            primaryActionContentHorizontalAlignment = if (!deviceConfiguration.isMobile()) {
-                Alignment.CenterHorizontally
-            } else {
-                Alignment.End
-            },
-            navigationItems = navigationSuiteItems
-        )
-    }
+            }
+        },
+        primaryActionContentHorizontalAlignment = if (!deviceConfiguration.isMobile()) {
+            Alignment.CenterHorizontally
+        } else {
+            Alignment.End
+        },
+        navigationItems = navigationSuiteItems
+    )
 }

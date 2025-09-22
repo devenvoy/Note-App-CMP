@@ -47,8 +47,7 @@ class CategoryDataSourceImpl(
                         name = entity.categoryName,
                         color = entity.colorRes,
                         isSynced = entity.isSynced == 1L,
-                        notesCount = entity.notesCount,
-                    )
+                    ).apply { updateNoteCount(entity.notesCount) }
                 }
             }
     }
