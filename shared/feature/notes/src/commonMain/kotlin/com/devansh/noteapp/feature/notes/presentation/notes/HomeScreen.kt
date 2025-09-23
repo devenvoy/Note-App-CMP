@@ -27,15 +27,14 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.adaptive.ExperimentalMaterial3AdaptiveApi
 import androidx.compose.material3.pulltorefresh.PullToRefreshDefaults
 import androidx.compose.material3.pulltorefresh.pullToRefresh
 import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
-import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -53,33 +52,40 @@ import androidx.compose.ui.text.font.FontWeight.Companion.W500
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.devansh.noteapp.core.designsystem.SettingsState
 import com.devansh.noteapp.core.designsystem.components.EmptyScreen
 import com.devansh.noteapp.core.designsystem.components.ExpandableSearchView
 import com.devansh.noteapp.core.designsystem.components.button.SecondaryOutlinedButton
 import com.devansh.noteapp.core.designsystem.resources.NoteAppDrawables
 import com.devansh.noteapp.core.designsystem.theme.LocalAppTheme
+import com.devansh.noteapp.core.utils.LongCBF
 import com.devansh.noteapp.core.utils.StringCBF
 import com.devansh.noteapp.core.utils.UnitCBF
 import com.devansh.noteapp.core.utils.clipEntryOf
 import com.devansh.noteapp.data.models.dto.NoteResponse
-import com.devansh.noteapp.data.models.dto.settings.ListType
 import com.dokar.sonner.ToastType
 import com.dokar.sonner.Toaster
 import com.dokar.sonner.ToasterDefaults
 import com.dokar.sonner.rememberToasterState
+import com.mohamedrejeb.calf.ui.sheet.AdaptiveBottomSheet
+import com.mohamedrejeb.calf.ui.sheet.rememberAdaptiveSheetState
 import com.mohamedrejeb.richeditor.model.rememberRichTextState
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.painterResource
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)
+@OptIn(
+    ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class,
+    ExperimentalMaterial3AdaptiveApi::class
+)
 @Composable
 fun HomeScreenContent(
-    homeScreenModel: HomeScreenViewModel,
-    onNavigateToAddEditNote: (Long) -> Unit,
+    viewModel: HomeScreenViewModel,
+    settingsState: SettingsState,
+    onNavigateToAddEditNote: LongCBF,
+    onNavigateToSettings: UnitCBF,
     onShareText: StringCBF,
-    goToSettings: UnitCBF,
 ) {
     val theme = LocalAppTheme.current
     val clipboard = LocalClipboard.current
@@ -87,9 +93,9 @@ fun HomeScreenContent(
     val scope = rememberCoroutineScope()
     val toasterState = rememberToasterState()
     val state = rememberPullToRefreshState()
-    val sheetState = rememberModalBottomSheetState()
+    val sheetState = rememberAdaptiveSheetState()
 
-    val noteState by homeScreenModel.noteState.collectAsState()
+    val noteState by viewModel.noteState.collectAsState()
     var isRefreshing by remember { mutableStateOf(false) }
 
     var selectedNoteResponse by remember { mutableStateOf<NoteResponse?>(null) }
@@ -99,7 +105,7 @@ fun HomeScreenContent(
         isRefreshing = true
         scope.launch {
             delay(500)
-            homeScreenModel.getAllNotes()
+            viewModel.getAllNotes()
             isRefreshing = false
         }
     }
@@ -121,27 +127,31 @@ fun HomeScreenContent(
             ExpandableSearchView(
                 modifier = Modifier.widthIn(max = 600.dp, min = Dp.Infinity),
                 expandedInitially = noteState.isSearchActive,
-                onExpandedChanged = { b -> homeScreenModel.onToggleSearch() },
+                onExpandedChanged = { b -> viewModel.onToggleSearch() },
                 searchDisplay = noteState.searchText,
-                onSearchDisplayChanged = homeScreenModel::onSearchTextChange,
-                onSearch = { homeScreenModel.onSearchTextChange("") },
+                onSearchDisplayChanged = viewModel::onSearchTextChange,
+                onSearch = { viewModel.onSearchTextChange("") },
             ) {
                 TopAppBar(
                     colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.surface,
-                    actionIconContentColor = MaterialTheme.colorScheme.primary
-                ), title = {
-                    Text(
-                        text = "Notes", style = MaterialTheme.typography.headlineSmall
-                    )
-                }, actions = {
-                    IconButton(onClick = homeScreenModel::onToggleSearch) {
+                        containerColor = MaterialTheme.colorScheme.surface,
+                        actionIconContentColor = MaterialTheme.colorScheme.primary
+                    ),
+                    title = {
+                        Text(
+                            text = "Notes",
+                            style = MaterialTheme.typography.headlineSmall
+                        )
+                    },
+                    actions = {
+                        IconButton(onClick = viewModel::onToggleSearch) {
                         Icon(imageVector = Icons.Filled.Search, contentDescription = "search")
                     }
-                    IconButton(onClick = goToSettings) {
-                        Icon(
-                            imageVector = Icons.Filled.Settings, contentDescription = "setting"
-                        )
+                        IconButton(onClick = onNavigateToSettings) {
+                            Icon(
+                                imageVector = Icons.Filled.Settings,
+                                contentDescription = "setting"
+                            )
                     }
                 })
             }
@@ -155,37 +165,29 @@ fun HomeScreenContent(
                 selectedNoteResponse = null
             }
 
-            ModalBottomSheet(
+            AdaptiveBottomSheet(
                 onDismissRequest = { dismissSheet() },
-                sheetState = sheetState,
-                tonalElevation = 0.dp,
+                adaptiveSheetState = sheetState,
                 dragHandle = null
             ) {
                 NoteMenuBottomSheet(
                     onEditClick = {
-                        onNavigateToAddEditNote(selectedNoteResponse?.id ?: 0)
-                    dismissSheet()
+                        onNavigateToAddEditNote(selectedNoteResponse?.id ?: 0); dismissSheet()
                     },
                     onShareClick = { onShareText("${selectedNoteResponse?.title} \n\n ${richContent.toText()}") },
                     onDeleteClick = {
                         selectedNoteResponse?.noteId?.let {
-                            homeScreenModel.deleteNoteById(selectedNoteResponse?.noteId!!)
+                            viewModel.deleteNoteById(selectedNoteResponse?.noteId!!)
                             toasterState.show(
                                 message = "Note deleted successfully",
                                 duration = ToasterDefaults.DurationLong,
                                 type = ToastType.Error
                             )
-                        }
-                    dismissSheet()
+                        };dismissSheet()
                 }, onCopyClick = {
-                    scope.launch {
-                        clipboard.setClipEntry(clipEntryOf(AnnotatedString("${selectedNoteResponse?.title} \n\n ${richContent.toText()}").text))
-                    }
-
-                    toasterState.show(
-                        message = "Copied to clipboard", type = ToastType.Info
-                    )
-                    dismissSheet()
+                        scope.launch { clipboard.setClipEntry(clipEntryOf(AnnotatedString("${selectedNoteResponse?.title} \n\n ${richContent.toText()}").text)) }
+                        toasterState.show(message = "Copied to clipboard", type = ToastType.Info)
+                        dismissSheet()
                     }
                 )
             }
@@ -209,7 +211,10 @@ fun HomeScreenContent(
                 NoteScreenContent(
                     state = noteState,
                     onNavigateToAddEditNote = onNavigateToAddEditNote,
-                    isGridLayout = homeScreenModel.isGridLayout.collectAsState().value == ListType.GRID,
+                    overflow = settingsState.enumOverflowStyle.toTextOverFlow(),
+                    textAlign = settingsState.titleAlignment.toTextAlign(),
+                    maxLines = settingsState.enumContentSize.toMaxLines(),
+                    isGridLayout = !settingsState.isListView,
                     onLongPress = {
                         selectedNoteResponse = it
                         isBottomSheetVisible = true

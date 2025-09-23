@@ -1,8 +1,8 @@
-package com.devansh.noteapp.feature.settings.presentation
+package com.devansh.noteapp.core.designsystem
 
 import androidx.compose.runtime.Stable
-import com.devansh.noteapp.core.designsystem.AppTheme
 import com.devansh.noteapp.data.models.dto.settings.AppColor
+import com.devansh.noteapp.data.models.dto.settings.AppTheme
 import com.devansh.noteapp.data.models.dto.settings.ListNoteContentDisplayMode
 import com.devansh.noteapp.data.models.dto.settings.ListNoteContentOverflowStyle
 import com.devansh.noteapp.data.models.dto.settings.ListNoteContentSize
@@ -11,9 +11,6 @@ import com.devansh.noteapp.data.models.dto.settings.ListNoteContentSize
 data class SettingsState(
     val theme: AppTheme = AppTheme.UNDEFINED,
     val color: AppColor = AppColor.DYNAMIC,
-    val isAppInDarkMode: Boolean = false,
-    val shouldFollowSystem: Boolean = false,
-    val isSwitchActive: Boolean = false,
     val isListView: Boolean = false,
     val dateFormatter: String = "",
     val timeFormatter: String = "",

@@ -17,7 +17,10 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import com.devansh.noteapp.core.utils.LongCBF
 import com.devansh.noteapp.data.models.dto.NoteResponse
 
 
@@ -25,9 +28,12 @@ import com.devansh.noteapp.data.models.dto.NoteResponse
 @Composable
 fun NoteScreenContent(
     state: NoteListState,
-    onNavigateToAddEditNote: (Long) -> Unit,
     isGridLayout: Boolean,
-    onLongPress: (NoteResponse) -> Unit
+    overflow: TextOverflow = TextOverflow.Ellipsis,
+    maxLines: Int = Int.MAX_VALUE,
+    textAlign: TextAlign = TextAlign.Unspecified,
+    onNavigateToAddEditNote: LongCBF,
+    onLongPress: (NoteResponse) -> Unit,
 ) {
 
     val window = currentWindowAdaptiveInfo()
@@ -54,6 +60,9 @@ fun NoteScreenContent(
         items(state.noteResponses) { note ->
             NoteItemUI(
                 noteResponse = note,
+                overflow = overflow,
+                maxLines = maxLines,
+                textAlign = textAlign,
                 modifier = Modifier
                     .padding(8.dp)
                     .then(

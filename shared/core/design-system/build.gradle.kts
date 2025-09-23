@@ -15,6 +15,7 @@ kotlin {
     sourceSets {
         commonMain.dependencies {
             implementation(projects.shared.core.common)
+            implementation(projects.shared.data.models)
             implementation(libs.bundles.jetbrains.compose)
             implementation(libs.bundles.jetbrains.lifecycle)
             implementation(libs.bundles.jetbrains.material3)

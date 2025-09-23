@@ -12,6 +12,8 @@ import androidx.navigation.navigation
 import com.devansh.noteapp.base.baseScreen
 import com.devansh.noteapp.core.designsystem.utils.LocalDeviceConfiguration
 import com.devansh.noteapp.core.utils.DeviceConfiguration
+import com.devansh.noteapp.feature.settings.presentation.BaseScreenViewModel
+import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 fun MainNavigationGraph(
@@ -19,6 +21,7 @@ fun MainNavigationGraph(
 ) {
 
     val windowAdaptiveInfo = currentWindowAdaptiveInfo()
+    val baseScreenViewModel = koinViewModel<BaseScreenViewModel>()
     val deviceConfiguration =
         DeviceConfiguration.fromWindowSizeClass(windowAdaptiveInfo.windowSizeClass)
     CompositionLocalProvider(LocalDeviceConfiguration provides deviceConfiguration) {
@@ -38,11 +41,11 @@ fun MainNavigationGraph(
                 resetPasswordScreen(mainNavController)
             }
 
-            baseScreen(mainNavController)
+            baseScreen(baseScreenViewModel ,mainNavController)
 
             addNoteScreen(mainNavController)
 
-            settingsScreen(mainNavController)
+            settingsScreen(baseScreenViewModel,mainNavController)
         }
     }
 

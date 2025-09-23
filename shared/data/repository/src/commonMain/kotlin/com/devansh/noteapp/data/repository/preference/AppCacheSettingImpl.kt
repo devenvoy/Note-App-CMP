@@ -9,7 +9,6 @@ import com.devansh.noteapp.data.models.dto.settings.ListNoteContentOverflowStyle
 import com.devansh.noteapp.data.models.dto.settings.ListNoteContentOverflowStyle.Companion.toInt
 import com.devansh.noteapp.data.models.dto.settings.ListNoteContentSize
 import com.devansh.noteapp.data.models.dto.settings.ListNoteContentSize.Companion.toInt
-import com.devansh.noteapp.data.models.dto.settings.ListType
 import com.devansh.noteapp.data.repository.AppCacheSetting
 import com.russhwolf.settings.ExperimentalSettingsApi
 import com.russhwolf.settings.ObservableSettings
@@ -57,13 +56,6 @@ class AppCacheSettingImpl : AppCacheSetting {
             true
         )
 
-
-    @OptIn(ExperimentalCoroutinesApi::class)
-    override val listType: Flow<ListType> =
-        observableSettings.getIntFlow(SettingStorageKeys.LIST_TYPE_KEY.key, 0)
-            .mapLatest { i -> ListType.entries.first { it.ordinal == i } }
-
-
     override val userEmail: String
         get() = settings[SettingStorageKeys.USER_EMAIL.key, ""]
 
@@ -75,15 +67,6 @@ class AppCacheSettingImpl : AppCacheSetting {
     override val color: Flow<AppColor> =
         observableSettings.getIntFlow(SettingStorageKeys.COLOR.key, AppColor.DYNAMIC.toInt())
             .mapLatest { AppColor.fromInt(it) }
-
-    override val isAppInDarkMode: Flow<Boolean>
-        get() = observableSettings.getBooleanFlow(SettingStorageKeys.IS_APP_IN_DARK_MODE.key, false)
-
-    override val shouldFollowSystem: Flow<Boolean>
-        get() = observableSettings.getBooleanFlow(SettingStorageKeys.SHOULD_FOLLOW_SYSTEM.key, false)
-
-    override val isSwitchActive: Flow<Boolean>
-        get() = observableSettings.getBooleanFlow(SettingStorageKeys.IS_SWITCH_ACTIVE.key, false)
 
     override val isListView: Flow<Boolean>
         get() = observableSettings.getBooleanFlow(SettingStorageKeys.IS_LIST_VIEW.key, false)
@@ -149,18 +132,6 @@ class AppCacheSettingImpl : AppCacheSetting {
 
     override suspend fun setColor(color: AppColor) {
         putPreferenceValue(SettingStorageKeys.COLOR.key, color.toInt())
-    }
-
-    override suspend fun setIsAppInDarkMode(isDarkMode: Boolean) {
-        putPreferenceValue(SettingStorageKeys.IS_APP_IN_DARK_MODE.key, isDarkMode)
-    }
-
-    override suspend fun setShouldFollowSystem(shouldFollow: Boolean) {
-        putPreferenceValue(SettingStorageKeys.SHOULD_FOLLOW_SYSTEM.key, shouldFollow)
-    }
-
-    override suspend fun setIsSwitchActive(isActive: Boolean) {
-        putPreferenceValue(SettingStorageKeys.IS_SWITCH_ACTIVE.key, isActive)
     }
 
     override suspend fun setIsListView(isListView: Boolean) {
@@ -230,7 +201,6 @@ class AppCacheSettingImpl : AppCacheSetting {
                 is Float -> observableSettings.putFloat(key, value)
                 is Boolean -> observableSettings.putBoolean(key, value)
                 is String -> observableSettings.putString(key, value)
-                is ListType -> observableSettings.putInt(key, value.ordinal)
                 else -> throw IllegalArgumentException("Unsupported value type")
             }
         }

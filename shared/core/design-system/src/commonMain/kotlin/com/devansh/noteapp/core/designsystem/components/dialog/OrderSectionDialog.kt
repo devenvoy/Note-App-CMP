@@ -20,9 +20,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.unit.dp
-import com.devansh.noteapp.core.designsystem.NoteOrder
-import com.devansh.noteapp.core.designsystem.OrderType
 import com.devansh.noteapp.core.utils.UnitCBF
+import com.devansh.noteapp.data.models.dto.settings.NoteOrder
+import com.devansh.noteapp.data.models.dto.settings.OrderType
 import noteapp.shared.core.design_system.generated.resources.Res
 import noteapp.shared.core.design_system.generated.resources.ascending
 import noteapp.shared.core.design_system.generated.resources.cancel

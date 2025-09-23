@@ -9,8 +9,12 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.Feed
 import androidx.compose.material.icons.automirrored.filled.MenuOpen
+import androidx.compose.material.icons.automirrored.outlined.Feed
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Folder
+import androidx.compose.material.icons.filled.FolderOpen
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.Icon
@@ -30,6 +34,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavDestination.Companion.hasRoute
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraphBuilder
@@ -38,6 +43,8 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.devansh.noteapp.core.designsystem.BottomNavItem
+import com.devansh.noteapp.core.designsystem.resources.NoteAppStrings
 import com.devansh.noteapp.core.designsystem.theme.LocalAppTheme
 import com.devansh.noteapp.core.designsystem.utils.LocalDeviceConfiguration
 import com.devansh.noteapp.core.utils.DeviceConfiguration.DESKTOP
@@ -45,32 +52,50 @@ import com.devansh.noteapp.core.utils.DeviceConfiguration.MOBILE_LANDSCAPE
 import com.devansh.noteapp.core.utils.DeviceConfiguration.MOBILE_PORTRAIT
 import com.devansh.noteapp.core.utils.DeviceConfiguration.TABLET_LANDSCAPE
 import com.devansh.noteapp.core.utils.DeviceConfiguration.TABLET_PORTRAIT
+import com.devansh.noteapp.feature.settings.presentation.BaseScreenViewModel
 import com.devansh.noteapp.navigation.NavRoute
 import com.devansh.noteapp.navigation.categoryScreen
 import com.devansh.noteapp.navigation.homeScreen
 import org.jetbrains.compose.resources.stringResource
-import org.koin.compose.viewmodel.koinViewModel
 
 
-fun NavGraphBuilder.baseScreen(mainNavController: NavHostController) {
+fun NavGraphBuilder.baseScreen(
+    baseScreenViewModel: BaseScreenViewModel,
+    mainNavController: NavHostController
+) {
     composable<NavRoute.BaseScreen> {
         val bottomNavController = rememberNavController()
-        BaseScreen(mainNavController, bottomNavController)
+        BaseScreen(baseScreenViewModel, mainNavController, bottomNavController)
     }
 }
 
 @Composable
 private fun BaseScreen(
+    viewModel: BaseScreenViewModel,
     mainNavController: NavHostController,
     bottomNavController: NavHostController
 ) {
-    val viewModel = koinViewModel<BaseScreenViewModel>()
     val theme = LocalAppTheme.current
+    val deviceConfiguration = LocalDeviceConfiguration.current
 
     var isRailExpanded by rememberSaveable { mutableStateOf(false) }
-
+    val settingsState by viewModel.settingsStateFlow.collectAsStateWithLifecycle()
     val currentBackStack by bottomNavController.currentBackStackEntryAsState()
-    val deviceConfiguration = LocalDeviceConfiguration.current
+
+    val bottomNavItems = listOf(
+        BottomNavItem(
+            title = NoteAppStrings.notes,
+            defaultIcon = Icons.AutoMirrored.Outlined.Feed,
+            selectedIcon = Icons.AutoMirrored.Filled.Feed,
+            route = NavRoute.HomeScreen,
+        ),
+        BottomNavItem(
+            title = NoteAppStrings.category,
+            defaultIcon = Icons.Filled.Folder,
+            selectedIcon = Icons.Filled.FolderOpen,
+            route = NavRoute.Category
+        )
+    )
 
     val layoutType = when (deviceConfiguration) {
         MOBILE_LANDSCAPE -> NavigationSuiteType.ShortNavigationBarMedium
@@ -82,7 +107,7 @@ private fun BaseScreen(
     val navigationSuiteScaffoldState = rememberNavigationSuiteScaffoldState()
 
     val navigationSuiteItems = @Composable {
-        viewModel.bottomNavItems.forEach { navItem ->
+        bottomNavItems.forEach { navItem ->
             val currentDestination = currentBackStack?.destination
             val isSelected =
                 currentDestination?.hierarchy?.any { it.hasRoute(navItem.route::class) } == true
@@ -124,7 +149,7 @@ private fun BaseScreen(
                     navController = bottomNavController,
                     startDestination = NavRoute.HomeScreen
                 ) {
-                    homeScreen(mainNavController)
+                    homeScreen(settingsState, mainNavController)
                     categoryScreen(mainNavController){
                         bottomNavController.navigateUp()
                     }

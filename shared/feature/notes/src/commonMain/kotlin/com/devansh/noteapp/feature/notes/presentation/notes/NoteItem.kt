@@ -16,6 +16,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -27,10 +28,13 @@ import com.mohamedrejeb.richeditor.ui.material3.RichText
 fun NoteItemUI(
     noteResponse: NoteResponse,
     modifier: Modifier = Modifier,
+    overflow: TextOverflow = TextOverflow.Ellipsis,
+    textAlign: TextAlign = TextAlign.Unspecified,
+    maxLines: Int = 12,
 ) {
     Card(
         modifier = modifier,
-        border = BorderStroke(width = 2.dp, color = MaterialTheme.colorScheme.onSurface),
+        border = BorderStroke(width = 2.dp, color = MaterialTheme.colorScheme.onSurface.copy(.5f)),
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
     ) {
         val content = rememberRichTextState().setHtml(noteResponse.content)
@@ -46,20 +50,21 @@ fun NoteItemUI(
                 Text(
                     text = noteResponse.title,
                     style = MaterialTheme.typography.bodyLarge,
-                    fontWeight = FontWeight.Bold,
-                    color = Color.White,
+                    fontWeight = FontWeight.SemiBold,
+                    textAlign = textAlign,
+                    color = MaterialTheme.colorScheme.onSurface,
                     maxLines = 2,
-                    overflow = TextOverflow.Ellipsis
+                    overflow = overflow
                 )
 
                 Spacer(modifier = Modifier.height(4.dp))
 
                 RichText(
                     state = content,
-                    maxLines = 12,
+                    maxLines = maxLines,
                     fontSize = 14.sp,
                     lineHeight = 14.sp,
-                    overflow = TextOverflow.Ellipsis
+                    overflow = overflow
                 )
             }
         }

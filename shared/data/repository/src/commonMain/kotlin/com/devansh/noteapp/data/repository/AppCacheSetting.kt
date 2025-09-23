@@ -5,7 +5,6 @@ import com.devansh.noteapp.data.models.dto.settings.AppColor
 import com.devansh.noteapp.data.models.dto.settings.ListNoteContentDisplayMode
 import com.devansh.noteapp.data.models.dto.settings.ListNoteContentOverflowStyle
 import com.devansh.noteapp.data.models.dto.settings.ListNoteContentSize
-import com.devansh.noteapp.data.models.dto.settings.ListType
 import kotlinx.coroutines.flow.Flow
 
 interface AppCacheSetting {
@@ -15,14 +14,9 @@ interface AppCacheSetting {
     val isLoggedIn: Boolean
     val userEmail : String
     val isOnBoardComplete: Boolean
-
-    val listType: Flow<ListType>
     val autoSyncDB: Flow<Boolean>
     val theme: Flow<Int>
     val color: Flow<AppColor>
-    val isAppInDarkMode: Flow<Boolean>
-    val shouldFollowSystem: Flow<Boolean>
-    val isSwitchActive: Flow<Boolean>
     val isListView: Flow<Boolean>
     val dateFormatter: Flow<String>
     val timeFormatter: Flow<String>
@@ -46,9 +40,6 @@ interface AppCacheSetting {
     // Settings State setters
     suspend fun setTheme(theme: Int)
     suspend fun setColor(color: AppColor)
-    suspend fun setIsAppInDarkMode(isDarkMode: Boolean)
-    suspend fun setShouldFollowSystem(shouldFollow: Boolean)
-    suspend fun setIsSwitchActive(isActive: Boolean)
     suspend fun setIsListView(isListView: Boolean)
     suspend fun setDateFormatter(formatter: String)
     suspend fun setTimeFormatter(formatter: String)

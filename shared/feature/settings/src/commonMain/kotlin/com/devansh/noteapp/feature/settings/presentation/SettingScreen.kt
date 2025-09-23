@@ -61,7 +61,6 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.alorma.compose.settings.ui.SettingsGroup
 import com.alorma.compose.settings.ui.SettingsMenuLink
 import com.alorma.compose.settings.ui.SettingsSwitch
-import com.devansh.noteapp.core.designsystem.AppTheme
 import com.devansh.noteapp.core.designsystem.components.button.BackButton
 import com.devansh.noteapp.core.designsystem.components.button.PrimaryButton
 import com.devansh.noteapp.core.designsystem.resources.NoteAppStrings
@@ -70,10 +69,10 @@ import com.devansh.noteapp.core.designsystem.utils.ListItemShapes.lastIndexShape
 import com.devansh.noteapp.core.designsystem.utils.ListItemShapes.middleIndexShape
 import com.devansh.noteapp.core.designsystem.utils.ListItemShapes.singleItemIndex
 import com.devansh.noteapp.core.utils.UnitCBF
+import com.devansh.noteapp.data.models.dto.settings.AppTheme
 import com.devansh.noteapp.data.models.dto.settings.ListNoteContentDisplayMode
 import com.devansh.noteapp.data.models.dto.settings.ListNoteContentOverflowStyle
 import com.devansh.noteapp.data.models.dto.settings.ListNoteContentSize
-import com.devansh.noteapp.data.models.dto.settings.ListType
 import org.jetbrains.compose.resources.stringResource
 import kotlin.math.roundToInt
 
@@ -81,7 +80,7 @@ import kotlin.math.roundToInt
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SettingScreenContent(
-    viewModel: SettingViewModel,
+    viewModel: BaseScreenViewModel,
     navigateBack: UnitCBF,
     logOut: UnitCBF,
 ) {
@@ -90,7 +89,6 @@ fun SettingScreenContent(
 
     val hapticFeedback = LocalHapticFeedback.current
     val autoSync by viewModel.autoSyncDB.collectAsStateWithLifecycle()
-    val listType by viewModel.listType.collectAsStateWithLifecycle()
     val settingState by viewModel.settingsStateFlow.collectAsStateWithLifecycle()
 
     var showPasswordDialog by remember { mutableStateOf(false) }
@@ -223,12 +221,10 @@ fun SettingScreenContent(
             ) {
                 SettingsSwitch(
                     modifier = Modifier.clip(firstIndexShape),
-                    state = listType == ListType.GRID,
+                    state = settingState.isListView,
                     title = { Text(text = "Notes Grid", fontSize = 16.sp, fontWeight = W500) },
                     subtitle = { Text("Show notes in grid or list", fontSize = 12.sp) },
-                    onCheckedChange = {
-                        viewModel.updateListType(if (it) ListType.GRID else ListType.LIST)
-                    }
+                    onCheckedChange = viewModel::updateListView
                 )
 
                 SettingsSectionDivider()

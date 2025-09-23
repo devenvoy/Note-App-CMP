@@ -1,4 +1,4 @@
-package com.devansh.noteapp.core.designsystem
+package com.devansh.noteapp.data.models.dto.settings
 
 sealed class OrderType {
     data object Ascending : OrderType()

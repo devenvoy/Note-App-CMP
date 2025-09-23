@@ -2,7 +2,7 @@ package com.devansh.noteapp.core.designsystem.theme
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.devansh.noteapp.core.designsystem.AppTheme
+import com.devansh.noteapp.data.models.dto.settings.AppTheme
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch

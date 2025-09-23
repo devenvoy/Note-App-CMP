@@ -1,4 +1,4 @@
-package com.devansh.noteapp.core.designsystem
+package com.devansh.noteapp.data.models.dto.settings
 
 sealed class NoteOrder(val orderType: OrderType) {
     class Title(orderType: OrderType) : NoteOrder(orderType)

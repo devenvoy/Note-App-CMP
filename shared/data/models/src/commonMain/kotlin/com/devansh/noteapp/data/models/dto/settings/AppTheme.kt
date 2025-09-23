@@ -1,4 +1,4 @@
-package com.devansh.noteapp.core.designsystem
+package com.devansh.noteapp.data.models.dto.settings
 
 enum class AppTheme(private val value: Int) {
     UNDEFINED(-1),

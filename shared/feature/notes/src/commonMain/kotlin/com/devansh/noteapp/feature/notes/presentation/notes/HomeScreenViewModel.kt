@@ -8,7 +8,6 @@ import com.devansh.noteapp.core.utils.onFailure
 import com.devansh.noteapp.core.utils.onSuccess
 import com.devansh.noteapp.data.models.dto.NoteResponse
 import com.devansh.noteapp.data.models.dto.request.NoteRequest
-import com.devansh.noteapp.data.repository.AppCacheSetting
 import com.devansh.noteapp.data.repository.SearchNotes
 import com.devansh.noteapp.data.repository.repo.NoteService
 import dev.tmapps.konnection.Konnection
@@ -28,26 +27,18 @@ import kotlin.time.Clock
 import kotlin.time.ExperimentalTime
 
 class HomeScreenViewModel(
-    private val pref: AppCacheSetting,
     private val noteDataSource: NoteDataSource,
     private val noteService: NoteService
 ) : ViewModel() {
 
     private val searchNotes = SearchNotes()
-
     private val _notes = MutableStateFlow<List<NoteResponse>>(emptyList())
     private val searchText = MutableStateFlow("")
     private val isSearchActive = MutableStateFlow(false)
-
-    val isGridLayout = pref.listType
-        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000L), false)
-
     private val _isSyncing = MutableStateFlow(false)
     val isSyncing = _isSyncing.asStateFlow()
-
     private val _conflictingNotes = MutableStateFlow<List<ConflictPair>>(emptyList())
     val conflictingNotes = _conflictingNotes.asStateFlow()
-
     val noteState =
         combine(_notes, searchText, isSearchActive) { list, text, isSearchActive ->
             NoteListState(
@@ -56,7 +47,6 @@ class HomeScreenViewModel(
                 isSearchActive = isSearchActive
             )
         }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000L), NoteListState())
-
 
     init {
         getAllNotes()

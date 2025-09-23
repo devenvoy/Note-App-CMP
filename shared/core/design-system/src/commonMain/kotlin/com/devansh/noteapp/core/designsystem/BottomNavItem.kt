@@ -1,4 +1,4 @@
-package com.devansh.noteapp.base
+package com.devansh.noteapp.core.designsystem
 
 import androidx.compose.ui.graphics.vector.ImageVector
 import org.jetbrains.compose.resources.StringResource
