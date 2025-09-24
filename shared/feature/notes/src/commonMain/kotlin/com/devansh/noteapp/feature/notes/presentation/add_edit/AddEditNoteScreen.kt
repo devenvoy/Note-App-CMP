@@ -238,7 +238,7 @@ fun AddEditScreenContent(
                 NoteMenuBottomSheet(
                     onShareClick = {},
                     onDeleteClick = {
-                        viewModel.deleteNoteById()
+                        viewModel.deleteNote()
                         dismissSheet()
                         onNavigateUp()
                     },
@@ -341,8 +341,8 @@ fun CategoryDropdownSelector(
         Box(
             modifier = Modifier
                 .background(
-                    color = Color(selectedCategory.color!!),
-                    shape = RoundedCornerShape(20.dp)
+                    color = selectedCategory.color?.let { Color(it) } ?: Color.Transparent,
+                    shape = RoundedCornerShape(50)
                 )
                 .clickable { onExpandedChange(true) }
                 .padding(horizontal = 8.dp, vertical = 4.dp)
@@ -354,7 +354,10 @@ fun CategoryDropdownSelector(
                 Text(
                     text = when {
                         categories.isEmpty() -> ""
-                        else -> selectedCategory.name
+                        else -> {
+                            val name = selectedCategory.name
+                            if (name.length > 25) name.take(25) + "…" else name
+                        }
                     },
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,

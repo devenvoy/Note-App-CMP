@@ -21,7 +21,7 @@ import org.koin.core.parameter.parametersOf
 
 fun NavGraphBuilder.categoryScreen(mainNavController: NavHostController, navigateToHome: UnitCBF) {
     composable<NavRoute.Category> {
-        CategoryScreen(navigateToHome)
+        CategoryScreen(navigateUp=navigateToHome)
     }
 }
 

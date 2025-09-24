@@ -65,6 +65,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.LifecycleResumeEffect
+import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.devansh.noteapp.core.designsystem.components.EmptyScreen
 import com.devansh.noteapp.core.designsystem.components.dialog.WarningDialog
@@ -79,19 +81,23 @@ import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 
 
-
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)
 @Composable
-fun CategoryScreen(navigateUp: UnitCBF) {
+fun CategoryScreen(
+    viewModel: CategoryViewModel = koinViewModel<CategoryViewModel>(),
+    navigateUp: UnitCBF
+) {
 
     val theme = LocalAppTheme.current
-    val viewModel = koinViewModel<CategoryViewModel>()
-
+    val lifecycle = LocalLifecycleOwner.current
     val categories: List<Category> by viewModel.categories.collectAsStateWithLifecycle()
-
     var showAddFolderDialog by rememberSaveable { mutableStateOf(false) }
-
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
+
+    LifecycleResumeEffect(lifecycle, Unit) {
+        viewModel.getAllCategories()
+        onPauseOrDispose { }
+    }
 
     Scaffold(
         modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection), topBar = {

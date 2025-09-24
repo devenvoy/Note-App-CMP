@@ -9,7 +9,7 @@ import kotlin.time.Instant
 
 @Serializable
 data class NoteResponse(
-    @Transient val id: Long = 0,
+    @Transient val id: Long = -1,
     @SerialName("id") val noteId: String?,
     @SerialName("title") val title: String,
     @SerialName("content") val content: String,
@@ -34,37 +34,49 @@ data class NoteResponse(
         }
     }
 
-
     /**
      * Check if this note needs to be synced
      */
-    fun needsSync(): Boolean = !isSynced && !isDeleted
+    fun needsSync(): Boolean = !isSynced && !isDeleted && !pendingDeletion
 
     /**
      * Check if this note needs to be deleted from server
      */
-    fun needsDeletion(): Boolean = pendingDeletion
+    fun needsDeletion(): Boolean = pendingDeletion && !noteId.isNullOrBlank()
+
+    /**
+     * Check if this is a local-only note (never synced)
+     */
+    fun isLocalOnly(): Boolean = noteId.isNullOrBlank()
 
     /**
      * Create a copy marked for sync
      */
-    fun markForSync(): NoteResponse = copy(isSynced = false)
+    fun markForSync(): NoteResponse = copy(isSynced = false, syncAction = SyncAction.UPDATE)
 
     /**
      * Create a copy marked as synced
      */
-    fun markAsSynced(): NoteResponse = copy(isSynced = true)
+    fun markAsSynced(): NoteResponse = copy(isSynced = true, syncAction = SyncAction.NONE)
 
     /**
      * Create a copy marked for deletion
      */
-    fun markForDeletion(): NoteResponse = copy(pendingDeletion = true, isSynced = false)
+    fun markForDeletion(): NoteResponse = copy(
+        pendingDeletion = true,
+        isSynced = false,
+        syncAction = SyncAction.DELETE
+    )
 
     /**
      * Create a copy marked as deleted
      */
-    fun markAsDeleted(): NoteResponse = copy(isDeleted = true, pendingDeletion = false, isSynced = false)
-    
+    fun markAsDeleted(): NoteResponse = copy(
+        isDeleted = true,
+        pendingDeletion = false,
+        isSynced = false
+    )
+
     companion object Companion {
         private val RedOrangeHex = 0xffffab91
         private val RedPinkHex = 0xfff48fb1

@@ -22,7 +22,7 @@ SELECT
 FROM categoryEntity AS c
 LEFT JOIN noteEntity AS n
     ON c.categoryId = n.categoryId
-GROUP BY c.categoryId, c.categoryName, c.colorRes, c.isSynced;
+GROUP BY c.categoryId;
 
 
 getAllUnsyncedCategories:

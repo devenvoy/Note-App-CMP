@@ -24,7 +24,7 @@ sealed interface NavRoute {
     data object Setting : NavRoute
 
     @Serializable
-    data class AddNote(val noteId: Long = 0) : NavRoute
+    data class AddNote(val noteId: Long = -1) : NavRoute
 
     @Serializable
     data object Category : NavRoute

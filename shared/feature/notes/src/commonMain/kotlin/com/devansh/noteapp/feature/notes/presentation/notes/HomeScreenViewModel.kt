@@ -66,41 +66,52 @@ class HomeScreenViewModel(
         }
     }
 
-
-    /**
-     * Enhanced delete function with proper offline handling
-     */
-    fun deleteNoteById(id: String) {
+    fun deleteNote(note: NoteResponse) {
         viewModelScope.launch {
             try {
-                if (isOnline()) {
-                    // Online - try to delete from server first
-                    val result = noteService.deleteNote(id)
+                if (!note.noteId.isNullOrBlank() && isOnline()) {
+                    val result = noteService.deleteNote(note.noteId!!)
                     result.onSuccess {
-                        // Successfully deleted from server, remove locally
-                        noteDataSource.deleteNoteById(id)
-                        Logger.d("Note $id deleted from server and locally",null,"Delete")
+                        noteDataSource.deleteNoteById(note.id)
+                        Logger.d("Note ${note.id} deleted from server and locally", null, "Delete")
                     }.onFailure {
-                        // Failed to delete from server, mark for deletion sync later
-                        noteDataSource.markForDeletion(id)
-                        Logger.w( "Failed to delete from server, marked for sync",null,"Delete")
+                        noteDataSource.markForDeletion(note.id)
+                        Logger.w("Failed to delete from server, marked for sync", null, "Delete")
                     }
+                } else if (!note.noteId.isNullOrBlank() && !isOnline()) {
+                    noteDataSource.markForDeletion(note.id)
+                    Logger.d("Offline: Note ${note.id} marked for deletion", null, "Delete")
                 } else {
-                    // Offline - mark for deletion when online
-                    noteDataSource.markForDeletion(id)
-                    Logger.d("Offline: Note $id marked for deletion",null,"Delete")
+                    noteDataSource.deleteNoteById(note.id)
+                    Logger.d("Local-only note ${note.id} deleted immediately", null, "Delete")
                 }
             } catch (e: Exception) {
-                Logger.e("DeleteError", e) { "Failed to delete note: $id" }
-                // Mark for deletion sync later
-                noteDataSource.markForDeletion(id)
+                Logger.e("DeleteError", e) { "Failed to delete note: ${note.id}" }
+                if (note.noteId.isNullOrBlank()) {
+                    noteDataSource.deleteNoteById(note.id)
+                } else {
+                    noteDataSource.markForDeletion(note.id)
+                }
             }
         }
     }
 
-    /**
-     * Comprehensive sync function
-     */
+    // Keep for backward compatibility
+    fun deleteNoteById(noteId: String) {
+        viewModelScope.launch {
+            try {
+                val note = noteDataSource.getNoteByNoteId(noteId)
+                if (note != null) {
+                    deleteNote(note)
+                } else {
+                    Logger.e("DeleteError", null) { "Note with noteId $noteId not found" }
+                }
+            } catch (e: Exception) {
+                Logger.e("DeleteError", e) { "Failed to find and delete note: $noteId" }
+            }
+        }
+    }
+
     fun getAllNotes() {
         viewModelScope.launch {
             if (!isOnline()) {
@@ -140,25 +151,27 @@ class HomeScreenViewModel(
         }
     }
 
-    /**
-     * Sync notes marked for deletion
-     */
     private suspend fun syncDeletions() {
         val notesToDelete = noteDataSource.getNotesMarkedForDeletion()
-        Logger.d("Syncing ${notesToDelete.size} deletions",null,"Sync")
+        Logger.d("Syncing ${notesToDelete.size} deletions", null, "Sync")
 
         notesToDelete.forEach { note ->
             try {
-                val result = noteService.deleteNote(note.noteId!!)
-                result.onSuccess {
-                    // Successfully deleted from server - remove completely
+                if (!note.noteId.isNullOrBlank()) {
+                    // Synced note - delete from server
+                    val result = noteService.deleteNote(note.noteId!!)
+                    result.onSuccess {
+                        noteDataSource.deleteNoteById(note.id)
+                        Logger.d("Successfully deleted note ${note.id} from server", null, "Sync")
+                    }.onFailure { error ->
+                        Logger.e("DeleteSync", null) { "Failed to delete note ${note.id}: $error" }
+                    }
+                } else {
+                    // Local-only note - just remove from database
                     noteDataSource.deleteNoteById(note.id)
-                    Logger.d("Successfully deleted note ${note.id} from server",null,"Sync")
-                }.onFailure { error ->
-                    Logger.e("DeleteSync", null) { "Failed to delete note ${note.id}: $error" }
-                    // Keep the note marked for deletion - will retry next sync
+                    Logger.d("Deleted local-only note ${note.id}", null, "Sync")
                 }
-                delay(100) // Rate limiting
+                delay(100)
             } catch (e: Exception) {
                 Logger.e("DeleteSync", e) { "Error deleting note ${note.id}" }
             }

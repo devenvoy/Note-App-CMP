@@ -98,7 +98,7 @@ fun HomeScreenContent(
     val noteState by viewModel.noteState.collectAsState()
     var isRefreshing by remember { mutableStateOf(false) }
 
-    var selectedNoteResponse by remember { mutableStateOf<NoteResponse?>(null) }
+    var selectedNote by remember { mutableStateOf<NoteResponse?>(null) }
     var isBottomSheetVisible by remember { mutableStateOf(false) }
 
     val onRefresh: UnitCBF = {
@@ -157,12 +157,12 @@ fun HomeScreenContent(
             }
         }) {
 
-        if (isBottomSheetVisible && selectedNoteResponse != null) {
-            val richContent = rememberRichTextState().setHtml(selectedNoteResponse?.content ?: "")
+        if (isBottomSheetVisible && selectedNote != null) {
+            val richContent = rememberRichTextState().setHtml(selectedNote?.content ?: "")
             val dismissSheet = {
                 scope.launch { sheetState.hide() }
                 isBottomSheetVisible = false
-                selectedNoteResponse = null
+                selectedNote = null
             }
 
             AdaptiveBottomSheet(
@@ -172,20 +172,21 @@ fun HomeScreenContent(
             ) {
                 NoteMenuBottomSheet(
                     onEditClick = {
-                        onNavigateToAddEditNote(selectedNoteResponse?.id ?: 0); dismissSheet()
+                        onNavigateToAddEditNote(selectedNote?.id ?: 0); dismissSheet()
                     },
-                    onShareClick = { onShareText("${selectedNoteResponse?.title} \n\n ${richContent.toText()}") },
+                    onShareClick = { onShareText("${selectedNote?.title} \n\n ${richContent.toText()}") },
                     onDeleteClick = {
-                        selectedNoteResponse?.noteId?.let {
-                            viewModel.deleteNoteById(selectedNoteResponse?.noteId!!)
+                        selectedNote?.let { note ->
+                            viewModel.deleteNote(note)
                             toasterState.show(
                                 message = "Note deleted successfully",
                                 duration = ToasterDefaults.DurationLong,
                                 type = ToastType.Error
                             )
-                        };dismissSheet()
+                        }
+                        dismissSheet()
                 }, onCopyClick = {
-                        scope.launch { clipboard.setClipEntry(clipEntryOf(AnnotatedString("${selectedNoteResponse?.title} \n\n ${richContent.toText()}").text)) }
+                        scope.launch { clipboard.setClipEntry(clipEntryOf(AnnotatedString("${selectedNote?.title} \n\n ${richContent.toText()}").text)) }
                         toasterState.show(message = "Copied to clipboard", type = ToastType.Info)
                         dismissSheet()
                     }
@@ -216,7 +217,7 @@ fun HomeScreenContent(
                     maxLines = settingsState.enumContentSize.toMaxLines(),
                     isGridLayout = !settingsState.isListView,
                     onLongPress = {
-                        selectedNoteResponse = it
+                        selectedNote = it
                         isBottomSheetVisible = true
                     }
                 )

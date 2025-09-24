@@ -52,7 +52,32 @@ DELETE FROM noteEntity WHERE note_id = ?;
 emptyNoteTable:
 DELETE FROM noteEntity;
 
--- New queries for deletion handling
+markAsDeletedById:
+UPDATE noteEntity
+SET isDeleted = 1, pendingDeletion = 0, isSynced = 0
+WHERE id = ?;
+
+markForDeletionById:
+UPDATE noteEntity
+SET pendingDeletion = 1, isSynced = 0
+WHERE id = ?;
+
+-- Mark operations by note_id (rename your existing ones for clarity)
+markAsDeletedByNoteId:
+UPDATE noteEntity
+SET isDeleted = 1, pendingDeletion = 0, isSynced = 0
+WHERE note_id = ?;
+
+markForDeletionByNoteId:
+UPDATE noteEntity
+SET pendingDeletion = 1, isSynced = 0
+WHERE note_id = ?;
+
+-- Cleanup query for permanently removing synced deleted notes
+cleanupDeletedNotes:
+DELETE FROM noteEntity
+WHERE isDeleted = 1 AND pendingDeletion = 0;
+
 markAsDeleted:
 UPDATE noteEntity
 SET isDeleted = 1, pendingDeletion = 0, isSynced = 0
@@ -71,7 +96,6 @@ getDeletedNote:
 SELECT * FROM noteEntity
 WHERE note_id = ? AND isDeleted = 1;
 
--- Additional helpful queries
 softDeleteNote:
 UPDATE noteEntity
 SET isDeleted = 1, pendingDeletion = 1, isSynced = 0
@@ -84,3 +108,6 @@ WHERE id = ?;
 
 getAllDeletedNotes:
 SELECT * FROM noteEntity WHERE isDeleted = 1;
+
+lastInsertRowId:
+SELECT last_insert_rowid();

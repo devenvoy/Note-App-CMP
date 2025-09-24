@@ -57,10 +57,10 @@ class NoteDataSourceImpl(
             ?.toNote()
     }
 
-    override suspend fun insertNote(note: NoteResponse, synced: Boolean) = withContext(dispatcher) {
+    override suspend fun insertNote(note: NoteResponse, synced: Boolean):Long = withContext(dispatcher) {
         val database = db.first()
         database.noteDatabaseQueries.insertNote(
-            id = note.id,
+            id = if (note.id == -1L) null else note.id, // Handle auto-increment
             note_id = note.noteId,
             title = note.title,
             content = note.content,
@@ -72,7 +72,7 @@ class NoteDataSourceImpl(
             createdAt = note.createdAt,
             updatedAt = note.updatedAt
         )
-        Unit
+        database.noteDatabaseQueries.lastInsertRowId().executeAsOne()
     }
 
     override suspend fun deleteNoteById(id: Long) = withContext(dispatcher) {
@@ -80,12 +80,39 @@ class NoteDataSourceImpl(
         database.noteDatabaseQueries.deleteNoteById(id = id)
         Unit
     }
-    override suspend fun deleteNoteById(noteId: String) = withContext(dispatcher) {
+
+    override suspend fun markAsDeleted(id: Long) = withContext(dispatcher) {
+        val database = db.first()
+        database.noteDatabaseQueries.markAsDeletedById(id)
+        Unit
+    }
+
+    override suspend fun markForDeletion(id: Long) = withContext(dispatcher) {
+        val database = db.first()
+        database.noteDatabaseQueries.markForDeletionById(id)
+        Unit
+    }
+
+    // DELETION METHODS BY SERVER NOTE ID
+    override suspend fun deleteNoteByNoteId(noteId: String) = withContext(dispatcher) {
         val database = db.first()
         database.noteDatabaseQueries.deleteNoteByNoteId(noteId)
         Unit
     }
 
+    override suspend fun markAsDeletedByNoteId(noteId: String) = withContext(dispatcher) {
+        val database = db.first()
+        database.noteDatabaseQueries.markAsDeletedByNoteId(noteId)
+        Unit
+    }
+
+    override suspend fun markForDeletionByNoteId(noteId: String) = withContext(dispatcher) {
+        val database = db.first()
+        database.noteDatabaseQueries.markForDeletionByNoteId(noteId)
+        Unit
+    }
+
+    // SYNC RELATED METHODS
     override suspend fun getUnSyncedNotes(): List<NoteResponse> = withContext(dispatcher) {
         val database = db.first()
         database.noteDatabaseQueries.getAllUnsyncedNotes()
@@ -105,24 +132,6 @@ class NoteDataSourceImpl(
         Unit
     }
 
-    override suspend fun emptyNoteTable() = withContext(dispatcher) {
-        db.first().noteDatabaseQueries.emptyNoteTable()
-        Unit
-    }
-
-    // DELETION HANDLING METHODS
-    override suspend fun markAsDeleted(noteId: String) = withContext(dispatcher) {
-        val database = db.first()
-        database.noteDatabaseQueries.markAsDeleted(noteId)
-        Unit
-    }
-
-    override suspend fun markForDeletion(noteId: String) = withContext(dispatcher) {
-        val database = db.first()
-        database.noteDatabaseQueries.markForDeletion(noteId)
-        Unit
-    }
-
     override suspend fun getNotesMarkedForDeletion(): List<NoteResponse> = withContext(dispatcher) {
         val database = db.first()
         database.noteDatabaseQueries.getNotesMarkedForDeletion()
@@ -137,7 +146,25 @@ class NoteDataSourceImpl(
             ?.toNote()
     }
 
-    // ADDITIONAL HELPER METHODS
+    // UTILITY METHODS
+    override suspend fun emptyNoteTable() = withContext(dispatcher) {
+        db.first().noteDatabaseQueries.emptyNoteTable()
+        Unit
+    }
+
+    /**
+     * Permanently delete notes that have been successfully synced for deletion
+     */
+    override suspend fun cleanupDeletedNotes() = withContext(dispatcher) {
+        val database = db.first()
+        database.transaction {
+            // Delete notes that are marked as deleted AND not pending deletion
+            database.noteDatabaseQueries.cleanupDeletedNotes()
+        }
+        Unit
+    }
+
+    // ADDITIONAL HELPER METHODS (using your existing queries)
 
     /**
      * Soft delete - marks note as deleted but keeps it for sync
@@ -165,24 +192,5 @@ class NoteDataSourceImpl(
         database.noteDatabaseQueries.getAllDeletedNotes()
             .executeAsList()
             .map { it.toNote() }
-    }
-
-    /**
-     * Permanently delete notes that have been successfully synced for deletion
-     */
-    override suspend fun cleanupDeletedNotes() = withContext(dispatcher) {
-      /*  val database = db.first()
-        database.transaction {
-            // Only delete notes that are marked as deleted AND not pending deletion
-            // This means they've been successfully deleted from server
-            database.noteDatabaseQueries.transaction {
-
-                execute(
-                    sql = "DELETE FROM noteEntity WHERE isDeleted = 1 AND pendingDeletion = 0",
-                    parameters = 0,
-                    binders = { }
-                )
-            }
-        }*/
     }
 }

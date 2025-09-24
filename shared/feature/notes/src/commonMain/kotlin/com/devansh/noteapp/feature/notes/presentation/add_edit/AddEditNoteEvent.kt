@@ -10,5 +10,7 @@ sealed interface AddEditNoteEvent {
     data class ChangeContentFocus(val focusState: FocusState) : AddEditNoteEvent
     data class OnColorChange(val color: Long?) : AddEditNoteEvent
     data class OnCategoryChange(val category: Category) : AddEditNoteEvent
+    data class AddNewCategory(val category: Category) : AddEditNoteEvent
     data object SaveNote : AddEditNoteEvent
+    data object ForceSave : AddEditNoteEvent
 }
