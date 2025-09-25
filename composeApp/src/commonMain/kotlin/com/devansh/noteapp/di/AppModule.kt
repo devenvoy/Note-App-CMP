@@ -31,8 +31,6 @@ import io.ktor.http.ContentType
 import io.ktor.http.HttpHeaders
 import io.ktor.http.contentType
 import io.ktor.http.takeFrom
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.IO
 import kotlinx.coroutines.flow.map
 import org.koin.core.module.dsl.viewModel
 import org.koin.dsl.module
@@ -50,22 +48,18 @@ val screenModelsModule = module {
 }
 
 val repositoryModule = module {
-    single<NoteDataSource> { NoteDataSourceImpl(get(), get()) }
-    single<CategoryDataSource> { CategoryDataSourceImpl(get(), get()) }
+    single<NoteDataSource> { NoteDataSourceImpl(get()) }
+    single<CategoryDataSource> { CategoryDataSourceImpl(get()) }
     single<CategoryService> { CategoryServiceImpl(get()) }
     single<NoteService> { NoteServiceImpl(get()) }
     single<AuthService> { AuthServiceImpl(get()) }
 }
 
 val dispatcherModule = module {
-    single { Dispatchers.IO }
-    single { Dispatchers.Default }
-    single { Dispatchers.Main }
-    single { Dispatchers.Unconfined }
 }
 
 val theme = module {
-    single<AppCacheSetting> { AppCacheSettingImpl() }
+    single<AppCacheSetting> { AppCacheSettingImpl(get()) }
     single {
         getHttpClient {
             install(DefaultRequest){

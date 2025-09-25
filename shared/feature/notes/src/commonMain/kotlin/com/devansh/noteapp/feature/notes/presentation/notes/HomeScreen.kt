@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBarsPadding
@@ -259,7 +260,8 @@ fun NoteMenuBottomSheet(
     onEditClick: UnitCBF? = null,
 ) {
     Column(
-        modifier = Modifier.fillMaxWidth().navigationBarsPadding().padding(16.dp)
+        modifier = Modifier.fillMaxSize()
+            .navigationBarsPadding().padding(16.dp)
     ) {
 
         BottomSheetDefaults.DragHandle(Modifier.width(50.dp).align(Alignment.CenterHorizontally))

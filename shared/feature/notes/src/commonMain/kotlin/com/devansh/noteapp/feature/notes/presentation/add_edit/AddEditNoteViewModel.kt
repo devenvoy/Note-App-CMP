@@ -8,6 +8,7 @@ import androidx.lifecycle.viewModelScope
 import co.touchlab.kermit.Logger
 import com.devansh.noteapp.core.database.repo.CategoryDataSource
 import com.devansh.noteapp.core.database.repo.NoteDataSource
+import com.devansh.noteapp.core.utils.IO
 import com.devansh.noteapp.core.utils.onFailure
 import com.devansh.noteapp.core.utils.onSuccess
 import com.devansh.noteapp.data.models.dto.Category
@@ -16,9 +17,8 @@ import com.devansh.noteapp.data.models.dto.NoteResponse
 import com.devansh.noteapp.data.models.dto.NoteResponse.Companion.emptyNote
 import com.devansh.noteapp.data.repository.repo.NoteService
 import com.mohamedrejeb.richeditor.model.RichTextState
-import dev.tmapps.konnection.Konnection
+//import dev.tmapps.konnection.Konnection
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.IO
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -51,7 +51,7 @@ class AddEditNoteViewModel(
     val eventFlow = _eventFlow.asSharedFlow()
     private val _isSaving = MutableStateFlow(false)
     val isSaving = _isSaving.asStateFlow()
-    private fun isOnline(): Boolean = Konnection.instance.isConnected()
+    private fun isOnline(): Boolean = true//Konnection.instance.isConnected()
 
     init {
         setupRichTextConfig()

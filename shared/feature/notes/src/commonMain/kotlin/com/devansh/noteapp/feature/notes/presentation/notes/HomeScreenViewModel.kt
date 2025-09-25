@@ -4,15 +4,15 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import co.touchlab.kermit.Logger
 import com.devansh.noteapp.core.database.repo.NoteDataSource
+import com.devansh.noteapp.core.utils.IO
 import com.devansh.noteapp.core.utils.onFailure
 import com.devansh.noteapp.core.utils.onSuccess
 import com.devansh.noteapp.data.models.dto.NoteResponse
 import com.devansh.noteapp.data.models.dto.request.NoteRequest
 import com.devansh.noteapp.data.repository.SearchNotes
 import com.devansh.noteapp.data.repository.repo.NoteService
-import dev.tmapps.konnection.Konnection
+//import dev.tmapps.konnection.Konnection
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.IO
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -411,7 +411,8 @@ class HomeScreenViewModel(
      * Check if device is online
      */
     private fun isOnline(): Boolean {
-        return Konnection.instance.isConnected()
+//        return Konnection.instance.isConnected()
+        return true
     }
 }
 

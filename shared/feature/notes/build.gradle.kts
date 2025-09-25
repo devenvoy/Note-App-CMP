@@ -11,6 +11,9 @@ kotlin {
     iosArm64()
     iosSimulatorArm64()
     jvm()
+    js(IR) {
+        browser()
+    }
 
     sourceSets {
         commonMain.dependencies {
@@ -36,7 +39,7 @@ kotlin {
             implementation(libs.touchlab.kermit)
             implementation(libs.richeditor.compose)
 
-            implementation(libs.konnection)
+//            implementation(libs.konnection)
             implementation(libs.compose.colorpicker)
             implementation(libs.calf.ui)
 

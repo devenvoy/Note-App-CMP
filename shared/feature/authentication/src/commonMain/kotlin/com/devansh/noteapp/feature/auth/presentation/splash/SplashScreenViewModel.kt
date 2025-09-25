@@ -2,10 +2,11 @@ package com.devansh.noteapp.feature.auth.presentation.splash
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.devansh.noteapp.core.utils.IO
+import com.devansh.noteapp.core.utils.Result
 import com.devansh.noteapp.data.repository.AppCacheSetting
 import com.devansh.noteapp.data.repository.repo.AuthService
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.IO
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -13,7 +14,6 @@ import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import com.devansh.noteapp.core.utils.Result
 
 class SplashScreenViewModel(
     private val pref: AppCacheSetting,

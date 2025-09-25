@@ -5,8 +5,12 @@ import app.cash.sqldelight.async.coroutines.synchronous
 import app.cash.sqldelight.db.SqlDriver
 import app.cash.sqldelight.driver.android.AndroidSqliteDriver
 
-actual fun getPlatformSqlDriver(context: Any?): SqlDriver {
-    val ctx = context as? Context
-        ?: throw IllegalArgumentException("Context required on Android")
-    return AndroidSqliteDriver(NoteAppDatabase.Schema.synchronous(), ctx, "note_app.db")
+actual class DatabaseDriverFactory(private val context: Context) {
+    actual fun createDriver(): SqlDriver {
+        return AndroidSqliteDriver(
+            schema = NoteAppDatabase.Schema.synchronous(),
+            context = context,
+            name = "note_app.db"
+        )
+    }
 }

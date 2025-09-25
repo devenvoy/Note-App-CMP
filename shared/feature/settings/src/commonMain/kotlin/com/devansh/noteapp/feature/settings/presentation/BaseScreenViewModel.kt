@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.devansh.noteapp.core.database.repo.NoteDataSource
 import com.devansh.noteapp.core.designsystem.SettingsState
+import com.devansh.noteapp.core.utils.IO
 import com.devansh.noteapp.data.models.dto.settings.AppColor
 import com.devansh.noteapp.data.models.dto.settings.AppTheme
 import com.devansh.noteapp.data.models.dto.settings.AppTheme.Companion.toInt
@@ -13,7 +14,6 @@ import com.devansh.noteapp.data.models.dto.settings.ListNoteContentSize
 import com.devansh.noteapp.data.repository.AppCacheSetting
 import com.devansh.noteapp.data.repository.preference.SettingStorageKeys
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.IO
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine

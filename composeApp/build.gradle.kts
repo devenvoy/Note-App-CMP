@@ -32,6 +32,17 @@ kotlin {
 
     jvm()
 
+    js {
+        outputModuleName = "composeApp"
+        browser {
+            commonWebpackConfig {
+                outputFileName = "composeApp.js"
+            }
+        }
+        binaries.executable()
+        useEsModules()
+    }
+
     sourceSets {
 
         androidMain.dependencies {
@@ -80,6 +91,8 @@ kotlin {
             implementation(libs.sonner)
             implementation(libs.color.materialKolor)
 
+            implementation(libs.multiplatform.settings.no.arg)
+
         }
 
         iosMain.dependencies {
@@ -91,6 +104,9 @@ kotlin {
             implementation(libs.slf4j.simple)
             implementation(compose.desktop.currentOs)
             implementation(libs.kotlinx.coroutines.swing)
+        }
+        jsMain.dependencies {
+            implementation(compose.html.core)
         }
     }
 }

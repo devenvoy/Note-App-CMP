@@ -11,6 +11,9 @@ kotlin {
     iosArm64()
     iosSimulatorArm64()
     jvm()
+    js(IR){
+        browser()
+    }
 
     sourceSets {
         commonMain.dependencies {
@@ -32,6 +35,9 @@ kotlin {
 
         jvmMain.dependencies {
             implementation(libs.ktor.client.java)
+        }
+        jsMain.dependencies {
+            implementation(libs.ktor.client.js)
         }
     }
 }

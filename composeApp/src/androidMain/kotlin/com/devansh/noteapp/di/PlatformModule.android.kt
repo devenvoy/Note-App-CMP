@@ -4,13 +4,18 @@ import android.content.Intent
 import app.cash.sqldelight.db.SqlDriver
 import com.devansh.noteapp.MainActivity
 import com.devansh.noteapp.NoteApp
-import com.devansh.noteapp.core.database.getPlatformSqlDriver
+import com.devansh.noteapp.core.database.DatabaseDriverFactory
+import com.devansh.noteapp.data.repository.SettingBuilder
 import org.koin.core.module.Module
 import org.koin.dsl.module
 
-
 actual fun platformModule(): Module = module {
-    single<SqlDriver> {getPlatformSqlDriver(NoteApp.Companion.AppContext)}
+    single<SqlDriver> {
+        DatabaseDriverFactory(NoteApp.AppContext).createDriver()
+    }
+    single {
+        SettingBuilder(NoteApp.AppContext).createSettings()
+    }
 }
 
 actual fun shareText(text: String, mimeType: String) {

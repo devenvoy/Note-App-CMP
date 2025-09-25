@@ -12,6 +12,9 @@ kotlin {
     iosArm64()
     iosSimulatorArm64()
     jvm()
+    js(IR) {
+        browser()
+    }
 
     sourceSets {
         commonMain.dependencies {
@@ -34,6 +37,10 @@ kotlin {
 
         jvmMain.dependencies {
             implementation(libs.kotlinx.coroutines.swing)
+        }
+
+        jsMain.dependencies {
+
         }
     }
 }

@@ -1,5 +1,6 @@
 package com.devansh.noteapp.data.repository.preference
 
+import com.devansh.noteapp.core.utils.IO
 import com.devansh.noteapp.core.utils.UnitCBF
 import com.devansh.noteapp.data.models.dto.settings.AppColor
 import com.devansh.noteapp.data.models.dto.settings.AppColor.Companion.toInt
@@ -21,15 +22,15 @@ import com.russhwolf.settings.get
 import com.russhwolf.settings.set
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.IO
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.withContext
 
 @OptIn(ExperimentalSettingsApi::class)
-class AppCacheSettingImpl : AppCacheSetting {
+class AppCacheSettingImpl(
+    private val settings: Settings = Settings(),
+) : AppCacheSetting {
 
-    private val settings: Settings by lazy { Settings() }
     private val observableSettings: ObservableSettings by lazy { settings as ObservableSettings }
 
     override var accessToken: String?

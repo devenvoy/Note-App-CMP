@@ -5,12 +5,12 @@ import app.cash.sqldelight.coroutines.mapToList
 import app.cash.sqldelight.db.SqlDriver
 import com.devansh.noteapp.core.database.NoteAppDatabase
 import com.devansh.noteapp.core.database.repo.CategoryDataSource
+import com.devansh.noteapp.core.utils.IO
 import com.devansh.noteapp.data.models.dto.Category
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.IO
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.first

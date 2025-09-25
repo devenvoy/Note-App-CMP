@@ -10,6 +10,7 @@ plugins {
     alias(libs.plugins.hot.reload) apply false
     id("com.google.gms.google-services") version "4.4.3" apply false
     alias(libs.plugins.android.lint) apply false
+    alias(libs.plugins.sqldelight) apply false
 }
 allprojects {
     repositories {
