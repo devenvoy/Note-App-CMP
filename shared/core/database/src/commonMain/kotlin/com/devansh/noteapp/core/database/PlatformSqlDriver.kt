@@ -3,5 +3,5 @@ package com.devansh.noteapp.core.database
 import app.cash.sqldelight.db.SqlDriver
 
 expect class DatabaseDriverFactory {
-    fun createDriver(): SqlDriver
+    suspend fun createDriver(): SqlDriver
 }

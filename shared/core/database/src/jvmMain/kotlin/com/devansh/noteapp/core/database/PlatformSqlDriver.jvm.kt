@@ -1,5 +1,6 @@
 package com.devansh.noteapp.core.database
 
+import app.cash.sqldelight.async.coroutines.awaitCreate
 import app.cash.sqldelight.db.SqlDriver
 import app.cash.sqldelight.driver.jdbc.sqlite.JdbcSqliteDriver
 import java.io.File
@@ -7,12 +8,12 @@ import java.sql.DriverManager
 
 actual class DatabaseDriverFactory {
 
-    actual fun createDriver(): SqlDriver {
+    actual suspend fun createDriver(): SqlDriver {
         val dbFilePath: String = getPath(isDebug = false)
         val driver: SqlDriver = JdbcSqliteDriver("jdbc:sqlite:${dbFilePath}")
 
         if (!File(dbFilePath).exists()) {
-            NoteAppDatabase.Schema.create(driver)
+            NoteAppDatabase.Schema.awaitCreate(driver)
         }
 
         val currentVersion = getSQLiteSchemaVersion(dbFilePath)

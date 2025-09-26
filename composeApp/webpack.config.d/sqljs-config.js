@@ -1,4 +1,3 @@
-// {project}/webpack.config.d/sqljs.js
 config.resolve = {
     fallback: {
         fs: false,

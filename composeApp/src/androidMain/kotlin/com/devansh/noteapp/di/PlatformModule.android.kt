@@ -1,7 +1,6 @@
 package com.devansh.noteapp.di
 
 import android.content.Intent
-import app.cash.sqldelight.db.SqlDriver
 import com.devansh.noteapp.MainActivity
 import com.devansh.noteapp.NoteApp
 import com.devansh.noteapp.core.database.DatabaseDriverFactory
@@ -10,12 +9,8 @@ import org.koin.core.module.Module
 import org.koin.dsl.module
 
 actual fun platformModule(): Module = module {
-    single<SqlDriver> {
-        DatabaseDriverFactory(NoteApp.AppContext).createDriver()
-    }
-    single {
-        SettingBuilder(NoteApp.AppContext).createSettings()
-    }
+    single { DatabaseDriverFactory(NoteApp.AppContext) }
+    single { SettingBuilder(NoteApp.AppContext).createSettings() }
 }
 
 actual fun shareText(text: String, mimeType: String) {

@@ -1,6 +1,7 @@
 package com.devansh.noteapp.di
 
 import com.devansh.noteapp.BuildConfig
+import com.devansh.noteapp.core.database.DbHelper
 import com.devansh.noteapp.core.database.datasource.CategoryDataSourceImpl
 import com.devansh.noteapp.core.database.datasource.NoteDataSourceImpl
 import com.devansh.noteapp.core.database.repo.CategoryDataSource
@@ -10,7 +11,6 @@ import com.devansh.noteapp.core.designsystem.theme.NoteThemes
 import com.devansh.noteapp.core.designsystem.theme.ThemeConfig
 import com.devansh.noteapp.core.designsystem.theme.ThemeState
 import com.devansh.noteapp.core.designsystem.theme.ThemeStatelessViewModel
-import com.devansh.noteapp.data.models.dto.settings.AppTheme
 import com.devansh.noteapp.data.repository.AppCacheSetting
 import com.devansh.noteapp.data.repository.impl.AuthServiceImpl
 import com.devansh.noteapp.data.repository.impl.CategoryServiceImpl
@@ -31,7 +31,6 @@ import io.ktor.http.ContentType
 import io.ktor.http.HttpHeaders
 import io.ktor.http.contentType
 import io.ktor.http.takeFrom
-import kotlinx.coroutines.flow.map
 import org.koin.core.module.dsl.viewModel
 import org.koin.dsl.module
 
@@ -60,6 +59,7 @@ val dispatcherModule = module {
 
 val theme = module {
     single<AppCacheSetting> { AppCacheSettingImpl(get()) }
+    single { DbHelper(get()) }
     single {
         getHttpClient {
             install(DefaultRequest){

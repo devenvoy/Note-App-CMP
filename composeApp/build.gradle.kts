@@ -1,5 +1,6 @@
 
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
+import org.jetbrains.kotlin.gradle.targets.js.webpack.KotlinWebpackConfig
 import java.util.Properties
 
 plugins {
@@ -35,12 +36,20 @@ kotlin {
     js {
         outputModuleName = "composeApp"
         browser {
+            val rootDirPath = project.rootDir.path
+            val projectDirPath = project.projectDir.path
             commonWebpackConfig {
                 outputFileName = "composeApp.js"
+                devServer = (devServer ?: KotlinWebpackConfig.DevServer()).apply {
+                    static = (static ?: mutableListOf()).apply {
+                        // Serve sources to debug inside browser
+                        add(rootDirPath)
+                        add(projectDirPath)
+                    }
+                }
             }
         }
         binaries.executable()
-        useEsModules()
     }
 
     sourceSets {
@@ -93,6 +102,7 @@ kotlin {
 
             implementation(libs.multiplatform.settings.no.arg)
 
+            implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.10.2")
         }
 
         iosMain.dependencies {
@@ -107,6 +117,12 @@ kotlin {
         }
         jsMain.dependencies {
             implementation(compose.html.core)
+            implementation(libs.ktor.client.js)
+            implementation(libs.sqldelight.web.driver)
+            implementation(npm("@cashapp/sqldelight-sqljs-worker", "2.1.0"))
+            implementation (npm("sql.js", "1.8.0"))
+
+            implementation (devNpm("copy-webpack-plugin", "9.1.0"))
         }
     }
 }

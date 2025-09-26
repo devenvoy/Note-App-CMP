@@ -24,6 +24,9 @@
                 implementation(libs.kotlinx.coroutines.core)
     //            implementation(libs.sqlite.bundled)
                 implementation(libs.koin.core)
+
+                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.10.2")
+
             }
 
             androidMain.dependencies {
@@ -39,11 +42,11 @@
             }
 
             jsMain.dependencies {
-                implementation(libs.sqldelight.web.worker.driver)
-
-                implementation (npm("sql.js", "1.12.0"))
-                implementation (devNpm("copy-webpack-plugin", "9.1.0"))
+                implementation(libs.sqldelight.web.driver)
                 implementation(npm("@cashapp/sqldelight-sqljs-worker", "2.1.0"))
+                implementation (npm("sql.js", "1.8.0"))
+
+                implementation (devNpm("copy-webpack-plugin", "9.1.0"))
             }
 
         }
@@ -59,10 +62,12 @@
     }
 
     sqldelight {
+        linkSqlite = true
         databases {
             create("NoteAppDatabase") {
                 packageName = "com.devansh.noteapp.core.database"
                 generateAsync.set(true)
+                version = 1
             }
         }
     }
