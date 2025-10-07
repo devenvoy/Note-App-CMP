@@ -11,11 +11,11 @@ import com.devansh.noteapp.core.designsystem.theme.NoteThemes
 import com.devansh.noteapp.core.designsystem.theme.ThemeConfig
 import com.devansh.noteapp.core.designsystem.theme.ThemeState
 import com.devansh.noteapp.core.designsystem.theme.ThemeStatelessViewModel
+import com.devansh.noteapp.data.models.dto.settings.AppTheme
 import com.devansh.noteapp.data.repository.AppCacheSetting
 import com.devansh.noteapp.data.repository.impl.AuthServiceImpl
 import com.devansh.noteapp.data.repository.impl.CategoryServiceImpl
 import com.devansh.noteapp.data.repository.impl.NoteServiceImpl
-import com.devansh.noteapp.data.repository.preference.AppCacheSettingImpl
 import com.devansh.noteapp.data.repository.repo.AuthService
 import com.devansh.noteapp.data.repository.repo.CategoryService
 import com.devansh.noteapp.data.repository.repo.NoteService
@@ -31,6 +31,7 @@ import io.ktor.http.ContentType
 import io.ktor.http.HttpHeaders
 import io.ktor.http.contentType
 import io.ktor.http.takeFrom
+import kotlinx.coroutines.flow.map
 import org.koin.core.module.dsl.viewModel
 import org.koin.dsl.module
 
@@ -54,11 +55,7 @@ val repositoryModule = module {
     single<AuthService> { AuthServiceImpl(get()) }
 }
 
-val dispatcherModule = module {
-}
-
 val theme = module {
-    single<AppCacheSetting> { AppCacheSettingImpl(get()) }
     single { DbHelper(get()) }
     single {
         getHttpClient {
@@ -86,6 +83,5 @@ val appModules = listOf(
     platformModule(),
     theme,
     repositoryModule,
-    screenModelsModule,
-    dispatcherModule,
+    screenModelsModule
 )

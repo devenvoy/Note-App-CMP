@@ -4,11 +4,11 @@ import android.content.Context
 import com.russhwolf.settings.Settings
 import com.russhwolf.settings.SharedPreferencesSettings
 
-actual class SettingBuilder(
+class AndroidSettingBuilder(
     private val context: Context,
     private val name: String? = null
-) {
-    actual fun createSettings(): Settings {
+) : SettingBuilder {
+    override fun createSettings(): Settings {
         return SharedPreferencesSettings.Factory(context).create(name ?: "my_prefs")
     }
 }

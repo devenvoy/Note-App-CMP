@@ -20,7 +20,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
-import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.BottomSheetDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
@@ -85,7 +84,6 @@ fun HomeScreenContent(
     viewModel: HomeScreenViewModel,
     settingsState: SettingsState,
     onNavigateToAddEditNote: LongCBF,
-    onNavigateToSettings: UnitCBF,
     onShareText: StringCBF,
 ) {
     val theme = LocalAppTheme.current
@@ -146,14 +144,8 @@ fun HomeScreenContent(
                     },
                     actions = {
                         IconButton(onClick = viewModel::onToggleSearch) {
-                        Icon(imageVector = Icons.Filled.Search, contentDescription = "search")
-                    }
-                        IconButton(onClick = onNavigateToSettings) {
-                            Icon(
-                                imageVector = Icons.Filled.Settings,
-                                contentDescription = "setting"
-                            )
-                    }
+                            Icon(imageVector = Icons.Filled.Search, contentDescription = "search")
+                        }
                 })
             }
         }) {
@@ -216,7 +208,7 @@ fun HomeScreenContent(
                     overflow = settingsState.enumOverflowStyle.toTextOverFlow(),
                     textAlign = settingsState.titleAlignment.toTextAlign(),
                     maxLines = settingsState.enumContentSize.toMaxLines(),
-                    isGridLayout = !settingsState.isListView,
+                    isGridLayout = settingsState.isListView.not(),
                     onLongPress = {
                         selectedNote = it
                         isBottomSheetVisible = true

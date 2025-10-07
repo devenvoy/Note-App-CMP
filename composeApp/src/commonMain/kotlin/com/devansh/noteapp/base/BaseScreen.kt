@@ -16,6 +16,8 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Folder
 import androidx.compose.material.icons.filled.FolderOpen
 import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -56,6 +58,7 @@ import com.devansh.noteapp.feature.settings.presentation.BaseScreenViewModel
 import com.devansh.noteapp.navigation.NavRoute
 import com.devansh.noteapp.navigation.categoryScreen
 import com.devansh.noteapp.navigation.homeScreen
+import com.devansh.noteapp.navigation.settingsScreen
 import org.jetbrains.compose.resources.stringResource
 
 
@@ -94,6 +97,12 @@ private fun BaseScreen(
             defaultIcon = Icons.Filled.Folder,
             selectedIcon = Icons.Filled.FolderOpen,
             route = NavRoute.Category
+        ),
+        BottomNavItem(
+            title = NoteAppStrings.settings,
+            defaultIcon = Icons.Outlined.Settings,
+            selectedIcon = Icons.Filled.Settings,
+            route = NavRoute.Setting
         )
     )
 
@@ -149,10 +158,14 @@ private fun BaseScreen(
                     navController = bottomNavController,
                     startDestination = NavRoute.HomeScreen
                 ) {
-                    homeScreen(settingsState, mainNavController)
-                    categoryScreen(mainNavController){
+                    homeScreen(settingsState = settingsState, mainNavController = mainNavController)
+                    categoryScreen(mainNavController = mainNavController){
                         bottomNavController.navigateUp()
                     }
+                    settingsScreen(
+                        baseScreenViewModel = viewModel,
+                        navHostController = mainNavController
+                    )
                 }
             }
         },

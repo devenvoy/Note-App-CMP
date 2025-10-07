@@ -26,7 +26,6 @@ import com.devansh.noteapp.core.designsystem.components.EmptyScreen
 import com.devansh.noteapp.core.designsystem.resources.NoteAppDrawables
 import com.devansh.noteapp.core.designsystem.theme.LocalAppTheme
 import com.devansh.noteapp.core.utils.StringCBF
-import com.devansh.noteapp.core.utils.UnitCBF
 import com.devansh.noteapp.feature.notes.presentation.add_edit.AddEditNoteViewModel
 import com.devansh.noteapp.feature.notes.presentation.add_edit.AddEditScreenContent
 import kotlinx.coroutines.launch
@@ -42,7 +41,6 @@ import org.koin.core.parameter.parametersOf
 fun NotesListDetailScreen(
     homeScreenModel: HomeScreenViewModel,
     settingsState: SettingsState,
-    onNavigateToSettings: UnitCBF,
     onShareText: StringCBF,
 ) {
     val navigator = rememberListDetailPaneScaffoldNavigator<Long>()
@@ -67,7 +65,6 @@ fun NotesListDetailScreen(
                             navigator.navigateTo(ListDetailPaneScaffoldRole.Detail, noteId)
                         }
                     },
-                    onNavigateToSettings = onNavigateToSettings,
                     onShareText = onShareText
                 )
             }

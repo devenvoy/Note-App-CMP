@@ -4,13 +4,16 @@ import android.content.Intent
 import com.devansh.noteapp.MainActivity
 import com.devansh.noteapp.NoteApp
 import com.devansh.noteapp.core.database.DatabaseDriverFactory
-import com.devansh.noteapp.data.repository.SettingBuilder
+import com.devansh.noteapp.data.repository.AndroidSettingBuilder
+import com.devansh.noteapp.data.repository.AppCacheSetting
+import com.devansh.noteapp.data.repository.preference.AppCacheSettingImpl
 import org.koin.core.module.Module
 import org.koin.dsl.module
 
 actual fun platformModule(): Module = module {
     single { DatabaseDriverFactory(NoteApp.AppContext) }
-    single { SettingBuilder(NoteApp.AppContext).createSettings() }
+    single { AndroidSettingBuilder(NoteApp.AppContext).createSettings() }
+    single<AppCacheSetting> { AppCacheSettingImpl(get()) }
 }
 
 actual fun shareText(text: String, mimeType: String) {

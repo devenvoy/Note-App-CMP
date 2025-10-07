@@ -34,14 +34,12 @@ fun NavGraphBuilder.homeScreen(settingsState: SettingsState,mainNavController: N
                 viewModel = homeScreenModel,
                 settingsState = settingsState,
                 onNavigateToAddEditNote = { id -> mainNavController.navigate(NavRoute.AddNote(id)) },
-                onNavigateToSettings = { mainNavController.navigate(NavRoute.Setting) },
                 onShareText = { shareText(it, "text/plain") }
             )
         } else {
             NotesListDetailScreen(
                 homeScreenModel = homeScreenModel,
                 settingsState = settingsState,
-                onNavigateToSettings = { mainNavController.navigate(NavRoute.Setting) },
                 onShareText = { shareText(it, "text/plain") }
             )
         }

@@ -44,8 +44,6 @@ fun MainNavigationGraph(
             baseScreen(baseScreenViewModel ,mainNavController)
 
             addNoteScreen(mainNavController)
-
-            settingsScreen(baseScreenViewModel,mainNavController)
         }
     }
 

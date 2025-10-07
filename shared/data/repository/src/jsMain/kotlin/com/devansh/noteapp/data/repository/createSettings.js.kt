@@ -4,8 +4,8 @@ import com.russhwolf.settings.Settings
 import com.russhwolf.settings.StorageSettings
 import kotlinx.browser.window
 
-actual class SettingBuilder {
-    actual fun createSettings(): Settings {
+class WebSettingBuilder : SettingBuilder {
+    override fun createSettings(): Settings {
         val delegate = window.localStorage
         return StorageSettings(delegate)
     }

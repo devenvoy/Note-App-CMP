@@ -62,12 +62,10 @@ fun NoteItemUI(
                 RichText(
                     state = content,
                     maxLines = maxLines,
-                    fontSize = 14.sp,
-                    lineHeight = 14.sp,
+                    fontSize = 12.sp,
                     overflow = overflow
                 )
             }
         }
     }
 }
-
